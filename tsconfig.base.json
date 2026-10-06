@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": false,
+    "baseUrl": ".",
+    "paths": {
+      "@flow/money": ["libs/money/src/index.ts"],
+      "@flow/ledger-domain": ["libs/ledger-domain/src/index.ts"],
+      "@flow/ledger-postgres": ["libs/ledger-postgres/src/index.ts"]
+    }
+  }
+}

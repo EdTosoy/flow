@@ -1,0 +1,114 @@
+# Verification, simulator and operations design
+
+## Verification boundary
+
+No application code, PostgreSQL migrations, service or simulation engine exists in Phase 0. The following is the required future verification plan. Architecture-document validation can check consistency and links, not establish financial correctness. Never label the future checks below as executed today.
+
+Use real PostgreSQL with the selected major version (Docker locally/CI), production-equivalent constraints, triggers, roles and isolation. SQLite/in-memory mocks cannot prove transactions, ON CONFLICT, row locks, SKIP LOCKED, deferred balance checks or retries. Use separate DB sessions/processes for concurrency and kill-process tests. Tests must assert committed DB facts and audit/work evidence, not only API responses.
+
+## Test strategy and release gates
+
+| Test class | Scope and assertions | Invariants / milestone gate |
+| --- | --- | --- |
+| Unit | Exact money parser/format/arithmetic, currency compatibility, pure posting/rule equations, identity canonicalization, error classification, source date precision | INV-003/005/009; money + ledger |
+| Property-based | Generate amounts/currencies/actions/event permutations; shrink failing cases and retain seed. Addition/subtraction exactness/bounds; debit=credit generation; reversals restore deltas; idempotent replay; population partition and signed/gross totals; allocation conservation; invalid evidence never confirms; transition/audit parity | INV-001/002/003/005/006/009/010/013/014/015; gate each relevant feature |
+| PostgreSQL integration | Positive/negative direct SQL through runtime roles, all required FKs/uniqueness/guards, transaction-end journal validation, zero-entry journal, constructing-state commit, shared posting/exclusive account closure race, ordinary closed-account posting denied but exact approved reversal allowed, effect/hash conflict, atomic audit/outbox rollback | INV-001/002/003/004/006/008/009/016; ledger and every migration |
+| State-machine/model tests | Generate legal and illegal command sequences; stale version rejection; every material transition audited; no resolved-as-reconciled shortcut; done requires committed receipt | INV-006/008/010/012/014; workflow milestone |
+| Concurrency | 100 parallel duplicates through mixed channels, simultaneous different key payloads, capture/refund bound race, group overlap across runs, alternate bank/projection item identity rejected, overlapping gross/net components rejected, revision invalidation vs confirmation, requeue vs stale worker, finalization vs last member write | INV-002/003/008/010/013/014/016; before worker/reconciliation release |
+| Deterministic simulation | Same seed + generator/adapter/rule versions + virtual clock produces identical source artifacts/fault schedule; final facts satisfy independent oracle expectations under delivery permutations | All financial and completeness invariants; every end-to-end milestone |
+| Failure injection | Kill before/after claim, after journal header/each entry, before audit/outbox, before commit, after commit/ack loss, before publication, after remote send, during group membership, while lease expires | INV-001/002/003/006/008/010/013; worker milestone |
+| Replay | Same receipts/file/action repeated, old/new parser versions, same rule and historical run, new rule shadow run, corrected source version, complete rebuild of projections | INV-003/004/014/017; adapter/rule change gates |
+| Migration | Empty DB and prior populated fixtures; constraints retained, immutable history unchanged, invalid legacy states rejected or explicitly blocked, runtime grants intact, forward-compatible worker schema/event versions, backup/restore integrity | INV-001/002/004/008/014/016; every migration |
+| Load/soak | Declare reproducible workload and DB resources; backlog drain, retry amplification, hot reference/account/run contention, import/control totals at 10,000+ rows, p95/p99 processing, storage/WAL growth and long transactions | INV-008/010/011/017; operations readiness |
+
+Property tests supplement targeted fixtures; a matching test must have independent expected evidence/equation, not call the same matcher to produce its expected output. PBT for the money parser should include large numeric source tokens that ordinary JSON.parse would round if converted to Number. Bounds/overflow are explicit rejection, not modular arithmetic.
+
+Migration tests do not require destructive automatic downgrade of financial schema. Prefer forward repair/roll-forward, reviewed reversible migration where safe, and demonstrated restore. Any deployment/migration against real systems requires explicit authorization, beyond this documentation task.
+
+## Minimal independent accounting example
+
+Provisional merchant mechanics, all USD minor units:
+
+| Journal | Debit | Credit |
+| --- | --- | --- |
+| Capture 10000 | Processor receivable 10000 | Sales 10000 |
+| Fee 300 | Fee expense 300 | Processor receivable 300 |
+| Dispatch payout 9700 | Settlement in transit 9700 | Processor receivable 9700 |
+| Booked bank receipt 9700 | Bank cash 9700 | Settlement in transit 9700 |
+
+Each journal balances separately. Ending processor receivable and in-transit are zero; bank is 9700. Sales credit 10000 minus fee expense debit 300 explains economic net 9700. Debit is not universally “inflow”; account type/normal side gives meaning.
+
+Refunds/chargebacks add distinct signed activities and journals under approved policy, with independent internal and source references. Do not reduce the original capture entry. Reversal tests negate each exact original entry and verify account deltas from original + reversal = zero. Sample chart/account recognition must be approved before production, particularly for chargeback expense versus receivable/recovery.
+
+## Simulator is a first-class subsystem
+
+Generator input: seed, PRNG algorithm/version, scenario schema/version, virtual base time, currency/source/account metadata, generator policy and fault schedule. Store a manifest of generated artifact checksums. Seed alone is insufficient reproducibility when generator code or time changes. Deliveries use a separately seeded deterministic schedule.
+
+Generate an independent ground-truth economic timeline, then materialize normal source contracts: internal payment/refund expectations, processor transactions/components/reports, settlement manifests, bank statements, and explicit commanded ledger actions. The generator does not call ledger/reconciliation implementation to decide what “correct” means. The evaluator computes independent expected effects, conservation/count controls, exposure and case classifications from the economic timeline.
+
+Two separated outputs:
+
+- **Public scenario artifacts:** realistic internal/external records, source-provided counts/references/balances, and delivery schedule. These are legitimate inputs. A provider-provided manifest is evidence, not a cheat.
+- **Private oracle artifacts:** hidden economic truth, fault labels, expected missing identities/cases/effects and expected final results. Separate file location/process and DB role, outside all application mounts/credentials; not imported into SUT schemas. The evaluator has read-only access to SUT results after execution. No `expected_match`, `is_fault`, or oracle scenario tag is accepted as reconciliation evidence.
+
+Faults must alter observable inputs/schedules while preserving hidden truth:
+
+| Scenario/fault | Expected observable result |
+| --- | --- |
+| Payments + fees + settlements + bank receipts | Exact scoped matching, independent totals agree |
+| Refund, partial refunds, chargeback and recovery | Distinct activities/effects, correct signed totals and remaining exposure |
+| Duplicate events / repeated ledger attempts | Multiple receipts/attempts, one effect per semantic key |
+| Missing event or missing ledger posting | Pending/exception/coverage failure or business-ledger failure; never invented counterpart |
+| Out-of-order events / delayed payout / late bank row | Pending with prerequisites/due window; eventual proof or overdue case |
+| Duplicate settlement | Same payout ID retransmission harmless; different IDs claiming same components cause conflict/coverage exception |
+| Amount mismatch / unexpected fee / wrong currency | No confirmation without explicit explaining evidence/policy; case retained |
+| Worker crash at each commit boundary | Rollback or committed receipt/outbox recovery; no duplicate effect |
+| Corrupt/truncated import / duplicate masks missing row | Checksum/count/distinct/source totals fail or coverage unverified |
+| Source correction / rule change | Old proof preserved, current assurance invalidated, guarded reevaluation |
+| Checker/projector stopped | Freshness/control heartbeat fails; dashboard cannot show current clean assurance |
+
+The runner records seed/version, delivery ordering, kill points, command keys and final authoritative snapshots. Replay from clean DB and replay into already-processed DB must agree on economic effects. Include schedules generated under concurrency barriers so a failure is reproducible rather than dependent only on wall-clock sleeps. The system under test must have no oracle-reader dependency; enforce mount/credential/import separation and test access denial.
+
+## Logs, audit, metrics and traces
+
+| Signal | Purpose / restrictions |
+| --- | --- |
+| Application logs | Diagnostic structured messages with correlation/work IDs, versions, error class, source kind and attempt; redact raw payloads/PII/credentials. Logging failure cannot roll back financial truth or be the only record of a decision. |
+| Audit trail | Attributable immutable domain decisions, prior/new state, reason and evidence, atomic with decision. Queryable under scoped authorization; not sampling or log retention. |
+| Metrics | Aggregates, freshness, throughput, exposure and failure controls. Not authoritative accounting balances. Never use record IDs or customer data as high-cardinality labels. |
+| Traces | Sampled causal API/worker/SQL/adapter paths linked through outbox causation; useful for timing and retries, never proof of committed effect. |
+
+## Domain metrics and alerts
+
+Monetary metrics are grouped by **book/source account/currency/scope**. Dashboard authoritative totals are exact integer strings from queries. If telemetry transport represents samples as float, telemetry is approximate operational information only; do not compare rounded gauges to certify zero financial residual. Page on a DB-derived invariant-failure count/boolean, retaining exact DB evidence. No cross-currency sum without a separately approved reporting conversion policy.
+
+| Metric | Definition / useful labels | Proposed response |
+| --- | --- | --- |
+| Unreconciled monetary value | Gross absolute value of unproved economic components, by relationship scope/currency and pending/exception/accepted-risk state; also exact signed residual. Do not add scope totals together. Avoid counting both counterpart sides as two independent losses. | Informational below due windows; alert on breached materiality/age policy. Critical unexpected residual/control violation pages regardless of netting. |
+| Unmatched records | Received/internal-expectation items without confirmed proof by scope/kind/age; denominator includes all sealed members | Dashboard and SLA alert; sudden rise or persistent stall alerts |
+| Age of oldest exception | Now - opened_at for unresolved cases; distinguish original age from last-update age | Alert on priority SLA; critical exposure pages |
+| Processing lag | DB now - oldest accepted ready/retry subject not successfully processed; stage/source | Page on breached service window or no progress with backlog |
+| Ingestion lag | Now - last verified source cursor/coverage interval, plus observed occurrence-to-ingestion delay | Alert/page after source-specific reporting window; distinguish no activity from no coverage evidence |
+| Duplicate events | Receipt retransmissions and semantic duplicate attempts, by source/channel/error classification | Informational; sudden abnormal spike alerts; conflicting duplicate payload opens critical case |
+| Failed processing attempts | Rate/count by transient/permanent/abandoned/blocked classification and handler | Transient retries informational; blocked financial work, retry storm or sustained growth alerts/pages |
+| Reconciliation rate | Reconciled members / complete sealed financial population by scope; record and value rate separate, as-of/rule/coverage shown | Informational trend; never overall assurance alone |
+| Pending settlement value | Exact expected/reported unpaid-to-bank value, currency/source, due/overdue and unknown-amount count | Dashboard before due; overdue/material value alerts |
+| Ledger invariant failures | Authoritative journal/entry/scope/reversal verifier failures + write-guard violations | Any committed invariant failure pages immediately; rejected invalid command alerts by context |
+| Coverage/control failures | Missing/distinct row residual, count/value/balance control fail and unverified period count | Known discrepancy pages for critical scope; missing evidence SLA alert; unverified cannot be green |
+| Outbox/work health | Oldest required delivery age, ready/retry/blocked/expired lease counts, attempts, last committed progress | Page when critical intent stalled; explicit blocked work case |
+| Checker/projection freshness | Last successful ledger/control sweep and projection checkpoints, expected interval | Page on missing control-check heartbeat; dashboard stale/degraded on expired freshness |
+
+Exposure definition is a product decision: report per-scope residual and obligation-side gross value rather than inventing one aggregate “money lost” number. Preserve accepted-risk discrepancies in that measure; closed case count does not remove financial exposure. Unknown amounts are a separate count/flag.
+
+Initial simulator operations can use configured virtual thresholds; real paging thresholds, business calendars and on-call recipients require product/operations decisions. Do not use speculative dollar thresholds. Tests verify alerts become eligible under virtual clock, while no messages are sent during Phase 0.
+
+## Operational runbooks required before deployment
+
+1. Stuck/blocked work: inspect durable attempt/evidence, classify cause, repair approved input/policy, requeue same key, verify outcome/coverage; no SQL force-done.
+2. Ledger/control failure: stop affected posting/confirmation use cases if integrity is uncertain; preserve evidence, verify independent facts, correct via approved reversal/replacement, rerun controls, document incident. Do not stop importing facts without a durable backlog plan.
+3. Import gap: preserve artifact, verify external manifest/cursors, resume missing chunk/independent pull, deduplicate receipts/facts, recheck distinct counts/totals and affected runs.
+4. Source/rule correction: mark current assurance stale, shadow reevaluate, revoke/replace affected proof under locks and approval, preserve as-of history.
+5. Restore: recover PostgreSQL/evidence to chosen point; freeze financial writes until ledger/coverage/outbox invariants and replay checks pass. Lost acknowledgements resolve through effect identities; no fresh IDs to bypass conflicts.
+6. Projection rebuild: read immutable authoritative facts and checkpoint, no financial postings; show degraded freshness until caught up.
+
+Metrics, heartbeat and runbooks need an accountable owner. Database durability is necessary but insufficient if nobody notices that durable work is not progressing.

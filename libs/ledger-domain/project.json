@@ -1,0 +1,17 @@
+{
+  "name": "ledger-domain",
+  "sourceRoot": "libs/ledger-domain/src",
+  "projectType": "library",
+  "tags": ["layer:ledger-domain"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc -b libs/ledger-domain" },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsx --test libs/ledger-domain/test/*.test.ts" }
+    }
+  }
+}

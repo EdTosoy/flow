@@ -1,0 +1,7 @@
+packages:
+  - libs/*
+saveExact: true
+strictPeerDependencies: true
+allowBuilds:
+  esbuild: true
+  nx: true

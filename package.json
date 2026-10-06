@@ -1,0 +1,34 @@
+{
+  "name": "flow",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.27.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "nx run-many -t build --skip-nx-cache",
+    "typecheck": "tsc -p tsconfig.check.json --noEmit",
+    "lint": "nx graph --file=.nx/phase1-project-graph.json && eslint . --max-warnings 0",
+    "format": "prettier --write '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md'",
+    "format:check": "prettier --check '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md'",
+    "test:unit": "nx run-many -t test --skip-nx-cache",
+    "test:integration": "tsx tools/test-postgres.ts",
+    "db:migrate": "tsx tools/migrate.ts",
+    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test:unit && pnpm test:integration"
+  },
+  "devDependencies": {
+    "@nx/eslint-plugin": "23.2.1",
+    "@types/node": "24.19.1",
+    "@types/pg": "8.23.1",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "fast-check": "4.10.2",
+    "nx": "23.2.1",
+    "pg": "8.23.1",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1"
+  }
+}

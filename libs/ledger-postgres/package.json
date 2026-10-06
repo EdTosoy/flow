@@ -1,0 +1,12 @@
+{
+  "name": "@flow/ledger-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@flow/money": "workspace:*",
+    "@flow/ledger-domain": "workspace:*",
+    "pg": "8.23.1"
+  }
+}
