@@ -4,6 +4,8 @@ This is an entity/relationship design, not Drizzle schemas or deployable DDL. Im
 
 Phase 1 now realizes the generic currency/book/account/journal/entry/command-receipt/audit/outbox slice through [reviewed SQL](../../database/migrations/001_financial_core.sql), described in the [actual schema](../phase1/README.md). Accounts are immutable/open only; account closure, evidence links to later modules, approvals, consumers/work/leases and all source/reconciliation entities remain conceptual. Audit/outbox are creation-only in this milestone and require reviewed evolution for later lifecycle events.
 
+Phase 3 realizes the source/account, atomic sealed batch, exact-byte receipt, conservative source revision, versioned movement interpretation and per-receipt disposition slice through `002_ingestion.sql`. See the [actual ingestion model](../phase3/README.md) for implemented identity, limits and controls. Manifests are optional immutable batch evidence; fact active/latest views are derived conservatively; normalization requests reuse existing audit/outbox. Full workers, typed settlement/bank projections and all reconciliation entities remain conceptual.
+
 ## Conventions and identities
 
 - Internal PKs are opaque UUIDs. External IDs are exact strings, never JavaScript numeric values. Identity always includes book, environment (synthetic/test/live), source/provider, source account, object kind, external ID and, where appropriate, revision. Test and live identities must never overlap.

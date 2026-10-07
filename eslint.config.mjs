@@ -17,6 +17,14 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:ingestion-domain',
+              onlyDependOnLibsWithTags: ['layer:money'],
+            },
+            {
+              sourceTag: 'layer:ingestion-postgres',
+              onlyDependOnLibsWithTags: ['layer:ingestion-domain'],
+            },
+            {
               sourceTag: 'trust:runtime',
               notDependOnLibsWithTags: ['trust:oracle'],
             },

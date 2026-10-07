@@ -56,13 +56,96 @@ async function main(): Promise<void> {
       }
     }
     if (!ready) throw new Error('Disposable PostgreSQL failed to become ready');
+    await migrate(admin, '001_financial_core.sql');
+    const upgradeBook = randomUUID();
+    await admin.query(
+      "INSERT INTO ledger.book(id,code,environment) VALUES($1,$2,'synthetic')",
+      [upgradeBook, `upgrade-${upgradeBook}`],
+    );
+    const accounts: string[] = [];
+    for (const [code, classification, normalSide] of [
+      ['asset', 'asset', 'debit'],
+      ['equity', 'equity', 'credit'],
+    ]) {
+      const result = await admin.query<{ result: { id: string } }>(
+        'SELECT ledger.create_account($1::jsonb) AS result',
+        [
+          JSON.stringify({
+            bookId: upgradeBook,
+            code,
+            classification,
+            normalSide,
+            currency: 'PHP',
+            commandKey: randomUUID(),
+            actorId: 'migration-fixture',
+            reason: 'Synthetic upgrade verification',
+          }),
+        ],
+      );
+      accounts.push(result.rows[0]!.result.id);
+    }
+    await admin.query('SELECT ledger.post_journal($1::jsonb)', [
+      JSON.stringify({
+        bookId: upgradeBook,
+        commandKey: randomUUID(),
+        actorId: 'migration-fixture',
+        reason: 'Synthetic upgrade verification',
+        effectNamespace: 'migration-fixture',
+        businessEffectKey: 'capture',
+        currency: 'PHP',
+        effectiveAt: '2026-01-01T00:00:00.000Z',
+        policyVersion: 'synthetic-v1',
+        entries: [
+          {
+            accountId: accounts[0],
+            side: 'debit',
+            amountMinor: '9007199254740993',
+          },
+          {
+            accountId: accounts[1],
+            side: 'credit',
+            amountMinor: '9007199254740993',
+          },
+        ],
+      }),
+    ]);
+    const snapshot = async (): Promise<string> => {
+      const rows = await Promise.all(
+        [
+          'ledger.ledger_account',
+          'ledger.ledger_transaction',
+          'ledger.ledger_entry',
+          'ledger.command_receipt',
+          'audit.audit_event',
+          'outbox.outbox_event',
+        ].map(
+          async (table) =>
+            (
+              await admin!.query(
+                `SELECT coalesce(jsonb_agg(jsonb_strip_nulls(to_jsonb(t)) ORDER BY to_jsonb(t)::text),'[]'::jsonb) AS rows FROM ${table} t WHERE book_id=$1`,
+                [upgradeBook],
+              )
+            ).rows[0].rows,
+        ),
+      );
+      return JSON.stringify(rows);
+    };
+    const beforeUpgrade = await snapshot();
     await migrate(admin);
+    if ((await snapshot()) !== beforeUpgrade)
+      throw new Error('Phase 3 migration changed Phase 1 history');
+    console.log(
+      'Phase 1 populated upgrade preserves exact journal/entry/receipt/audit/outbox history PASS',
+    );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
       'CREATE ROLE flow_test_writer LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_ledger_writer',
     );
     await admin.query(
       'CREATE ROLE flow_test_reader LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_ledger_reader',
+    );
+    await admin.query(
+      'CREATE ROLE flow_test_ingestion LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_ingestion_writer',
     );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
@@ -80,11 +163,17 @@ async function main(): Promise<void> {
           '--test-concurrency=1',
           'tests/ledger.integration.test.ts',
           'tests/simulator-ledger.integration.test.ts',
+          'tests/ingestion.integration.test.ts',
+          'tests/simulator-ingestion.integration.test.ts',
         ],
         {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_INGESTION_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_ingestion@',
+            ),
             FLOW_TEST_WRITER_URL: url.replace(
               'flow_test_admin@',
               'flow_test_writer@',

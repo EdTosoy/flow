@@ -554,6 +554,10 @@ Phase 0 architecture is complete.
 
 Phase 1 financial core is complete and verified.
 
+Phase 2 deterministic simulator is complete and verified.
+
+Phase 3 ingestion and normalization is complete and verified within its documented synthetic evidence boundary; consult `docs/phase3/verification.md` for acceptance evidence and limitations.
+
 Current implemented financial core includes:
 
 - exact `bigint` money
@@ -566,9 +570,10 @@ Current implemented financial core includes:
 - PostgreSQL concurrency controls
 - failure and unknown-commit recovery tests
 
+Phase 3 includes immutable raw receipts, scoped source revisions, versioned synthetic movement interpretations, explicit processing dispositions and source coverage evidence. Runtime ingestion cannot access the simulator oracle or post ledger history.
+
 The following are not yet implemented:
 
-- deterministic simulator
 - reconciliation engine
 - bank ingestion
 - payment processor integration

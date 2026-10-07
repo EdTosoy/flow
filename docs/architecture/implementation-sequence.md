@@ -74,3 +74,5 @@ No answer should be silently filled in with fabricated regulatory requirements o
 ## Phase 0 sign-off boundaries
 
 The simple modular architecture is a viable design candidate. Approval should be conditional on the open domain policies and executable gates above. Financial integrity, coverage and operational recoverability remain **unproven until implemented and tested**. This documentation does not represent approval to deploy, move money or process customer data.
+
+Phase 3 was subsequently authorized for ingestion/evidence/completeness only. [Implementation](../phase3/README.md) and [verification](../phase3/verification.md) record its actual boundary. Phase 4 and later gates remain deferred.
