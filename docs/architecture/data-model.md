@@ -120,3 +120,7 @@ No generic “financial transaction” joining source and ledger; no authoritati
 ## Phase 4 concrete processor boundary
 
 `003_processor.sql` implements processor payment associations, immutable normalized-evidence derivations, explicit signed activities, itemized batch/member-reference evidence and frozen processor-internal evaluations with typed activity links. These associations are not Phase 0's independently authorized internal payment entities. Stable settlement identity is its scoped source fact; each report revision/version creates a separate batch. Multiple revisions are ambiguous, never automatically superseded. See [Phase 4](../phase4/README.md) and [ADR-011](adr/011-processor-interpretations.md). Internal authorization, bank/reconciliation entities and active proof allocations remain deferred.
+
+## Phase 5 implemented bank model
+
+Migration 004 realizes separate bank accounts, derivations, booked entries, statement-reference groups/reports, immutable entry memberships/source references, opening/closing/running stock observations and frozen intrinsic evaluations with typed entry links. Source account + currency scopes bank account identity. Source facts/revisions and normalized versions remain restrictive provenance; unidentified revisions are explicitly observation-only. Accounting and processor records remain separate. [Concrete model and controls](../phase5/README.md); [ADR-012](adr/012-bank-observations.md). Reconciliation items, allocations and processor-bank relationships are still conceptual.

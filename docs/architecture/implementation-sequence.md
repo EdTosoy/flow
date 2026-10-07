@@ -78,3 +78,7 @@ The simple modular architecture is a viable design candidate. Approval should be
 Phase 3 was subsequently authorized for ingestion/evidence/completeness only. [Implementation](../phase3/README.md) and [verification](../phase3/verification.md) record its actual boundary. Phase 4 and later gates remain deferred.
 
 Phase 4 was subsequently authorized only for [processor interpretation and settlement expectations](../phase4/README.md). Independent internal authorization and accounting orchestration from the original broader Phase 4 row remain deferred; [ADR-011](adr/011-processor-interpretations.md) records this narrowing. Processor-internal arithmetic/composition controls do not implement Phase 8 reconciliation proof. Phase 5 and later are not authorized.
+
+## Explicitly authorized Phase 5 milestone
+
+The user subsequently authorized bank observations as Phase 5, overriding the numbering/order of the original recommended worker-first sequence. This does not authorize that original worker milestone. Implement only synthetic bank entries, optional statements/stocks, provenance and intrinsic controls. [Bank implementation](../phase5/README.md), [verification](../phase5/verification.md) and [ADR-012](adr/012-bank-observations.md) define the boundary. Phase 6+ matching/reconciliation, exception management, real integrations and durable worker infrastructure remain deferred.

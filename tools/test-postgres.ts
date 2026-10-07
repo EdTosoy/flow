@@ -3,6 +3,7 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
+import { PostgresProcessor } from '@flow/processor-postgres';
 import { PostgresIngestion } from '@flow/ingestion-postgres';
 
 const exec = promisify(execFile);
@@ -209,7 +210,7 @@ async function main(): Promise<void> {
         ]),
       );
     const beforeIngestionUpgrade = await ingestionSnapshot();
-    await migrate(admin);
+    await migrate(admin, '003_processor.sql');
     if ((await ingestionSnapshot()) !== beforeIngestionUpgrade)
       throw new Error('Phase 4 migration changed Phase 3 evidence');
     console.log(
@@ -219,6 +220,101 @@ async function main(): Promise<void> {
       throw new Error('Migration changed Phase 1 history');
     console.log(
       'Phase 1 populated upgrade preserves exact journal/entry/receipt/audit/outbox history PASS',
+    );
+    const fixtureProcessor = new PostgresProcessor(admin);
+    const fixtureDerivations = await fixtureProcessor.deriveBatch(
+      fixtureBatch.id,
+      'synthetic-movement-v1',
+    );
+    await fixtureProcessor.evaluate(
+      'payment',
+      fixtureDerivations[0]!.paymentId!,
+      'before-phase5',
+    );
+    const reportFixture = await fixtureIngestion.ingest({
+      sourceAccountId: fixtureAccount,
+      batchKey: 'processor-report-before-phase5',
+      actorId: 'migration-fixture',
+      provenance: { adapterVersion: 'fixture-v1' },
+      records: [
+        {
+          locator: '0',
+          objectKind: 'synthetic-settlement',
+          externalId: 'report',
+          sourceRevision: null,
+          sequence: null,
+          sourceObservedAt: null,
+          bytes: Buffer.from(
+            JSON.stringify({
+              id: 'report',
+              transferReference: 'fixture-transfer',
+              componentIds: ['capture'],
+              reportedAt: '2026-01-02T00:00:00.000Z',
+              gross: { amountMinor: '9007199254740993', currency: 'PHP' },
+              fees: { amountMinor: '0', currency: 'PHP' },
+              refunds: { amountMinor: '0', currency: 'PHP' },
+              chargebacks: { amountMinor: '0', currency: 'PHP' },
+              net: { amountMinor: '1', currency: 'PHP' },
+            }),
+          ),
+        },
+      ],
+    });
+    await fixtureIngestion.requestNormalization(
+      reportFixture.id,
+      'synthetic-settlement-v1',
+      'migration-fixture',
+    );
+    await fixtureIngestion.normalizeBatch(
+      reportFixture.id,
+      'synthetic-settlement-v1',
+    );
+    const reportDerivations = await fixtureProcessor.deriveBatch(
+      reportFixture.id,
+      'synthetic-settlement-v1',
+    );
+    await fixtureProcessor.evaluate(
+      'settlement',
+      reportDerivations[0]!.id,
+      'before-phase5',
+    );
+    const processorSnapshot = async (): Promise<string> =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'processor.interpreter_version',
+            'processor.payment',
+            'processor.derivation',
+            'processor.activity',
+            'processor.settlement_batch',
+            'processor.membership',
+            'processor.evaluation',
+            'processor.evaluation_activity',
+            'audit.audit_event',
+            'outbox.outbox_event',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(jsonb_strip_nulls(to_jsonb(t)) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM ${table} t`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const beforeProcessorUpgrade = await processorSnapshot();
+    const beforeBankIngestionUpgrade = await ingestionSnapshot();
+    await migrate(admin);
+    if (
+      (await processorSnapshot()) !== beforeProcessorUpgrade ||
+      (await ingestionSnapshot()) !== beforeBankIngestionUpgrade ||
+      (await snapshot()) !== beforeUpgrade
+    )
+      throw new Error(
+        'Phase 5 migration changed prior financial/evidence history',
+      );
+    console.log(
+      'Populated Phase 4 -> Phase 5 upgrade preserves processor and Phase 1–3 history PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -232,6 +328,9 @@ async function main(): Promise<void> {
     );
     await admin.query(
       'CREATE ROLE flow_test_processor LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_processor_writer',
+    );
+    await admin.query(
+      'CREATE ROLE flow_test_bank LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_bank_writer',
     );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
@@ -253,11 +352,17 @@ async function main(): Promise<void> {
           'tests/simulator-ingestion.integration.test.ts',
           'tests/processor.integration.test.ts',
           'tests/simulator-processor.integration.test.ts',
+          'tests/bank.integration.test.ts',
+          'tests/simulator-bank.integration.test.ts',
         ],
         {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_BANK_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_bank@',
+            ),
             FLOW_TEST_PROCESSOR_URL: url.replace(
               'flow_test_admin@',
               'flow_test_processor@',

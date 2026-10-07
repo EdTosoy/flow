@@ -89,3 +89,7 @@ Archive only under explicit retention policy after all required delivery/account
 ## Phase 4 implemented transactions
 
 Processor derivation is separate from already committed normalization. READ COMMITTED plus the ingestion source-account lock commits derivation/payment association/activity or batch/all membership references with existing-outbox intent. Separate evaluation captures pinned source/processor evidence under the same scope lock and stable helper snapshot, then atomically commits frozen result, complete typed activity links and required failed-control audit. Unique version identities and unchanged evaluation keys recover unknown commits; old calculations never refresh in place. No ledger, bank, allocation or worker writes occur. [Implemented guarantees](../phase4/README.md).
+
+## Phase 5 implemented transactions
+
+Independent bank derivation locks ingestion source account at READ COMMITTED and commits bank account identity, immutable derivation/entry or statement, complete membership/source-line/stock population and existing typed outbox intent. Separate evaluation freezes one stable source/bank snapshot with complete typed entry links and failed-control audit. Sealed/deferred guards and unique identities recover unchanged retries and unknown commits. No ledger/processor write or relationship proof occurs. [Implemented guarantees](../phase5/README.md).

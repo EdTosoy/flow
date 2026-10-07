@@ -88,6 +88,26 @@ test('Nx prevents runtime simulator from depending on oracle and financial core 
       "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
     ],
     [
+      'libs/bank-domain/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/bank-postgres/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/bank-domain/src/probe.ts',
+      "import { PostgresProcessor } from '@flow/processor-postgres'; void PostgresProcessor;",
+    ],
+    [
+      'libs/bank-postgres/src/probe.ts',
+      "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
+    ],
+    [
+      'libs/money/src/probe.ts',
+      "import { movement } from '@flow/bank-domain'; void movement;",
+    ],
+    [
       'libs/money/src/probe.ts',
       "import { lifecycle } from '@flow/processor-domain'; void lifecycle;",
     ],

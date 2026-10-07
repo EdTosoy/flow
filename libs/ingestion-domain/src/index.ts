@@ -1,11 +1,19 @@
 import { createHash } from 'node:crypto';
 import { TextDecoder } from 'node:util';
 import { Money, type MoneyJson } from '@flow/money';
+import {
+  normalizeBank,
+  type BankEntryObservation,
+  type BankStatementObservation,
+} from './bank';
+export type { BankEntryObservation, BankStatementObservation } from './bank';
 
 export const NORMALIZER_VERSIONS = [
   'synthetic-movement-v1',
   'synthetic-movement-v2',
   'synthetic-settlement-v1',
+  'synthetic-bank-entry-v1',
+  'synthetic-bank-statement-v1',
 ] as const;
 export type NormalizerVersion = (typeof NORMALIZER_VERSIONS)[number];
 export interface RawInput {
@@ -54,7 +62,11 @@ export interface SettlementObservation {
 export type NormalizationResult =
   | {
       readonly state: 'NORMALIZED';
-      readonly observation: Observation | SettlementObservation;
+      readonly observation:
+        | Observation
+        | SettlementObservation
+        | BankEntryObservation
+        | BankStatementObservation;
     }
   | {
       readonly state: 'FAILED';
@@ -124,6 +136,24 @@ export function normalizerVersion(value: string): NormalizerVersion {
 export function normalize(
   bytes: Uint8Array,
   externalId: string | null,
+  version:
+    | 'synthetic-movement-v1'
+    | 'synthetic-movement-v2'
+    | 'synthetic-settlement-v1',
+):
+  | Exclude<NormalizationResult, { readonly state: 'NORMALIZED' }>
+  | {
+      readonly state: 'NORMALIZED';
+      readonly observation: Observation | SettlementObservation;
+    };
+export function normalize(
+  bytes: Uint8Array,
+  externalId: string | null,
+  version: NormalizerVersion,
+): NormalizationResult;
+export function normalize(
+  bytes: Uint8Array,
+  externalId: string | null,
   version: NormalizerVersion,
 ): NormalizationResult {
   normalizerVersion(version);
@@ -141,6 +171,11 @@ export function normalize(
   } catch {
     return { state: 'FAILED', code: 'INVALID_JSON' };
   }
+  if (
+    version === 'synthetic-bank-entry-v1' ||
+    version === 'synthetic-bank-statement-v1'
+  )
+    return normalizeBank(parsed, externalId, version);
   if (!externalId) return { state: 'FAILED', code: 'MISSING_IDENTITY' };
   if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed))
     return { state: 'FAILED', code: 'INVALID_STRUCTURE' };
