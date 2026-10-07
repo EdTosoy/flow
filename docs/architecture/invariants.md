@@ -154,3 +154,7 @@ For each invariant below: purpose, enforcement (database and application), test,
 | Human/automation trust | INV-006, INV-007, INV-016 |
 
 Database enforcement of domain rules uses the smallest explicit controlled routines/triggers that protect the stated boundary. PostgreSQL documents that a [CHECK cannot guarantee cross-row constraints](https://www.postgresql.org/docs/18/ddl-constraints.html); a CHECK invoking a hidden aggregate query is therefore not an acceptable balance implementation. Deferrable [constraint triggers](https://www.postgresql.org/docs/18/sql-createtrigger.html) can validate transaction-end state. Exact types alone are also insufficient: [NUMERIC accepts special values and has specific rounding behavior](https://www.postgresql.org/docs/18/datatype-numeric.html), so validation and declared rounding remain necessary.
+
+## Phase 6 implemented proof boundary
+
+Phase 6 realizes the synthetic 1:1 settlement_bank slice of INV-005/010/013/014 and decision portions of INV-006/016: named exact evidence, frozen populations/complete outcomes, stable source-fact allocation uniqueness and immutable historical proof. Current read checks invalidate changed evidence conservatively; controlled reevaluation writes retirement/supersession audit/intent. Period source completeness, later group shapes and exception/manual workflows are not implied. [Executed acceptance evidence](../phase6/verification.md).

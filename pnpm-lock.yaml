@@ -116,6 +116,24 @@ importers:
         specifier: 8.23.1
         version: 8.23.1
 
+  libs/reconciliation-domain:
+    dependencies:
+      '@flow/ingestion-domain':
+        specifier: workspace:*
+        version: link:../ingestion-domain
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+
+  libs/reconciliation-postgres:
+    dependencies:
+      '@flow/reconciliation-domain':
+        specifier: workspace:*
+        version: link:../reconciliation-domain
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
+
   libs/simulator:
     dependencies:
       '@flow/ledger-domain':

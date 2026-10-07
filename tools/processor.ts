@@ -58,6 +58,17 @@ async function main(): Promise<void> {
       settlements.id,
       'synthetic-settlement-v1',
     );
+    if (input.settlements.some((r) => r.payoutMemberIds !== undefined)) {
+      await ingestion.requestNormalization(
+        settlements.id,
+        'synthetic-settlement-group-v1',
+        'synthetic-processor-cli',
+      );
+      await ingestion.normalizeBatch(
+        settlements.id,
+        'synthetic-settlement-group-v1',
+      );
+    }
     const payments = new Set(activities.map((a) => a.paymentId!));
     const paymentResults = [];
     for (const id of payments)

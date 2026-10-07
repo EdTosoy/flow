@@ -1,0 +1,15 @@
+{
+  "name": "reconciliation-postgres",
+  "sourceRoot": "libs/reconciliation-postgres/src",
+  "projectType": "library",
+  "tags": ["layer:reconciliation-postgres", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/reconciliation-postgres"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  }
+}

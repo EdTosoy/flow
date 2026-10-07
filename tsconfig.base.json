@@ -22,7 +22,13 @@
       "@flow/processor-domain": ["libs/processor-domain/src/index.ts"],
       "@flow/processor-postgres": ["libs/processor-postgres/src/index.ts"],
       "@flow/bank-domain": ["libs/bank-domain/src/index.ts"],
-      "@flow/bank-postgres": ["libs/bank-postgres/src/index.ts"]
+      "@flow/bank-postgres": ["libs/bank-postgres/src/index.ts"],
+      "@flow/reconciliation-domain": [
+        "libs/reconciliation-domain/src/index.ts"
+      ],
+      "@flow/reconciliation-postgres": [
+        "libs/reconciliation-postgres/src/index.ts"
+      ]
     }
   }
 }

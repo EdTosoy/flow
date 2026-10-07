@@ -581,3 +581,4 @@ function corrupt(
     anomalies,
   };
 }
+export { generateGroupedSimulation } from './grouped';

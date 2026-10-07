@@ -1,6 +1,6 @@
 # ADR-008 — Grouped, scoped reconciliation proof
 
-Status: proposed. Date: 2026-10-07.
+Status: accepted for the authorized synthetic Phase 7 settlement-bank N:1 scope. Date: 2026-10-07.
 
 ## Context
 
@@ -17,3 +17,7 @@ One fact can prove different scopes without reuse within a scope. Current alloca
 ## Verification gate
 
 Conservation/property tests, ambiguous equal-value fixtures, complete membership controls and simultaneous cross-run allocation/reopening tests on PostgreSQL.
+
+## Phase 7 implementation clarification
+
+Extend Phase 6 typed runs/groups/allocations with `settlement-bank-grouped-v1`, not a parallel matcher. Require explicit complete source `payoutMemberIds` on all immutable member revisions, normalized through supplemental `synthetic-settlement-group-v1` and consistent with pinned Phase 4 financial evidence. Evaluate only whole declared sets of 2–32 settlements to one movement; no subset search, amount-only grouping or partial allocation. Declared groups reserve evidence before residual exact pairs inside this new version; pair-only v1 remains unchanged. Retain failed candidate collisions, bounded search refusal and whole-group atomic acceptance/audit/outbox. Reuse the global allocation key, current freshness/invalidation and historical immutability semantics. [Phase 7 semantics](../../phase7/README.md) defines fixed bounds, provenance and limitations; [verification](../../phase7/verification.md) records actual execution.

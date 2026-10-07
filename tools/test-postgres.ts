@@ -3,6 +3,9 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
+import { PostgresReconciliation } from '@flow/reconciliation-postgres';
+import { fixture as reconciliationFixture } from '../tests/helpers/reconciliation-fixture';
+import { PostgresBank } from '@flow/bank-postgres';
 import { PostgresProcessor } from '@flow/processor-postgres';
 import { PostgresIngestion } from '@flow/ingestion-postgres';
 
@@ -304,7 +307,7 @@ async function main(): Promise<void> {
       );
     const beforeProcessorUpgrade = await processorSnapshot();
     const beforeBankIngestionUpgrade = await ingestionSnapshot();
-    await migrate(admin);
+    await migrate(admin, '004_bank.sql');
     if (
       (await processorSnapshot()) !== beforeProcessorUpgrade ||
       (await ingestionSnapshot()) !== beforeBankIngestionUpgrade ||
@@ -315,6 +318,175 @@ async function main(): Promise<void> {
       );
     console.log(
       'Populated Phase 4 -> Phase 5 upgrade preserves processor and Phase 1–3 history PASS',
+    );
+    const bankSource = await fixtureIngestion.registerSource({
+      bookId: ingestionBook,
+      environment: 'synthetic',
+      provider: 'migration-bank',
+      externalAccountId: 'bank',
+    });
+    const bankFixture = await fixtureIngestion.ingest({
+      sourceAccountId: bankSource,
+      batchKey: 'before-phase6',
+      actorId: 'migration-fixture',
+      provenance: { adapterVersion: 'fixture-v1' },
+      records: [
+        {
+          locator: '0',
+          objectKind: 'synthetic-bank-entry',
+          externalId: 'entry',
+          sourceRevision: null,
+          sequence: null,
+          sourceObservedAt: null,
+          bytes: Buffer.from(
+            JSON.stringify({
+              id: 'entry',
+              status: 'booked',
+              amount: { amountMinor: '9007199254740993', currency: 'PHP' },
+              bookedAt: '2026-01-03T00:00:00.000Z',
+              transferReference: 'fixture-transfer',
+              statementReference: 'statement',
+              lineIdentity: 'line-1',
+              sequence: 1,
+              runningBalance: {
+                amountMinor: '9007199254740993',
+                currency: 'PHP',
+              },
+            }),
+          ),
+        },
+        {
+          locator: '1',
+          objectKind: 'synthetic-bank-statement',
+          externalId: 'statement',
+          sourceRevision: null,
+          sequence: null,
+          sourceObservedAt: null,
+          bytes: Buffer.from(
+            JSON.stringify({
+              id: 'statement',
+              currency: 'PHP',
+              reportedAt: '2026-01-04T00:00:00.000Z',
+              opening: { amountMinor: '0', currency: 'PHP' },
+              closing: { amountMinor: '1', currency: 'PHP' },
+              expectedLineCount: 1,
+              lineIds: ['line-1'],
+              sequenceRange: { from: 1, to: 1 },
+            }),
+          ),
+        },
+      ],
+    });
+    const fixtureBank = new PostgresBank(admin);
+    for (const nv of [
+      'synthetic-bank-entry-v1',
+      'synthetic-bank-statement-v1',
+    ] as const) {
+      await fixtureIngestion.requestNormalization(
+        bankFixture.id,
+        nv,
+        'migration-fixture',
+      );
+      await fixtureIngestion.normalizeBatch(bankFixture.id, nv);
+      for (const d of await fixtureBank.deriveBatch(bankFixture.id, nv))
+        if (d.kind === 'statement')
+          await fixtureBank.evaluate(d.id, 'before-phase6');
+    }
+    const priorSnapshot = async (): Promise<string> =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'bank.interpreter_version',
+            'bank.account',
+            'bank.statement_group',
+            'bank.derivation',
+            'bank.entry',
+            'bank.statement',
+            'bank.membership',
+            'bank.statement_reference',
+            'bank.balance_observation',
+            'bank.evaluation',
+            'bank.evaluation_entry',
+            'audit.audit_event',
+            'outbox.outbox_event',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(jsonb_strip_nulls(to_jsonb(t)) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM ${table} t`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const phase5Before = await priorSnapshot(),
+      phase4Before = await processorSnapshot(),
+      phase3Before = await ingestionSnapshot();
+    await migrate(admin, '005_reconciliation.sql');
+    if (
+      (await priorSnapshot()) !== phase5Before ||
+      (await processorSnapshot()) !== phase4Before ||
+      (await ingestionSnapshot()) !== phase3Before ||
+      (await snapshot()) !== beforeUpgrade
+    )
+      throw new Error('Phase 6 migration changed Phase 1–5 history');
+    console.log(
+      'Populated Phase 5 -> Phase 6 preserves exact bank/processor/ingestion/ledger/audit/outbox history PASS',
+    );
+    const priorReconciliation = await reconciliationFixture(
+      admin,
+      admin,
+      admin,
+      admin,
+    );
+    const upgradeRun = await new PostgresReconciliation(admin).run(
+      priorReconciliation.command,
+    );
+    const reconciliationSnapshot = async (): Promise<string> =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'run',
+            'run_member',
+            'candidate',
+            'outcome_plan',
+            'match_group',
+            'match_group_member',
+            'outcome',
+            'allocation_decision',
+            'current_allocation',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM reconciliation.${table} t`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const phase6History = await reconciliationSnapshot(),
+      phase6Current = await new PostgresReconciliation(admin).summary(
+        upgradeRun.id,
+      );
+    const phase6PriorBank = await priorSnapshot(),
+      phase6PriorProcessor = await processorSnapshot(),
+      phase6PriorIngestion = await ingestionSnapshot();
+    await migrate(admin);
+    if (
+      (await reconciliationSnapshot()) !== phase6History ||
+      JSON.stringify(
+        await new PostgresReconciliation(admin).summary(upgradeRun.id),
+      ) !== JSON.stringify(phase6Current) ||
+      (await priorSnapshot()) !== phase6PriorBank ||
+      (await processorSnapshot()) !== phase6PriorProcessor ||
+      (await ingestionSnapshot()) !== phase6PriorIngestion
+    )
+      throw new Error(
+        'Phase 7 migration changed Phase 1–6 history/current proof',
+      );
+    console.log(
+      'Populated Phase 6 -> Phase 7 preserves frozen runs/members/results/allocations/current assurance and prior evidence PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -332,12 +504,32 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_bank LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_bank_writer',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_reconciliation LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_reconciliation_writer',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
     console.log(
       `Disposable PostgreSQL ${Object.values(version.rows[0]!)[0]}; migration from empty + hash consistency PASS`,
     );
+    const requested = process.argv.slice(2);
+    const files = [
+      'tests/ledger.integration.test.ts',
+      'tests/simulator-ledger.integration.test.ts',
+      'tests/ingestion.integration.test.ts',
+      'tests/simulator-ingestion.integration.test.ts',
+      'tests/processor.integration.test.ts',
+      'tests/simulator-processor.integration.test.ts',
+      'tests/bank.integration.test.ts',
+      'tests/simulator-bank.integration.test.ts',
+      'tests/reconciliation.integration.test.ts',
+      'tests/grouped-reconciliation.integration.test.ts',
+      'tests/simulator-grouped-reconciliation.integration.test.ts',
+      'tests/simulator-reconciliation.integration.test.ts',
+    ];
+    if (requested.some((file) => !files.includes(file)))
+      throw new Error('Unknown integration test path');
     await new Promise<void>((resolve, reject) => {
       const child = execFile(
         process.execPath,
@@ -346,19 +538,16 @@ async function main(): Promise<void> {
           'tsx',
           '--test',
           '--test-concurrency=1',
-          'tests/ledger.integration.test.ts',
-          'tests/simulator-ledger.integration.test.ts',
-          'tests/ingestion.integration.test.ts',
-          'tests/simulator-ingestion.integration.test.ts',
-          'tests/processor.integration.test.ts',
-          'tests/simulator-processor.integration.test.ts',
-          'tests/bank.integration.test.ts',
-          'tests/simulator-bank.integration.test.ts',
+          ...(requested.length ? requested : files),
         ],
         {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_RECONCILIATION_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_reconciliation@',
+            ),
             FLOW_TEST_BANK_URL: url.replace(
               'flow_test_admin@',
               'flow_test_bank@',
@@ -398,6 +587,13 @@ async function main(): Promise<void> {
   }
 }
 main().catch((error) => {
+  if (typeof error === 'object' && error !== null && 'position' in error)
+    console.error(
+      'SQL position:',
+      error.position,
+      'internal position:',
+      'internalPosition' in error ? error.internalPosition : undefined,
+    );
   console.error(
     error instanceof Error
       ? error.message

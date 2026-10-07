@@ -29,6 +29,8 @@ export interface SourceEvent {
   readonly payload: string;
 }
 export interface SettlementReport {
+  /** Explicit complete processor transfer membership, independent of bank receipt. */
+  readonly payoutMemberIds?: readonly string[];
   readonly id: string;
   readonly sourceAccountId: string;
   readonly transferReference: string;
