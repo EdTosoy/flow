@@ -28,7 +28,9 @@
       ],
       "@flow/reconciliation-postgres": [
         "libs/reconciliation-postgres/src/index.ts"
-      ]
+      ],
+      "@flow/exception-domain": ["libs/exception-domain/src/index.ts"],
+      "@flow/exception-postgres": ["libs/exception-postgres/src/index.ts"]
     }
   }
 }

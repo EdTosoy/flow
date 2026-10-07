@@ -472,7 +472,7 @@ async function main(): Promise<void> {
     const phase6PriorBank = await priorSnapshot(),
       phase6PriorProcessor = await processorSnapshot(),
       phase6PriorIngestion = await ingestionSnapshot();
-    await migrate(admin);
+    await migrate(admin, '006_grouped_reconciliation.sql');
     if (
       (await reconciliationSnapshot()) !== phase6History ||
       JSON.stringify(
@@ -487,6 +487,19 @@ async function main(): Promise<void> {
       );
     console.log(
       'Populated Phase 6 -> Phase 7 preserves frozen runs/members/results/allocations/current assurance and prior evidence PASS',
+    );
+    const phase7History = await reconciliationSnapshot();
+    const phase7Prior = await priorSnapshot();
+    await migrate(admin);
+    if (
+      (await reconciliationSnapshot()) !== phase7History ||
+      (await priorSnapshot()) !== phase7Prior
+    )
+      throw new Error(
+        'Phase 8 migration changed prior evidence/allocation/companions',
+      );
+    console.log(
+      'Populated Phase 7 -> Phase 8 preserves prior history/current allocation PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -507,6 +520,9 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_reconciliation LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_reconciliation_writer',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_exception LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_exception_writer',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
@@ -515,6 +531,8 @@ async function main(): Promise<void> {
     );
     const requested = process.argv.slice(2);
     const files = [
+      'tests/exceptions.integration.test.ts',
+      'tests/simulator-exceptions.integration.test.ts',
       'tests/ledger.integration.test.ts',
       'tests/simulator-ledger.integration.test.ts',
       'tests/ingestion.integration.test.ts',
@@ -544,6 +562,10 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_EXCEPTION_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_exception@',
+            ),
             FLOW_TEST_RECONCILIATION_URL: url.replace(
               'flow_test_admin@',
               'flow_test_reconciliation@',

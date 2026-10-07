@@ -48,6 +48,30 @@ test('Nx prevents runtime simulator from depending on oracle and financial core 
   const eslint = new ESLint();
   for (const [file, code] of [
     [
+      'libs/exception-domain/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/exception-postgres/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/exception-domain/src/reconciliation-probe.ts',
+      "import { evaluate } from '@flow/reconciliation-domain'; void evaluate;",
+    ],
+    [
+      'libs/exception-postgres/src/reconciliation-probe.ts',
+      "import { PostgresReconciliation } from '@flow/reconciliation-postgres'; void PostgresReconciliation;",
+    ],
+    [
+      'libs/reconciliation-domain/src/exception-probe.ts',
+      "import { nextState } from '@flow/exception-domain'; void nextState;",
+    ],
+    [
+      'libs/exception-postgres/src/ledger-probe.ts',
+      "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
+    ],
+    [
       'libs/simulator/src/probe.ts',
       "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
     ],

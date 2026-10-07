@@ -121,3 +121,7 @@ An independently supplied external closing balance is essential: reconstructing 
 ## Phase 7 implementation
 
 The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).
+
+## Phase 8 operational distinction
+
+Exception closure/classification/assignment/notes never update engine outcomes or allocations. ACCEPTED_RISK remains unreconciled exposure; FIXED_AND_VERIFIED and SUPERSEDE require independently existing fresh later-run proof. Manual matching remains deferred, preserving the named Phase 6/7 rules and shared allocation barriers. [Exception semantics](../phase8/README.md); [ADR-014](adr/014-operational-exceptions.md).

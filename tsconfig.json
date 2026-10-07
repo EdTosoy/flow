@@ -40,6 +40,12 @@
     },
     {
       "path": "libs/reconciliation-postgres"
+    },
+    {
+      "path": "libs/exception-domain"
+    },
+    {
+      "path": "libs/exception-postgres"
     }
   ]
 }

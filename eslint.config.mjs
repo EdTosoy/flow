@@ -17,6 +17,14 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:exception-domain',
+              onlyDependOnLibsWithTags: ['layer:money'],
+            },
+            {
+              sourceTag: 'layer:exception-postgres',
+              onlyDependOnLibsWithTags: ['layer:exception-domain'],
+            },
+            {
               sourceTag: 'layer:reconciliation-domain',
               onlyDependOnLibsWithTags: [
                 'layer:money',

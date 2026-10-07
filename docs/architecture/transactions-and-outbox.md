@@ -101,3 +101,7 @@ Population freezing uses REPEATABLE READ. Creation/planning/bounded progress/com
 ## Phase 7 implementation
 
 The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).
+
+## Phase 8 operational transactions
+
+Case generation and each human decision atomically commit immutable case/event/evidence history with existing audit/outbox companions. Book → sorted source accounts → case locks serialize fresh-proof closure/supersession against source and current-allocation changes. Expected versions reject stale reviewers; unique logical/command identities recover unchanged retries and unknown COMMIT. No exception command changes allocation or ledger state. [Concrete boundaries](../phase8/README.md).

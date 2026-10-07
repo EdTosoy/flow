@@ -161,3 +161,7 @@ Synthetic exact 1:1 settlement-bank reconciliation is implemented with frozen hi
 ## Phase 7 concrete status
 
 The existing reconciliation model supports complete-declaration N:1 settlement-bank proof and preserved exact 1:1 behavior. [ADR-008](adr/008-grouped-reconciliation.md) is accepted for this synthetic scope. Whole-item allocation, immutable frozen history, current freshness and conservative source ordering remain enforced. [Implementation](../phase7/README.md); [verification](../phase7/verification.md). No 1:N/N:M or exception workflow is implemented.
+
+## Phase 8 concrete status
+
+Operational exception cases are implemented separately from reconciliation. Accepted-risk and other operational closure cannot create financial proof; verified closure/supersession cites a fresh existing later-run allocation. See [ADR-014](adr/014-operational-exceptions.md), [semantics](../phase8/README.md) and [verification](../phase8/verification.md). No Phase 9 completeness/control-total expansion, workers, frontend, real integration, cloud or AI is included.
