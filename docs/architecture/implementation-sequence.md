@@ -86,3 +86,7 @@ The user subsequently authorized bank observations as Phase 5, overriding the nu
 ## Authorized Phase 6 scope
 
 Following the explicitly authorized Phase 5 bank evidence milestone, Phase 6 implements exact deterministic 1:1 processor settlement ↔ bank movement reconciliation only. Original recommendations do not authorize workers, N:1 matching, cases or later milestones. [Implementation](../phase6/README.md); [verification](../phase6/verification.md).
+
+## Phase 7 implementation
+
+The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).

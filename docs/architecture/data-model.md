@@ -128,3 +128,7 @@ Migration 004 realizes separate bank accounts, derivations, booked entries, stat
 ## Phase 6 implemented reconciliation slice
 
 Migration 005 realizes source-fact economic items, immutable scoped mapping/rules, frozen run members, candidate/plan/outcome evidence, typed whole-item groups and current allocations with append-only activation/supersession decisions. Only exact 1:1 settlement_bank proof is implemented. [Concrete schema and historical/current semantics](../phase6/README.md); [ADR-013](adr/013-exact-reconciliation.md). Grouped algorithms, manual review and cases remain deferred.
+
+## Phase 7 implementation
+
+The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).

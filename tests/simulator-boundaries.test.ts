@@ -108,6 +108,14 @@ test('Nx prevents runtime simulator from depending on oracle and financial core 
       "import { movement } from '@flow/bank-domain'; void movement;",
     ],
     [
+      'libs/reconciliation-domain/src/grouped-probe.ts',
+      "import { generateGroupedSimulation } from '@flow/simulator-oracle'; void generateGroupedSimulation;",
+    ],
+    [
+      'libs/reconciliation-postgres/src/grouped-probe.ts',
+      "import { generateGroupedSimulation } from '@flow/simulator-oracle'; void generateGroupedSimulation;",
+    ],
+    [
       'libs/reconciliation-domain/src/probe.ts',
       "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
     ],

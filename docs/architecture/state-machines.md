@@ -143,3 +143,7 @@ Booked bank claims, statement memberships and stock observations have no mutable
 ## Phase 6 concrete run stages
 
 Implemented allowlist is DRAFT → SEALED → RUNNING → COMPLETED. Each stage commits separately and resumes unchanged identity after failure. Completed population/plan/outcomes never mutate. Frozen outcomes are MATCHED/UNMATCHED/AMBIGUOUS/INELIGIBLE; no exception lifecycle. Immutable initial activation ACTIVE/STALE/CONFLICT and linked SUPERSEDED/INVALIDATED decisions are separate from current-validity read checks. [Phase 6](../phase6/README.md).
+
+## Phase 7 implementation
+
+The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).

@@ -3,6 +3,8 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
+import { PostgresReconciliation } from '@flow/reconciliation-postgres';
+import { fixture as reconciliationFixture } from '../tests/helpers/reconciliation-fixture';
 import { PostgresBank } from '@flow/bank-postgres';
 import { PostgresProcessor } from '@flow/processor-postgres';
 import { PostgresIngestion } from '@flow/ingestion-postgres';
@@ -420,7 +422,7 @@ async function main(): Promise<void> {
     const phase5Before = await priorSnapshot(),
       phase4Before = await processorSnapshot(),
       phase3Before = await ingestionSnapshot();
-    await migrate(admin);
+    await migrate(admin, '005_reconciliation.sql');
     if (
       (await priorSnapshot()) !== phase5Before ||
       (await processorSnapshot()) !== phase4Before ||
@@ -430,6 +432,61 @@ async function main(): Promise<void> {
       throw new Error('Phase 6 migration changed Phase 1–5 history');
     console.log(
       'Populated Phase 5 -> Phase 6 preserves exact bank/processor/ingestion/ledger/audit/outbox history PASS',
+    );
+    const priorReconciliation = await reconciliationFixture(
+      admin,
+      admin,
+      admin,
+      admin,
+    );
+    const upgradeRun = await new PostgresReconciliation(admin).run(
+      priorReconciliation.command,
+    );
+    const reconciliationSnapshot = async (): Promise<string> =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'run',
+            'run_member',
+            'candidate',
+            'outcome_plan',
+            'match_group',
+            'match_group_member',
+            'outcome',
+            'allocation_decision',
+            'current_allocation',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM reconciliation.${table} t`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const phase6History = await reconciliationSnapshot(),
+      phase6Current = await new PostgresReconciliation(admin).summary(
+        upgradeRun.id,
+      );
+    const phase6PriorBank = await priorSnapshot(),
+      phase6PriorProcessor = await processorSnapshot(),
+      phase6PriorIngestion = await ingestionSnapshot();
+    await migrate(admin);
+    if (
+      (await reconciliationSnapshot()) !== phase6History ||
+      JSON.stringify(
+        await new PostgresReconciliation(admin).summary(upgradeRun.id),
+      ) !== JSON.stringify(phase6Current) ||
+      (await priorSnapshot()) !== phase6PriorBank ||
+      (await processorSnapshot()) !== phase6PriorProcessor ||
+      (await ingestionSnapshot()) !== phase6PriorIngestion
+    )
+      throw new Error(
+        'Phase 7 migration changed Phase 1–6 history/current proof',
+      );
+    console.log(
+      'Populated Phase 6 -> Phase 7 preserves frozen runs/members/results/allocations/current assurance and prior evidence PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -467,6 +524,8 @@ async function main(): Promise<void> {
       'tests/bank.integration.test.ts',
       'tests/simulator-bank.integration.test.ts',
       'tests/reconciliation.integration.test.ts',
+      'tests/grouped-reconciliation.integration.test.ts',
+      'tests/simulator-grouped-reconciliation.integration.test.ts',
       'tests/simulator-reconciliation.integration.test.ts',
     ];
     if (requested.some((file) => !files.includes(file)))
@@ -528,6 +587,13 @@ async function main(): Promise<void> {
   }
 }
 main().catch((error) => {
+  if (typeof error === 'object' && error !== null && 'position' in error)
+    console.error(
+      'SQL position:',
+      error.position,
+      'internal position:',
+      'internalPosition' in error ? error.internalPosition : undefined,
+    );
   console.error(
     error instanceof Error
       ? error.message

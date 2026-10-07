@@ -55,6 +55,7 @@ async function main(): Promise<void> {
       throw new Error(
         'Provisioned mapping does not cover the supplied public scope',
       );
+    const grouped = process.argv.slice(8).includes('--grouped');
     const result = await new PostgresReconciliation(pool).run({
       mappingId,
       runKey,
@@ -62,6 +63,9 @@ async function main(): Promise<void> {
       to,
       effectiveAt: to,
       actorId: 'reconciliation-developer',
+      ...(grouped
+        ? { ruleVersion: 'settlement-bank-grouped-v1' as const }
+        : {}),
     });
     console.log(JSON.stringify({ ...domains, reconciliation: result }));
   } finally {

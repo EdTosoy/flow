@@ -12,6 +12,7 @@ export const NORMALIZER_VERSIONS = [
   'synthetic-movement-v1',
   'synthetic-movement-v2',
   'synthetic-settlement-v1',
+  'synthetic-settlement-group-v1',
   'synthetic-bank-entry-v1',
   'synthetic-bank-statement-v1',
 ] as const;
@@ -58,6 +59,8 @@ export interface SettlementObservation {
   readonly transferReference: string;
   readonly componentKind: 'synthetic-movement';
   readonly componentIds: readonly string[];
+  /** Supplemental complete transfer declaration; only settlement-group-v1 supplies it. */
+  readonly payoutMemberIds?: readonly string[] | null;
 }
 export type NormalizationResult =
   | {
@@ -176,6 +179,32 @@ export function normalize(
     version === 'synthetic-bank-statement-v1'
   )
     return normalizeBank(parsed, externalId, version);
+  if (version === 'synthetic-settlement-group-v1') {
+    const base = normalize(bytes, externalId, 'synthetic-settlement-v1');
+    if (base.state !== 'NORMALIZED' || base.observation.type !== 'settlement')
+      return base;
+    try {
+      const members = (parsed as Record<string, unknown>)['payoutMemberIds'];
+      if (members === undefined)
+        return {
+          state: 'NORMALIZED',
+          observation: { ...base.observation, payoutMemberIds: null },
+        };
+      if (
+        !Array.isArray(members) ||
+        members.length < 2 ||
+        members.length > 10000
+      )
+        throw new TypeError('Explicit complete transfer members required');
+      members.forEach(boundedText);
+      return {
+        state: 'NORMALIZED',
+        observation: { ...base.observation, payoutMemberIds: members },
+      };
+    } catch {
+      return { state: 'FAILED', code: 'INVALID_STRUCTURE' };
+    }
+  }
   if (!externalId) return { state: 'FAILED', code: 'MISSING_IDENTITY' };
   if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed))
     return { state: 'FAILED', code: 'INVALID_STRUCTURE' };

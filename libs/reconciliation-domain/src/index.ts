@@ -1,6 +1,8 @@
 import { Money, type Currency } from '@flow/money';
 import { boundedText, canonicalJson, utcTime } from '@flow/ingestion-domain';
 export const RULE_VERSION = 'settlement-bank-exact-v1';
+export const GROUPED_RULE_VERSION = 'settlement-bank-grouped-v1';
+export const MAX_GROUP_SIZE = 32;
 export type Outcome = 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'INELIGIBLE';
 export interface RunCommand {
   readonly mappingId: string;
@@ -10,16 +12,23 @@ export interface RunCommand {
   readonly to: string;
   readonly effectiveAt: string;
   readonly actorId: string;
-  readonly ruleVersion?: typeof RULE_VERSION;
+  readonly ruleVersion?: typeof RULE_VERSION | typeof GROUPED_RULE_VERSION;
 }
 export function serializeCommand(command: RunCommand): string {
   [command.mappingId, command.runKey, command.actorId].forEach(boundedText);
   [command.from, command.to, command.effectiveAt].forEach(utcTime);
   if (command.from >= command.to)
     throw new RangeError('Empty/reversed run window');
-  if (command.ruleVersion && command.ruleVersion !== RULE_VERSION)
+  if (
+    command.ruleVersion &&
+    command.ruleVersion !== RULE_VERSION &&
+    command.ruleVersion !== GROUPED_RULE_VERSION
+  )
     throw new TypeError('Unsupported rule');
-  return canonicalJson({ ...command, ruleVersion: RULE_VERSION });
+  return canonicalJson({
+    ...command,
+    ruleVersion: command.ruleVersion ?? RULE_VERSION,
+  });
 }
 export interface RuleInput {
   readonly id: string;
@@ -94,6 +103,18 @@ export function evaluate(
   return result;
 }
 export interface RunResult {
+  readonly grouped?: {
+    readonly candidateCount: number;
+    readonly partitionCount: number;
+    readonly matchedGroups: number;
+    readonly processorMembers: number;
+    readonly refusedLimitCount: number;
+    readonly ambiguousCount: number;
+    readonly values: readonly {
+      readonly currency: Currency;
+      readonly amountMinor: string;
+    }[];
+  };
   readonly id: string;
   readonly state: 'DRAFT' | 'SEALED' | 'RUNNING' | 'COMPLETED';
   readonly processorPopulation: number;
@@ -120,3 +141,8 @@ export interface RunResult {
   readonly populationHash: string | null;
   readonly unknownValueCount: number;
 }
+export {
+  evaluateGrouped,
+  type GroupedInput,
+  type GroupCandidate,
+} from './grouped';

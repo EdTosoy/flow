@@ -2,6 +2,7 @@ import { readFile, mkdir, writeFile, realpath } from 'node:fs/promises';
 import path from 'node:path';
 import {
   generateSimulation,
+  generateGroupedSimulation,
   type SimulationConfig,
 } from '@flow/simulator-oracle';
 import { stableJson } from '@flow/simulator';
@@ -37,6 +38,7 @@ async function main(): Promise<void> {
         '--out',
         '--oracle-out',
         '--replay',
+        '--group-size',
       ].includes(key) ||
       value === undefined ||
       value.startsWith('--') ||
@@ -47,16 +49,21 @@ async function main(): Promise<void> {
   }
   let config: SimulationConfig;
   let expectedHash: string | undefined;
+  let groupSize: number | undefined;
   if (action === 'replay') {
     if (
       !flags.has('--replay') ||
       flags.has('--config') ||
       flags.has('--seed') ||
-      flags.has('--payments')
+      flags.has('--payments') ||
+      flags.has('--group-size')
     )
       throw new Error('Replay requires only --replay plus output options');
     const artifact = JSON.parse(await readFile(flags.get('--replay')!, 'utf8'));
-    config = artifact.oracle.replay;
+    if (artifact.oracle.replay.version === 'phase7-grouped-v1') {
+      config = artifact.oracle.replay.base;
+      groupSize = artifact.oracle.replay.groupSize;
+    } else config = artifact.oracle.replay;
     expectedHash = artifact.manifest.inputSha256;
   } else {
     if (flags.has('--replay'))
@@ -72,7 +79,11 @@ async function main(): Promise<void> {
         : {}),
     };
   }
-  const simulation = generateSimulation(config);
+  if (flags.has('--group-size')) groupSize = Number(flags.get('--group-size'));
+  const simulation =
+    groupSize === undefined
+      ? generateSimulation(config)
+      : generateGroupedSimulation(config, groupSize);
   if (
     expectedHash !== undefined &&
     expectedHash !== simulation.manifest.inputSha256

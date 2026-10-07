@@ -97,3 +97,7 @@ Independent bank derivation locks ingestion source account at READ COMMITTED and
 ## Phase 6 transaction boundary
 
 Population freezing uses REPEATABLE READ. Creation/planning/bounded progress/completion use separate READ COMMITTED transactions. Current allocation changes acquire book, sorted source accounts and run locks; atomic group/members/outcomes/decision/audit/outbox prevent partial proof. Six restricted commands, immutable sealing guards and whole-stage retry/unknown-COMMIT recovery preserve all prior domains. [Concrete protocol](../phase6/README.md).
+
+## Phase 7 implementation
+
+The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).

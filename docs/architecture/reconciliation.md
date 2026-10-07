@@ -117,3 +117,7 @@ Coverage is reported independently as verified/unverified/discrepancy. To detect
 Examples: processor opening + captures - refunds - fees - payouts + explicit adjustments = expected processor closing; bank opening + booked credits - booked debits = expected bank closing; opening in-transit + dispatched payouts - booked receipts/returns = expected in-transit closing. Use separate source accounts/currencies and exact date boundaries. Never net currencies together or compare counts as substitutes for value.
 
 An independently supplied external closing balance is essential: reconstructing both sides from the same normalized rows is a tautology. Likewise, a journal auto-derived from a processor charge is correlated evidence, not proof that an independent internal capture exists. Track evidence lineage and label assurance levels accordingly. Control failures may suspend period-level assurance even when individual identity matches remain valid.
+
+## Phase 7 implementation
+
+The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).

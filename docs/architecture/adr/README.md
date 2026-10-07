@@ -18,3 +18,5 @@ These Phase 0 decisions were approved as the current design baseline on 2026-10-
 | [ADR-012](012-bank-observations.md) | Independent bank observations and stock/flow identity; intrinsic controls before reconciliation |
 
 - [ADR-013: exact settlement-bank proof](013-exact-reconciliation.md) — accepted for synthetic Phase 6 only.
+
+ADR-008 is now accepted for Phase 7 synthetic complete-declaration N:1 settlement-bank proof; future cardinalities remain deferred.

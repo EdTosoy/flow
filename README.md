@@ -1,6 +1,6 @@
 # Financial reconciliation and exception management
 
-Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. Phase 5 adds separate immutable bank observations, statement/balance evidence and bank-internal controls. No application host or Phase 6 and later features are implemented.
+Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. Phase 5 adds separate immutable bank observations, statement/balance evidence and bank-internal controls. Phase 6 implements exact 1:1 reconciliation, and Phase 7 extends it with explicit complete-declaration N:1 groups. No application host or later-phase workflow is implemented.
 
 **Promise:** no unexplained financial discrepancy should fail silently.
 
@@ -26,3 +26,5 @@ Read the [Phase 5 bank model and public pipeline](docs/phase5/README.md) and [ve
 ## Phase 6
 
 [Exact synthetic 1:1 reconciliation](docs/phase6/README.md) and [verification report](docs/phase6/verification.md). Run `pnpm reconciliation` with public evidence and an explicitly provisioned source-account mapping. No grouped matching or exception workflow.
+
+Phase 7 adds explicit complete-declaration N:1 settlement-bank reconciliation on the existing frozen-run/allocation model. See [semantics](docs/phase7/README.md) and [verification](docs/phase7/verification.md).

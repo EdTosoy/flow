@@ -157,3 +157,7 @@ Phase 5 now implements [immutable bank claims and intrinsic controls](../phase5/
 ## Phase 6 concrete status
 
 Synthetic exact 1:1 settlement-bank reconciliation is implemented with frozen history and guarded current allocation. [Model](../phase6/README.md), [verification](../phase6/verification.md), [ADR-013](adr/013-exact-reconciliation.md). Phase 7 grouped matching and later workflows remain deferred.
+
+## Phase 7 concrete status
+
+The existing reconciliation model supports complete-declaration N:1 settlement-bank proof and preserved exact 1:1 behavior. [ADR-008](adr/008-grouped-reconciliation.md) is accepted for this synthetic scope. Whole-item allocation, immutable frozen history, current freshness and conservative source ordering remain enforced. [Implementation](../phase7/README.md); [verification](../phase7/verification.md). No 1:N/N:M or exception workflow is implemented.
