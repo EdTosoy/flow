@@ -63,6 +63,21 @@ importers:
         specifier: 8.23.1
         version: 8.23.1
 
+  libs/control-domain:
+    dependencies:
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+
+  libs/control-postgres:
+    dependencies:
+      '@flow/control-domain':
+        specifier: workspace:*
+        version: link:../control-domain
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
+
   libs/exception-domain:
     dependencies:
       '@flow/money':

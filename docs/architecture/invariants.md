@@ -158,3 +158,7 @@ Database enforcement of domain rules uses the smallest explicit controlled routi
 ## Phase 6 implemented proof boundary
 
 Phase 6 realizes the synthetic 1:1 settlement_bank slice of INV-005/010/013/014 and decision portions of INV-006/016: named exact evidence, frozen populations/complete outcomes, stable source-fact allocation uniqueness and immutable historical proof. Current read checks invalidate changed evidence conservatively; controlled reevaluation writes retirement/supersession audit/intent. Period source completeness, later group shapes and exception/manual workflows are not implied. [Executed acceptance evidence](../phase6/verification.md).
+
+## Phase 9 implemented control boundary
+
+Phase 9 independently evaluates the supported received-evidence portions of INV-002/009/010/011/012/013/014/015/017 without replacing write-time guarantees. Missing independent period evidence stays UNKNOWN. Financial exposure is canonical, excludes case duplication, preserves accepted risk and refuses unproven cross-side addition. Historical frozen evaluations and results remain immutable. [Semantics](../phase9/README.md); [verification](../phase9/verification.md).

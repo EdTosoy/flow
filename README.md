@@ -34,3 +34,7 @@ Phase 7 adds explicit complete-declaration N:1 settlement-bank reconciliation on
 A separate exception domain supports deterministic case generation, review, evidence/notes, auditable assignment/classification, structured resolution and explicit reopening/supersession. Accepted risk closes operations while money stays unreconciled. Verified closure cites existing fresh later-run proof; it creates no allocation. [Model and CLI](docs/phase8/README.md), [verification](docs/phase8/verification.md), [ADR-014](docs/architecture/adr/014-operational-exceptions.md).
 
 Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, Phase 9 controls, workers, frontend, real integrations, cloud and AI remain deferred.
+
+## Phase 9 financial controls
+
+Versioned frozen control runs coordinate source/processing completeness, processor and bank totals, reconciliation coverage, allocation and ledger integrity, exposure and aging. UNKNOWN evidence stays explicit; operationally accepted risk remains unreconciled. See [implementation](docs/phase9/README.md) and [verification](docs/phase9/verification.md). `pnpm controls run <command-json>` and `pnpm controls pipeline <reconciliation arguments>` use separate synthetic runtime credentials. No Phase 10 worker infrastructure is implemented.

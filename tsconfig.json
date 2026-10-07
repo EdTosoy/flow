@@ -46,6 +46,12 @@
     },
     {
       "path": "libs/exception-postgres"
+    },
+    {
+      "path": "libs/control-domain"
+    },
+    {
+      "path": "libs/control-postgres"
     }
   ]
 }

@@ -151,3 +151,7 @@ The existing Phase 6 model now supports explicit complete-declaration N:1 settle
 ## Phase 8 concrete lifecycle
 
 Implemented exception lifecycle retains OPEN → UNDER_REVIEW → AWAITING_EVIDENCE → UNDER_REVIEW and UNDER_REVIEW → RESOLVED. Changed unresolved evidence permits RESOLVED → UNDER_REVIEW. Explicit SUPERSEDE appends a RESOLVED → RESOLVED verified operational conclusion citing fresh later-run allocation. Notes/evidence may append after closure; assignment/classification changes require unresolved state. Every decision is immutable/versioned and audit/intent atomic. Reconciliation outcomes never gain workflow fields. [Detailed allowlist](../phase8/README.md).
+
+## Phase 9 implemented boundary
+
+System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 and later infrastructure/UI/integration/AI remain deferred.

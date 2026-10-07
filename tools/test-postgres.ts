@@ -3,6 +3,7 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
+import { PostgresExceptions } from '@flow/exception-postgres';
 import { PostgresReconciliation } from '@flow/reconciliation-postgres';
 import { fixture as reconciliationFixture } from '../tests/helpers/reconciliation-fixture';
 import { PostgresBank } from '@flow/bank-postgres';
@@ -490,7 +491,7 @@ async function main(): Promise<void> {
     );
     const phase7History = await reconciliationSnapshot();
     const phase7Prior = await priorSnapshot();
-    await migrate(admin);
+    await migrate(admin, '007_exceptions.sql');
     if (
       (await reconciliationSnapshot()) !== phase7History ||
       (await priorSnapshot()) !== phase7Prior
@@ -500,6 +501,65 @@ async function main(): Promise<void> {
       );
     console.log(
       'Populated Phase 7 -> Phase 8 preserves prior history/current allocation PASS',
+    );
+    const phase8Fixture = await reconciliationFixture(
+      admin,
+      admin,
+      admin,
+      admin,
+      { banks: [] },
+    );
+    const phase8Run = await new PostgresReconciliation(admin).run(
+      phase8Fixture.command,
+    );
+    const phase8Exceptions = new PostgresExceptions(admin);
+    const phase8Cases = await phase8Exceptions.generate(
+      phase8Run.id,
+      'upgrade-case-system',
+    );
+    if (phase8Cases.length !== 1)
+      throw new Error('Expected nonempty Phase 8 upgrade fixture');
+    let phase8Case = await phase8Exceptions.get(phase8Cases[0]!);
+    for (const action of ['START_REVIEW', 'NOTE', 'RESOLVE'] as const) {
+      phase8Case = await phase8Exceptions.apply({
+        caseId: phase8Case.id,
+        commandKey: 'upgrade-' + action,
+        expectedVersion: phase8Case.version,
+        actorId: 'upgrade-reviewer',
+        reason: 'Synthetic historical Phase 8 upgrade decision',
+        action,
+        ...(action === 'NOTE' ? { note: 'Append-only historical note' } : {}),
+        ...(action === 'RESOLVE'
+          ? { resolution: 'ACCEPTED_RISK' as const }
+          : {}),
+      });
+    }
+    const caseSnapshot = async () =>
+      JSON.stringify(
+        await Promise.all(
+          ['case_record', 'event', 'occurrence', 'attachment'].map(
+            async (t) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(to_jsonb(x) ORDER BY to_jsonb(x)::text),'[]') AS rows FROM exceptions.${t} x`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const phase8History = await caseSnapshot(),
+      before9 = await priorSnapshot(),
+      recon8 = await reconciliationSnapshot();
+    await migrate(admin);
+    if (
+      (await caseSnapshot()) !== phase8History ||
+      (await priorSnapshot()) !== before9 ||
+      (await reconciliationSnapshot()) !== recon8
+    )
+      throw new Error('Phase 9 changed prior financial/case history');
+    console.log(
+      'Populated Phase 8 -> Phase 9 preserves financial/case history PASS',
+      phase8Cases.length,
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -523,6 +583,9 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_exception LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_exception_writer',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_control LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_control_writer',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
@@ -531,6 +594,8 @@ async function main(): Promise<void> {
     );
     const requested = process.argv.slice(2);
     const files = [
+      'tests/controls.integration.test.ts',
+      'tests/simulator-controls.integration.test.ts',
       'tests/exceptions.integration.test.ts',
       'tests/simulator-exceptions.integration.test.ts',
       'tests/ledger.integration.test.ts',
@@ -562,6 +627,10 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_CONTROL_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_control@',
+            ),
             FLOW_TEST_EXCEPTION_URL: url.replace(
               'flow_test_admin@',
               'flow_test_exception@',

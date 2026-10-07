@@ -136,3 +136,7 @@ The existing Phase 6 model now supports explicit complete-declaration N:1 settle
 ## Phase 8 exception ownership
 
 Migration 007 adds separate immutable case_record, versioned event, occurrence and typed attachment tables. One lifetime case per mapping/item retains original and later run/outcome evidence. Current state is a last-decision projection; audit/outbox reference exact decisions. No exception routine writes reconciliation or accounting. [Concrete schema/semantics](../phase8/README.md); [ADR-014](adr/014-operational-exceptions.md).
+
+## Phase 9 implemented boundary
+
+System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 and later infrastructure/UI/integration/AI remain deferred.
