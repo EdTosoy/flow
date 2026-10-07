@@ -1,0 +1,21 @@
+{
+  "name": "control-domain",
+  "sourceRoot": "libs/control-domain/src",
+  "projectType": "library",
+  "tags": ["layer:control-domain", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/control-domain"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/control-domain/test/*.test.ts"
+      }
+    }
+  }
+}

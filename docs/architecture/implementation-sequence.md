@@ -90,3 +90,11 @@ Following the explicitly authorized Phase 5 bank evidence milestone, Phase 6 imp
 ## Phase 7 implementation
 
 The existing Phase 6 model now supports explicit complete-declaration N:1 settlement-bank groups under a separately versioned rule. Whole typed membership, exact same-currency conservation, global allocation uniqueness, immutable history, current freshness and atomic audit/outbox remain required. Declared groups are evaluated before residual pairs, with fixed conservative search bounds and no subset search or new exception lifecycle. [Concrete semantics and transaction/database boundaries](../phase7/README.md); [executed verification](../phase7/verification.md).
+
+## Authorized Phase 8 milestone
+
+The user authorized operational exception management only around completed Phase 6/7 outcomes. Separate cases, review/evidence/classification, structured operational resolution, accepted risk, reopening/supersession and atomic audit/intent implement that scope. Manual matching and all Phase 9 completeness/control-total expansion remain deferred, as do asynchronous infrastructure, frontend, real integrations, cloud and AI. [Implementation](../phase8/README.md); [verification](../phase8/verification.md).
+
+## Phase 9 implemented boundary
+
+System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 and later infrastructure/UI/integration/AI remain deferred.

@@ -1,0 +1,15 @@
+{
+  "name": "exception-postgres",
+  "sourceRoot": "libs/exception-postgres/src",
+  "projectType": "library",
+  "tags": ["layer:exception-postgres", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/exception-postgres"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  }
+}

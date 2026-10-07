@@ -161,3 +161,11 @@ Synthetic exact 1:1 settlement-bank reconciliation is implemented with frozen hi
 ## Phase 7 concrete status
 
 The existing reconciliation model supports complete-declaration N:1 settlement-bank proof and preserved exact 1:1 behavior. [ADR-008](adr/008-grouped-reconciliation.md) is accepted for this synthetic scope. Whole-item allocation, immutable frozen history, current freshness and conservative source ordering remain enforced. [Implementation](../phase7/README.md); [verification](../phase7/verification.md). No 1:N/N:M or exception workflow is implemented.
+
+## Phase 8 concrete status
+
+Operational exception cases are implemented separately from reconciliation. Accepted-risk and other operational closure cannot create financial proof; verified closure/supersession cites a fresh existing later-run allocation. See [ADR-014](adr/014-operational-exceptions.md), [semantics](../phase8/README.md) and [verification](../phase8/verification.md). No Phase 9 completeness/control-total expansion, workers, frontend, real integration, cloud or AI is included.
+
+## Phase 9 implemented boundary
+
+System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 and later infrastructure/UI/integration/AI remain deferred.

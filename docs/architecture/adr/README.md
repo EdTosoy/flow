@@ -20,3 +20,7 @@ These Phase 0 decisions were approved as the current design baseline on 2026-10-
 - [ADR-013: exact settlement-bank proof](013-exact-reconciliation.md) — accepted for synthetic Phase 6 only.
 
 ADR-008 is now accepted for Phase 7 synthetic complete-declaration N:1 settlement-bank proof; future cardinalities remain deferred.
+
+[ADR-014 — Operational exceptions](014-operational-exceptions.md) is accepted for the synthetic Phase 8 review/disposition scope, preserving independent reconciliation proof.
+
+[ADR-015 — Frozen system financial controls](015-versioned-financial-controls.md) records Phase 9 versioned snapshot coordination, unknown completeness and canonical exposure.

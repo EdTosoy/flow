@@ -10,8 +10,8 @@
     "build": "nx run-many -t build --skip-nx-cache",
     "typecheck": "tsc -p tsconfig.check.json --noEmit",
     "lint": "nx graph --file=.nx/phase1-project-graph.json && eslint . --max-warnings 0 && node tools/check-oracle-dependencies.mjs",
-    "format": "prettier --write '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md'",
-    "format:check": "prettier --check '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md'",
+    "format": "prettier --write '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md'",
+    "format:check": "prettier --check '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md'",
     "test:unit": "nx run-many -t test --skip-nx-cache && pnpm test:boundaries",
     "test:integration": "tsx tools/test-postgres.ts",
     "db:migrate": "tsx tools/migrate.ts",
@@ -22,7 +22,9 @@
     "processor": "tsx tools/processor.ts",
     "bank": "tsx tools/bank.ts",
     "reconciliation": "tsx tools/reconciliation.ts",
-    "benchmark:grouped": "tsx tools/benchmark-grouped.ts"
+    "benchmark:grouped": "tsx tools/benchmark-grouped.ts",
+    "exceptions": "tsx tools/exceptions.ts",
+    "controls": "tsx tools/controls.ts"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "23.2.1",

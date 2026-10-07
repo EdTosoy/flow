@@ -1,0 +1,21 @@
+{
+  "name": "exception-domain",
+  "sourceRoot": "libs/exception-domain/src",
+  "projectType": "library",
+  "tags": ["layer:exception-domain", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/exception-domain"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/exception-domain/test/*.test.ts"
+      }
+    }
+  }
+}

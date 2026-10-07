@@ -582,7 +582,6 @@ The following are not yet implemented:
 - 1:N/N:M, partial allocation and later reconciliation policies
 - real bank ingestion/integrations
 - payment processor integration
-- exception workflow
 - frontend
 - asynchronous publisher/consumer infrastructure
 - cloud infrastructure
@@ -610,6 +609,10 @@ choose the second.
 
 For financial code, correctness is a feature.
 
-Phase 6 is complete and verified within its documented synthetic exact 1:1 settlement-bank scope. Read `docs/phase6/README.md`, `docs/phase6/verification.md` and ADR-013 before changes to matching/allocation. Completed runs are immutable; source-fact allocations remain unique across runs. Current assurance requires fresh proof, not a historical MATCHED outcome. The Phase 6 rule remains pair-only; exceptions and worker infrastructure remain deferred.
+Phase 6 is complete and verified within its documented synthetic exact 1:1 settlement-bank scope. Read `docs/phase6/README.md`, `docs/phase6/verification.md` and ADR-013 before changes to matching/allocation. Completed runs are immutable; source-fact allocations remain unique across runs. Current assurance requires fresh proof, not a historical MATCHED outcome. The Phase 6 rule remains pair-only; worker infrastructure remains deferred. Phase 8 owns the separate operational exception workflow.
 
-Phase 7 is complete and verified within its documented synthetic complete-declaration N:1 settlement-bank scope. Read `docs/phase7/README.md`, `docs/phase7/verification.md` and ADR-008 before grouped matching changes. Preserve complete source declarations, exact whole-item conservation, bounded search refusal, shared allocation uniqueness, frozen history, current freshness and the unchanged Phase 6 exact rule. 1:N/N:M, partial allocation and exception workflows remain deferred.
+Phase 7 is complete and verified within its documented synthetic complete-declaration N:1 settlement-bank scope. Read `docs/phase7/README.md`, `docs/phase7/verification.md` and ADR-008 before grouped matching changes. Preserve complete source declarations, exact whole-item conservation, bounded search refusal, shared allocation uniqueness, frozen history, current freshness and the unchanged Phase 6 exact rule. 1:N/N:M, partial allocation and manual matching remain deferred. Phase 8 owns the separate operational exception workflow.
+
+Phase 8 implements separate operational exception management for unresolved Phase 6/7 outcomes. Read `docs/phase8/README.md`, `docs/phase8/verification.md` and ADR-014 before exception changes. A resolved case never implies reconciliation. Accepted risk remains unreconciled exposure; verified resolution/supersession requires fresh existing later-run allocation. Preserve immutable cases/events/evidence/notes, semantic identity and atomic audit/outbox. Manual matching and priority/SLA scheduling remain deferred. Phase 9 owns system-wide completeness/control-total coordination.
+
+Phase 9 implements frozen versioned financial controls over existing evidence. Read `docs/phase9/README.md`, `docs/phase9/verification.md` and ADR-015 before control changes. UNKNOWN coverage never implies completeness; current assurance requires fresh inputs. Canonical exposure never adds case value, counts a unique pair residual once and retains accepted risk as unreconciled. Preserve immutable evaluations, exact per-currency/account totals, complete frozen inputs/results and atomic case links/audit/outbox. Phase 10 worker infrastructure remains deferred.
