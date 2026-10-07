@@ -6,7 +6,7 @@ import type { Pool } from 'pg';
 const migrationDirectory = resolve(__dirname, '../database/migrations');
 
 /** Reviewed SQL is authoritative. Hashes detect edits; each migration is one transaction. */
-export async function migrate(pool: Pool): Promise<void> {
+export async function migrate(pool: Pool, through?: string): Promise<void> {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -20,9 +20,15 @@ export async function migrate(pool: Pool): Promise<void> {
     await client.query(
       'REVOKE ALL ON public.flow_schema_migration FROM PUBLIC',
     );
-    const names = (await readdir(migrationDirectory))
+    const available = (await readdir(migrationDirectory))
       .filter((n) => /^\d{3}_[a-z_]+\.sql$/.test(n))
       .sort();
+    if (through !== undefined && !available.includes(through))
+      throw new Error('Unknown migration checkpoint');
+    const names =
+      through === undefined
+        ? available
+        : available.slice(0, available.indexOf(through) + 1);
     const applied = await client.query<{ name: string; checksum: string }>(
       'SELECT name,checksum FROM public.flow_schema_migration ORDER BY name',
     );

@@ -16,6 +16,12 @@
     },
     {
       "path": "libs/simulator-oracle"
+    },
+    {
+      "path": "libs/ingestion-domain"
+    },
+    {
+      "path": "libs/ingestion-postgres"
     }
   ]
 }
