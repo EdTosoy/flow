@@ -82,3 +82,7 @@ Phase 4 was subsequently authorized only for [processor interpretation and settl
 ## Explicitly authorized Phase 5 milestone
 
 The user subsequently authorized bank observations as Phase 5, overriding the numbering/order of the original recommended worker-first sequence. This does not authorize that original worker milestone. Implement only synthetic bank entries, optional statements/stocks, provenance and intrinsic controls. [Bank implementation](../phase5/README.md), [verification](../phase5/verification.md) and [ADR-012](adr/012-bank-observations.md) define the boundary. Phase 6+ matching/reconciliation, exception management, real integrations and durable worker infrastructure remain deferred.
+
+## Authorized Phase 6 scope
+
+Following the explicitly authorized Phase 5 bank evidence milestone, Phase 6 implements exact deterministic 1:1 processor settlement ↔ bank movement reconciliation only. Original recommendations do not authorize workers, N:1 matching, cases or later milestones. [Implementation](../phase6/README.md); [verification](../phase6/verification.md).

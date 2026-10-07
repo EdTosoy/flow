@@ -16,3 +16,5 @@ These Phase 0 decisions were approved as the current design baseline on 2026-10-
 | [ADR-010](010-evidence-and-completeness.md) | Separate versioned evidence and independent completeness |
 | [ADR-011](011-processor-interpretations.md) | Processor claims separate from authorized payments; immutable versioned evaluations |
 | [ADR-012](012-bank-observations.md) | Independent bank observations and stock/flow identity; intrinsic controls before reconciliation |
+
+- [ADR-013: exact settlement-bank proof](013-exact-reconciliation.md) — accepted for synthetic Phase 6 only.

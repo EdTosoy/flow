@@ -93,3 +93,7 @@ Processor derivation is separate from already committed normalization. READ COMM
 ## Phase 5 implemented transactions
 
 Independent bank derivation locks ingestion source account at READ COMMITTED and commits bank account identity, immutable derivation/entry or statement, complete membership/source-line/stock population and existing typed outbox intent. Separate evaluation freezes one stable source/bank snapshot with complete typed entry links and failed-control audit. Sealed/deferred guards and unique identities recover unchanged retries and unknown commits. No ledger/processor write or relationship proof occurs. [Implemented guarantees](../phase5/README.md).
+
+## Phase 6 transaction boundary
+
+Population freezing uses REPEATABLE READ. Creation/planning/bounded progress/completion use separate READ COMMITTED transactions. Current allocation changes acquire book, sorted source accounts and run locks; atomic group/members/outcomes/decision/audit/outbox prevent partial proof. Six restricted commands, immutable sealing guards and whole-stage retry/unknown-COMMIT recovery preserve all prior domains. [Concrete protocol](../phase6/README.md).

@@ -153,3 +153,7 @@ No application scaffolding, dependency installation, deployed resource, or produ
 Phase 4 now implements [processor claims and settlement expectations](../phase4/README.md), preserving independent internal payment authorization and accounting truth. [ADR-011](adr/011-processor-interpretations.md) records the scope distinction. The separately authorized Phase 5 bank evidence milestone is documented below; later features remain deferred.
 
 Phase 5 now implements [immutable bank claims and intrinsic controls](../phase5/README.md). [ADR-012](adr/012-bank-observations.md) records distinct stock/flow identities, conservative observation-only identity and bank-owned intrinsic controls. Phase 6+ reconciliation and durable workers remain deferred.
+
+## Phase 6 concrete status
+
+Synthetic exact 1:1 settlement-bank reconciliation is implemented with frozen history and guarded current allocation. [Model](../phase6/README.md), [verification](../phase6/verification.md), [ADR-013](adr/013-exact-reconciliation.md). Phase 7 grouped matching and later workflows remain deferred.

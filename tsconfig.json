@@ -34,6 +34,12 @@
     },
     {
       "path": "libs/bank-postgres"
+    },
+    {
+      "path": "libs/reconciliation-domain"
+    },
+    {
+      "path": "libs/reconciliation-postgres"
     }
   ]
 }

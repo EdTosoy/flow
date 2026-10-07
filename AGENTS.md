@@ -579,7 +579,7 @@ Phase 5 bank interpretation is complete and verified within its synthetic booked
 The following are not yet implemented:
 
 - independently authorized internal payment commands and accounting orchestration
-- reconciliation engine
+- N:1 reconciliation and later reconciliation policies
 - real bank ingestion/integrations
 - payment processor integration
 - exception workflow
@@ -609,3 +609,5 @@ boring, explicit, testable, recoverable
 choose the second.
 
 For financial code, correctness is a feature.
+
+Phase 6 is complete and verified within its documented synthetic exact 1:1 settlement-bank scope. Read `docs/phase6/README.md`, `docs/phase6/verification.md` and ADR-013 before changes to matching/allocation. Completed runs are immutable; source-fact allocations remain unique across runs. Current assurance requires fresh proof, not a historical MATCHED outcome. N:1, exceptions and worker infrastructure remain deferred.

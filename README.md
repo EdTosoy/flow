@@ -22,3 +22,7 @@ Read the [Phase 3 ingestion model and developer workflow](docs/phase3/README.md)
 Read the [Phase 4 processor model and developer pipeline](docs/phase4/README.md) and [verification/acceptance report](docs/phase4/verification.md). Processor claims never automatically create internal authorization or ledger entries, and settlement expectations do not prove bank receipt.
 
 Read the [Phase 5 bank model and public pipeline](docs/phase5/README.md) and [verification/acceptance report](docs/phase5/verification.md). Bank observations never establish processor origin or ledger truth. The developer CLI prints separate processor and bank summaries without matching.
+
+## Phase 6
+
+[Exact synthetic 1:1 reconciliation](docs/phase6/README.md) and [verification report](docs/phase6/verification.md). Run `pnpm reconciliation` with public evidence and an explicitly provisioned source-account mapping. No grouped matching or exception workflow.

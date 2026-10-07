@@ -139,3 +139,7 @@ Processor-associated lifecycle is derived from pinned immutable activities: obse
 ## Phase 5 bank interpretation
 
 Booked bank claims, statement memberships and stock observations have no mutable lifecycle. A new source revision/normalizer/interpreter yields new immutable evidence. Multiple unordered source revisions have no selected authoritative current entry. Bank-internal control snapshots expose independent UNKNOWN/PROVEN_COMPLETE/PROVEN_INCOMPLETE coverage and PASS/FAIL/UNVERIFIED arithmetic. Replayed evaluation keys retain historical as-of results; new evidence requires a fresh key. No settlement received state, reconciliation transition or exception workflow is introduced. [Implemented semantics](../phase5/README.md).
+
+## Phase 6 concrete run stages
+
+Implemented allowlist is DRAFT → SEALED → RUNNING → COMPLETED. Each stage commits separately and resumes unchanged identity after failure. Completed population/plan/outcomes never mutate. Frozen outcomes are MATCHED/UNMATCHED/AMBIGUOUS/INELIGIBLE; no exception lifecycle. Immutable initial activation ACTIVE/STALE/CONFLICT and linked SUPERSEDED/INVALIDATED decisions are separate from current-validity read checks. [Phase 6](../phase6/README.md).

@@ -17,6 +17,17 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:reconciliation-domain',
+              onlyDependOnLibsWithTags: [
+                'layer:money',
+                'layer:ingestion-domain',
+              ],
+            },
+            {
+              sourceTag: 'layer:reconciliation-postgres',
+              onlyDependOnLibsWithTags: ['layer:reconciliation-domain'],
+            },
+            {
               sourceTag: 'layer:bank-domain',
               onlyDependOnLibsWithTags: [
                 'layer:money',
