@@ -17,6 +17,17 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:processor-domain',
+              onlyDependOnLibsWithTags: [
+                'layer:money',
+                'layer:ingestion-domain',
+              ],
+            },
+            {
+              sourceTag: 'layer:processor-postgres',
+              onlyDependOnLibsWithTags: ['layer:processor-domain'],
+            },
+            {
               sourceTag: 'layer:ingestion-domain',
               onlyDependOnLibsWithTags: ['layer:money'],
             },

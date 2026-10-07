@@ -18,7 +18,9 @@
       "@flow/simulator": ["libs/simulator/src/index.ts"],
       "@flow/simulator-oracle": ["libs/simulator-oracle/src/index.ts"],
       "@flow/ingestion-domain": ["libs/ingestion-domain/src/index.ts"],
-      "@flow/ingestion-postgres": ["libs/ingestion-postgres/src/index.ts"]
+      "@flow/ingestion-postgres": ["libs/ingestion-postgres/src/index.ts"],
+      "@flow/processor-domain": ["libs/processor-domain/src/index.ts"],
+      "@flow/processor-postgres": ["libs/processor-postgres/src/index.ts"]
     }
   }
 }

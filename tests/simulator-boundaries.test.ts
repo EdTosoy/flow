@@ -71,6 +71,26 @@ test('Nx prevents runtime simulator from depending on oracle and financial core 
       'libs/ingestion-postgres/src/probe.ts',
       "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
     ],
+    [
+      'libs/processor-domain/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/processor-postgres/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/processor-domain/src/probe.ts',
+      "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
+    ],
+    [
+      'libs/processor-postgres/src/probe.ts',
+      "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
+    ],
+    [
+      'libs/money/src/probe.ts',
+      "import { lifecycle } from '@flow/processor-domain'; void lifecycle;",
+    ],
   ] as const) {
     const [result] = await eslint.lintText(code, {
       filePath: path.join(root, file!),

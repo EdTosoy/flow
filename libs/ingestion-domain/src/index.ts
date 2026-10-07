@@ -5,6 +5,7 @@ import { Money, type MoneyJson } from '@flow/money';
 export const NORMALIZER_VERSIONS = [
   'synthetic-movement-v1',
   'synthetic-movement-v2',
+  'synthetic-settlement-v1',
 ] as const;
 export type NormalizerVersion = (typeof NORMALIZER_VERSIONS)[number];
 export interface RawInput {
@@ -40,8 +41,21 @@ export interface Observation {
   readonly reference: string;
   readonly parentReference: string | null;
 }
+export interface SettlementObservation {
+  readonly type: 'settlement';
+  readonly externalId: string;
+  readonly amount: MoneyJson;
+  readonly occurredAt: string;
+  readonly direction: 'inflow' | 'outflow' | 'zero';
+  readonly transferReference: string;
+  readonly componentKind: 'synthetic-movement';
+  readonly componentIds: readonly string[];
+}
 export type NormalizationResult =
-  | { readonly state: 'NORMALIZED'; readonly observation: Observation }
+  | {
+      readonly state: 'NORMALIZED';
+      readonly observation: Observation | SettlementObservation;
+    }
   | {
       readonly state: 'FAILED';
       readonly code:
@@ -135,6 +149,50 @@ export function normalize(
     return { state: 'FAILED', code: 'MISSING_IDENTITY' };
   if (r['id'] !== externalId)
     return { state: 'FAILED', code: 'IDENTITY_MISMATCH' };
+  if (version === 'synthetic-settlement-v1') {
+    try {
+      boundedText(r['transferReference']);
+      if (!Array.isArray(r['componentIds']) || r['componentIds'].length > 10000)
+        throw new TypeError('Bounded itemized membership required');
+      r['componentIds'].forEach(boundedText);
+    } catch {
+      return { state: 'FAILED', code: 'INVALID_STRUCTURE' };
+    }
+    let money: Money;
+    try {
+      money = Money.fromJSON(r['net']);
+      // Preserve all explicit report totals in raw evidence; do not infer fee facts from them.
+      for (const k of ['gross', 'fees', 'refunds', 'chargebacks'])
+        if (Money.fromJSON(r[k]).currency !== money.currency)
+          throw new TypeError('Mixed report currency');
+    } catch {
+      return { state: 'FAILED', code: 'INVALID_MONEY' };
+    }
+    let occurredAt: string;
+    try {
+      occurredAt = utcTime(r['reportedAt']);
+    } catch {
+      return { state: 'FAILED', code: 'INVALID_TIMESTAMP' };
+    }
+    return {
+      state: 'NORMALIZED',
+      observation: {
+        type: 'settlement',
+        externalId,
+        amount: money.toJSON(),
+        occurredAt,
+        direction:
+          money.amountMinor > 0n
+            ? 'inflow'
+            : money.amountMinor < 0n
+              ? 'outflow'
+              : 'zero',
+        transferReference: r['transferReference'] as string,
+        componentKind: 'synthetic-movement',
+        componentIds: r['componentIds'] as string[],
+      },
+    };
+  }
   if (!['capture', 'fee', 'refund', 'chargeback'].includes(r['kind'] as string))
     return { state: 'FAILED', code: 'UNSUPPORTED_KIND' };
   try {

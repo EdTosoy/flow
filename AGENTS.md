@@ -572,8 +572,11 @@ Current implemented financial core includes:
 
 Phase 3 includes immutable raw receipts, scoped source revisions, versioned synthetic movement interpretations, explicit processing dispositions and source coverage evidence. Runtime ingestion cannot access the simulator oracle or post ledger history.
 
+Phase 4 processor interpretation is complete and verified within its documented synthetic claim boundary; consult `docs/phase4/verification.md`. Scoped processor payment associations, immutable activity/report interpretations, itemized settlement evidence and frozen internal-control evaluations remain separate from independent business authorization, ledger history and bank truth.
+
 The following are not yet implemented:
 
+- independently authorized internal payment commands and accounting orchestration
 - reconciliation engine
 - bank ingestion
 - payment processor integration

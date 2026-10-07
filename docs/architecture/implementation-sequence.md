@@ -76,3 +76,5 @@ No answer should be silently filled in with fabricated regulatory requirements o
 The simple modular architecture is a viable design candidate. Approval should be conditional on the open domain policies and executable gates above. Financial integrity, coverage and operational recoverability remain **unproven until implemented and tested**. This documentation does not represent approval to deploy, move money or process customer data.
 
 Phase 3 was subsequently authorized for ingestion/evidence/completeness only. [Implementation](../phase3/README.md) and [verification](../phase3/verification.md) record its actual boundary. Phase 4 and later gates remain deferred.
+
+Phase 4 was subsequently authorized only for [processor interpretation and settlement expectations](../phase4/README.md). Independent internal authorization and accounting orchestration from the original broader Phase 4 row remain deferred; [ADR-011](adr/011-processor-interpretations.md) records this narrowing. Processor-internal arithmetic/composition controls do not implement Phase 8 reconciliation proof. Phase 5 and later are not authorized.
