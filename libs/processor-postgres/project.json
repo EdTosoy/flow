@@ -1,0 +1,15 @@
+{
+  "name": "processor-postgres",
+  "sourceRoot": "libs/processor-postgres/src",
+  "projectType": "library",
+  "tags": ["layer:processor-postgres", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/processor-postgres"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  }
+}

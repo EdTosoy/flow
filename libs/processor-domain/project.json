@@ -1,0 +1,21 @@
+{
+  "name": "processor-domain",
+  "sourceRoot": "libs/processor-domain/src",
+  "projectType": "library",
+  "tags": ["layer:processor-domain", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/processor-domain"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/processor-domain/test/*.test.ts"
+      }
+    }
+  }
+}

@@ -80,6 +80,24 @@ importers:
 
   libs/money: {}
 
+  libs/processor-domain:
+    dependencies:
+      '@flow/ingestion-domain':
+        specifier: workspace:*
+        version: link:../ingestion-domain
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+
+  libs/processor-postgres:
+    dependencies:
+      '@flow/processor-domain':
+        specifier: workspace:*
+        version: link:../processor-domain
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
+
   libs/simulator:
     dependencies:
       '@flow/ledger-domain':

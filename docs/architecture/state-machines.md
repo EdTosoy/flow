@@ -131,3 +131,7 @@ blocked -> ready                      authorized repair/requeue with audit
 ```
 
 `done` is terminal for that handler/version. A replay under a new handler version is new work; existing business-effect keys still protect accounting. `leased -> done` requires current generation and committed receipt/effect. No `blocked -> done` shortcut, no deletion after retry exhaustion, no universal event “done” while a required handler is blocked. Leases are fencing tokens, not proof of exactly-once delivery.
+
+## Phase 4 processor lifecycle projection
+
+Processor-associated lifecycle is derived from pinned immutable activities: observed, captured, partially_refunded, refunded, charged_back, or under_review when controls fail. It conveys no internal authorization, ledger posting or bank receipt. Multiple refunds are evaluated per parent capture; invalid external claims remain retained and no excessive total is labeled valid. Processor reports remain reported claims; Phase 4 has no received/in_transit transition or reconciliation proof. [Concrete state/control semantics](../phase4/README.md).

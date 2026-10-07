@@ -149,3 +149,5 @@ All financial policies in this package are proposed system controls. External te
 - **SKIPPED:** Git diff/whitespace checks because the workspace has no usable Git metadata. The executed document checker covers whitespace and file scope; no commit/push occurred.
 
 No application scaffolding, dependency installation, deployed resource, or production behavior was introduced during Phase 0. The baseline has since been approved; Phase 1 implements only its financial-core slice. Real-data accounting policy, authorization and production readiness remain conditional on later decisions/gates.
+
+Phase 4 now implements [processor claims and settlement expectations](../phase4/README.md), preserving independent internal payment authorization and accounting truth. [ADR-011](adr/011-processor-interpretations.md) records the scope distinction. Phase 5 and later remain deferred.

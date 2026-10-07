@@ -116,3 +116,7 @@ The ER sketch omits typed evidence FKs for readability; the tables above define 
 ## Deliberately omitted entities
 
 No generic “financial transaction” joining source and ledger; no authoritative cached balance; no stored editable draft journal; no arbitrary reconciliation edge graph; no standalone microservice model for each module; no AI decision entity; no message broker offsets as proof of accounting. Customer/PII, tax, treasury transfer, FX position, multi-entity consolidation and money-movement commands are deferred until actual product requirements justify them.
+
+## Phase 4 concrete processor boundary
+
+`003_processor.sql` implements processor payment associations, immutable normalized-evidence derivations, explicit signed activities, itemized batch/member-reference evidence and frozen processor-internal evaluations with typed activity links. These associations are not Phase 0's independently authorized internal payment entities. Stable settlement identity is its scoped source fact; each report revision/version creates a separate batch. Multiple revisions are ambiguous, never automatically superseded. See [Phase 4](../phase4/README.md) and [ADR-011](adr/011-processor-interpretations.md). Internal authorization, bank/reconciliation entities and active proof allocations remain deferred.

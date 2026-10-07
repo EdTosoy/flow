@@ -3,6 +3,7 @@ import { promisify } from 'node:util';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
+import { PostgresIngestion } from '@flow/ingestion-postgres';
 
 const exec = promisify(execFile);
 const image =
@@ -131,9 +132,91 @@ async function main(): Promise<void> {
       return JSON.stringify(rows);
     };
     const beforeUpgrade = await snapshot();
+    await migrate(admin, '002_ingestion.sql');
+    const ingestionBook = randomUUID();
+    await admin.query(
+      "INSERT INTO ledger.book(id,code,environment) VALUES($1,$2,'synthetic')",
+      [ingestionBook, 'upgrade-ingestion-' + ingestionBook],
+    );
+    const fixtureIngestion = new PostgresIngestion(admin);
+    const fixtureAccount = await fixtureIngestion.registerSource({
+      bookId: ingestionBook,
+      environment: 'synthetic',
+      provider: 'migration-fixture',
+      externalAccountId: 'processor',
+    });
+    const fixtureBatch = await fixtureIngestion.ingest({
+      sourceAccountId: fixtureAccount,
+      batchKey: 'before-phase4',
+      actorId: 'migration-fixture',
+      provenance: { adapterVersion: 'fixture-v1' },
+      records: [
+        {
+          locator: '0',
+          objectKind: 'synthetic-movement',
+          externalId: 'capture',
+          sourceRevision: 'opaque-1',
+          sequence: null,
+          sourceObservedAt: null,
+          bytes: Buffer.from(
+            JSON.stringify({
+              id: 'capture',
+              kind: 'capture',
+              amount: { amountMinor: '9007199254740993', currency: 'PHP' },
+              paymentReference: 'payment',
+              parentCaptureId: null,
+              occurredAt: '2026-01-01T00:00:00.000Z',
+            }),
+          ),
+        },
+      ],
+    });
+    await fixtureIngestion.normalizeBatch(fixtureBatch.id);
+    const ingestionSnapshot = async (): Promise<string> =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'source',
+            'source_account',
+            'batch',
+            'source_fact',
+            'revision',
+            'raw_record',
+            'interpretation',
+            'processing',
+            'normalization_request',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM ingestion.${table} t`,
+                )
+              ).rows[0].rows,
+          ),
+        ).then(async (rows) => [
+          ...rows,
+          ...(await Promise.all(
+            ['audit.audit_event', 'outbox.outbox_event'].map(
+              async (table) =>
+                (
+                  await admin!.query(
+                    `SELECT coalesce(jsonb_agg(jsonb_strip_nulls(to_jsonb(t)) ORDER BY to_jsonb(t)::text),'[]') AS rows FROM ${table} t WHERE book_id=$1`,
+                    [ingestionBook],
+                  )
+                ).rows[0].rows,
+            ),
+          )),
+        ]),
+      );
+    const beforeIngestionUpgrade = await ingestionSnapshot();
     await migrate(admin);
+    if ((await ingestionSnapshot()) !== beforeIngestionUpgrade)
+      throw new Error('Phase 4 migration changed Phase 3 evidence');
+    console.log(
+      'Populated Phase 3 upgrade preserves exact receipts/revisions/interpretations/dispositions/audit/outbox PASS',
+    );
     if ((await snapshot()) !== beforeUpgrade)
-      throw new Error('Phase 3 migration changed Phase 1 history');
+      throw new Error('Migration changed Phase 1 history');
     console.log(
       'Phase 1 populated upgrade preserves exact journal/entry/receipt/audit/outbox history PASS',
     );
@@ -146,6 +229,9 @@ async function main(): Promise<void> {
     );
     await admin.query(
       'CREATE ROLE flow_test_ingestion LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_ingestion_writer',
+    );
+    await admin.query(
+      'CREATE ROLE flow_test_processor LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_processor_writer',
     );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
@@ -165,11 +251,17 @@ async function main(): Promise<void> {
           'tests/simulator-ledger.integration.test.ts',
           'tests/ingestion.integration.test.ts',
           'tests/simulator-ingestion.integration.test.ts',
+          'tests/processor.integration.test.ts',
+          'tests/simulator-processor.integration.test.ts',
         ],
         {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_PROCESSOR_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_processor@',
+            ),
             FLOW_TEST_INGESTION_URL: url.replace(
               'flow_test_admin@',
               'flow_test_ingestion@',

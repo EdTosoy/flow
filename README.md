@@ -1,6 +1,6 @@
 # Financial reconciliation and exception management
 
-Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization. No application host or later-phase features are implemented.
+Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. No application host or Phase 5 and later features are implemented.
 
 **Promise:** no unexplained financial discrepancy should fail silently.
 
@@ -18,3 +18,5 @@ Prerequisites: Node 24, pnpm 11.27.0 and Docker. Integration tests own a disposa
 Read the [Phase 2 simulator model, configuration and reproduction procedure](docs/phase2/README.md) and [verification evidence](docs/phase2/verification.md). Generate safe input locally with `pnpm simulator generate --seed 828192 --payments 10000`; explicit private oracle export is a separate test-only option.
 
 Read the [Phase 3 ingestion model and developer workflow](docs/phase3/README.md) and [verification evidence](docs/phase3/verification.md). Raw receipts, source revisions and interpretations are separate immutable evidence. Normalization never posts accounting or performs reconciliation.
+
+Read the [Phase 4 processor model and developer pipeline](docs/phase4/README.md) and [verification/acceptance report](docs/phase4/verification.md). Processor claims never automatically create internal authorization or ledger entries, and settlement expectations do not prove bank receipt.
