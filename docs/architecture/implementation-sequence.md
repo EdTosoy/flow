@@ -2,7 +2,7 @@
 
 This sequence is a recommendation, not authorization to implement or deploy. Phase 0 creates documents only. Each later milestone is the smallest coherent slice with its own control gate; dependencies do not require building the entire future UI first.
 
-Update: the user approved Phase 0 and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) follows that financial-core scope; no Phase 2 work is authorized or implemented. A dedicated correction/replacement approval workflow and account closure remain later features; generic full reversal and same-transaction command composition are sufficient for this milestone.
+Update: the user approved Phase 0 and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) follows that financial-core scope; Phase 2 was subsequently authorized for deterministic simulation only; see its [model and boundaries](../phase2/README.md) and [verification](../phase2/verification.md). No Phase 3 or later work is authorized. A dedicated correction/replacement approval workflow and account closure remain later features; generic full reversal and same-transaction command composition are sufficient for this milestone.
 
 ## Recommended sequence
 

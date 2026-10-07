@@ -1,20 +1,20 @@
 {
-  "name": "ledger-domain",
-  "sourceRoot": "libs/ledger-domain/src",
+  "name": "simulator-oracle",
+  "sourceRoot": "libs/simulator-oracle/src",
   "projectType": "library",
-  "tags": ["layer:ledger-domain", "trust:runtime"],
+  "tags": ["layer:simulator-oracle", "trust:oracle"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsc -b libs/ledger-domain"
+        "command": "tsc -b libs/simulator-oracle"
       },
       "outputs": ["{projectRoot}/dist"]
     },
     "test": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "tsx --test libs/ledger-domain/test/*.test.ts"
+        "command": "tsx --test libs/simulator-oracle/test/*.test.ts"
       }
     }
   }

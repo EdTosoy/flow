@@ -79,6 +79,7 @@ async function main(): Promise<void> {
           '--test',
           '--test-concurrency=1',
           'tests/ledger.integration.test.ts',
+          'tests/simulator-ledger.integration.test.ts',
         ],
         {
           env: {

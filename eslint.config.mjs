@@ -1,12 +1,13 @@
 import tseslint from 'typescript-eslint';
 import nx from '@nx/eslint-plugin';
 import prettier from 'eslint-config-prettier';
+import oracleBoundary from './tools/oracle-boundary.mjs';
 
 export default tseslint.config(
   { ignores: ['**/dist/**', 'node_modules/**', '.nx/**'] },
   ...tseslint.configs.recommended,
   {
-    files: ['libs/**/*.ts'],
+    files: ['libs/**/*.ts', 'apps/**/*.ts', 'apps/**/*.tsx'],
     plugins: { '@nx': nx },
     rules: {
       '@nx/enforce-module-boundaries': [
@@ -15,6 +16,18 @@ export default tseslint.config(
           enforceBuildableLibDependency: true,
           allow: [],
           depConstraints: [
+            {
+              sourceTag: 'trust:runtime',
+              notDependOnLibsWithTags: ['trust:oracle'],
+            },
+            {
+              sourceTag: 'layer:simulator',
+              onlyDependOnLibsWithTags: ['layer:money', 'layer:ledger-domain'],
+            },
+            {
+              sourceTag: 'layer:simulator-oracle',
+              onlyDependOnLibsWithTags: ['layer:money', 'layer:simulator'],
+            },
             {
               sourceTag: 'layer:money',
               onlyDependOnLibsWithTags: ['layer:money'],
@@ -31,6 +44,11 @@ export default tseslint.config(
         },
       ],
     },
+  },
+  {
+    files: ['**/*.{ts,tsx,js,mjs}'],
+    plugins: { 'flow-boundaries': oracleBoundary },
+    rules: { 'flow-boundaries/no-oracle-import': 'error' },
   },
   prettier,
 );

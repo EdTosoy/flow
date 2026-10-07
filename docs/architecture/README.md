@@ -1,6 +1,6 @@
 # Phase 0 architecture
 
-Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was documentation only. The user subsequently approved the baseline and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) makes financial-core choices concrete; [verification](../phase1/verification.md) distinguishes executed guarantees from future controls. The original inspection and validation below describe Phase 0 historical evidence, not the current installed workspace.
+Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was documentation only. The user subsequently approved the baseline and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) makes financial-core choices concrete; [verification](../phase1/verification.md) distinguishes executed guarantees from future controls. The original inspection and validation below describe Phase 0 historical evidence, not the current installed workspace. Phase 2 was subsequently authorized for the [deterministic simulator](../phase2/README.md) only; its [verification](../phase2/verification.md) records the implemented boundary.
 
 ## Design package
 

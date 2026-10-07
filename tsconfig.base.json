@@ -14,7 +14,9 @@
     "paths": {
       "@flow/money": ["libs/money/src/index.ts"],
       "@flow/ledger-domain": ["libs/ledger-domain/src/index.ts"],
-      "@flow/ledger-postgres": ["libs/ledger-postgres/src/index.ts"]
+      "@flow/ledger-postgres": ["libs/ledger-postgres/src/index.ts"],
+      "@flow/simulator": ["libs/simulator/src/index.ts"],
+      "@flow/simulator-oracle": ["libs/simulator-oracle/src/index.ts"]
     }
   }
 }

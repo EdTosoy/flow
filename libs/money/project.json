@@ -2,16 +2,20 @@
   "name": "money",
   "sourceRoot": "libs/money/src",
   "projectType": "library",
-  "tags": ["layer:money"],
+  "tags": ["layer:money", "trust:runtime"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
-      "options": { "command": "tsc -b libs/money" },
+      "options": {
+        "command": "tsc -b libs/money"
+      },
       "outputs": ["{projectRoot}/dist"]
     },
     "test": {
       "executor": "nx:run-commands",
-      "options": { "command": "tsx --test libs/money/test/*.test.ts" }
+      "options": {
+        "command": "tsx --test libs/money/test/*.test.ts"
+      }
     }
   }
 }

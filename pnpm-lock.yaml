@@ -65,6 +65,24 @@ importers:
 
   libs/money: {}
 
+  libs/simulator:
+    dependencies:
+      '@flow/ledger-domain':
+        specifier: workspace:*
+        version: link:../ledger-domain
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+
+  libs/simulator-oracle:
+    dependencies:
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+      '@flow/simulator':
+        specifier: workspace:*
+        version: link:../simulator
+
 packages:
 
   '@babel/code-frame@7.29.7':

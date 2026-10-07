@@ -2,8 +2,20 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "libs/money" },
-    { "path": "libs/ledger-domain" },
-    { "path": "libs/ledger-postgres" }
+    {
+      "path": "libs/money"
+    },
+    {
+      "path": "libs/ledger-domain"
+    },
+    {
+      "path": "libs/ledger-postgres"
+    },
+    {
+      "path": "libs/simulator"
+    },
+    {
+      "path": "libs/simulator-oracle"
+    }
   ]
 }

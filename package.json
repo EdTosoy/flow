@@ -9,13 +9,15 @@
   "scripts": {
     "build": "nx run-many -t build --skip-nx-cache",
     "typecheck": "tsc -p tsconfig.check.json --noEmit",
-    "lint": "nx graph --file=.nx/phase1-project-graph.json && eslint . --max-warnings 0",
-    "format": "prettier --write '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md'",
-    "format:check": "prettier --check '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md'",
-    "test:unit": "nx run-many -t test --skip-nx-cache",
+    "lint": "nx graph --file=.nx/phase1-project-graph.json && eslint . --max-warnings 0 && node tools/check-oracle-dependencies.mjs",
+    "format": "prettier --write '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md'",
+    "format:check": "prettier --check '**/*.{ts,mjs,json,yaml}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md'",
+    "test:unit": "nx run-many -t test --skip-nx-cache && pnpm test:boundaries",
     "test:integration": "tsx tools/test-postgres.ts",
     "db:migrate": "tsx tools/migrate.ts",
-    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test:unit && pnpm test:integration"
+    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test:unit && pnpm test:integration",
+    "simulator": "tsx tools/simulator.ts",
+    "test:boundaries": "tsx --test tests/simulator-boundaries.test.ts"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "23.2.1",
