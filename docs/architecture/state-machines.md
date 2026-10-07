@@ -135,3 +135,7 @@ blocked -> ready                      authorized repair/requeue with audit
 ## Phase 4 processor lifecycle projection
 
 Processor-associated lifecycle is derived from pinned immutable activities: observed, captured, partially_refunded, refunded, charged_back, or under_review when controls fail. It conveys no internal authorization, ledger posting or bank receipt. Multiple refunds are evaluated per parent capture; invalid external claims remain retained and no excessive total is labeled valid. Processor reports remain reported claims; Phase 4 has no received/in_transit transition or reconciliation proof. [Concrete state/control semantics](../phase4/README.md).
+
+## Phase 5 bank interpretation
+
+Booked bank claims, statement memberships and stock observations have no mutable lifecycle. A new source revision/normalizer/interpreter yields new immutable evidence. Multiple unordered source revisions have no selected authoritative current entry. Bank-internal control snapshots expose independent UNKNOWN/PROVEN_COMPLETE/PROVEN_INCOMPLETE coverage and PASS/FAIL/UNVERIFIED arithmetic. Replayed evaluation keys retain historical as-of results; new evidence requires a fresh key. No settlement received state, reconciliation transition or exception workflow is introduced. [Implemented semantics](../phase5/README.md).

@@ -20,7 +20,9 @@
       "@flow/ingestion-domain": ["libs/ingestion-domain/src/index.ts"],
       "@flow/ingestion-postgres": ["libs/ingestion-postgres/src/index.ts"],
       "@flow/processor-domain": ["libs/processor-domain/src/index.ts"],
-      "@flow/processor-postgres": ["libs/processor-postgres/src/index.ts"]
+      "@flow/processor-postgres": ["libs/processor-postgres/src/index.ts"],
+      "@flow/bank-domain": ["libs/bank-domain/src/index.ts"],
+      "@flow/bank-postgres": ["libs/bank-postgres/src/index.ts"]
     }
   }
 }

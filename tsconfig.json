@@ -28,6 +28,12 @@
     },
     {
       "path": "libs/processor-postgres"
+    },
+    {
+      "path": "libs/bank-domain"
+    },
+    {
+      "path": "libs/bank-postgres"
     }
   ]
 }

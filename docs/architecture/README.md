@@ -58,7 +58,7 @@ An arrow means **imports/uses public contract of**, not a database foreign-key d
 
 Application use cases sit above these modules. They coordinate payments + ledger + audit + outbox inside a shared transaction, or reconciliation + exceptions + audit. Exceptions do not import reconciliation and reconciliation does not import exceptions: the coordinator connects them through IDs and results. Typed cross-module foreign keys are valid; arbitrary writes to another module's tables are not. The ledger never calls the payments module to decide accounting correctness. Settlement observations never directly mark reconciliation complete.
 
-Bank transactions need a distinct concept and trust boundary, but not a separate package immediately. Split a bank module only if bank-specific behavior becomes cohesive enough to justify it. Completeness/control evaluations belong to reconciliation, with source coverage inputs owned by ingestion.
+Bank observations need a distinct trust boundary. Phase 5 now justifies cohesive bank domain/persistence packages with stock/flow, statement identity and intrinsic controls. Relationship proof/control evaluations remain in future reconciliation; intrinsic source controls belong to processor/bank and physical source coverage remains in ingestion. See ADR-012.
 
 Proposed logical layout, not directories scaffolded in Phase 0:
 
@@ -150,4 +150,6 @@ All financial policies in this package are proposed system controls. External te
 
 No application scaffolding, dependency installation, deployed resource, or production behavior was introduced during Phase 0. The baseline has since been approved; Phase 1 implements only its financial-core slice. Real-data accounting policy, authorization and production readiness remain conditional on later decisions/gates.
 
-Phase 4 now implements [processor claims and settlement expectations](../phase4/README.md), preserving independent internal payment authorization and accounting truth. [ADR-011](adr/011-processor-interpretations.md) records the scope distinction. Phase 5 and later remain deferred.
+Phase 4 now implements [processor claims and settlement expectations](../phase4/README.md), preserving independent internal payment authorization and accounting truth. [ADR-011](adr/011-processor-interpretations.md) records the scope distinction. The separately authorized Phase 5 bank evidence milestone is documented below; later features remain deferred.
+
+Phase 5 now implements [immutable bank claims and intrinsic controls](../phase5/README.md). [ADR-012](adr/012-bank-observations.md) records distinct stock/flow identities, conservative observation-only identity and bank-owned intrinsic controls. Phase 6+ reconciliation and durable workers remain deferred.
