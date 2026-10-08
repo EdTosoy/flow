@@ -640,7 +640,7 @@ async function main(): Promise<void> {
       ).rows,
     );
     const prior11 = await snapshot9();
-    await migrate(admin);
+    await migrate(admin, '010_integrity.sql');
     if (
       (await snapshot9()) !== prior11 ||
       JSON.stringify(
@@ -652,6 +652,29 @@ async function main(): Promise<void> {
       ) !== workerBefore11
     )
       throw new Error('Phase 11 changed committed financial history or work');
+    const beforeOperations = await snapshot9();
+    const workBeforeOperations = JSON.stringify(
+      (
+        await admin.query(
+          'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+        )
+      ).rows,
+    );
+    await migrate(admin);
+    if (
+      (await snapshot9()) !== beforeOperations ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+          )
+        ).rows,
+      ) !== workBeforeOperations
+    )
+      throw new Error('Operations migration changed historical truth or work');
+    console.log(
+      'Populated Phase 11 -> Phase 12 unchanged financial/work state PASS',
+    );
     const historicalRows = (
       await admin.query(
         "SELECT id::text AS identity, to_jsonb(j) AS row FROM ledger.ledger_transaction j UNION ALL SELECT id::text,to_jsonb(r) FROM ingestion.raw_record r UNION ALL SELECT revision_id::text||':'||normalizer_version,to_jsonb(i) FROM ingestion.interpretation i UNION ALL SELECT id::text,to_jsonb(r) FROM controls.run r ORDER BY identity",
@@ -722,6 +745,9 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_integrity LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_integrity_reader',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_operations LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_operations_reader',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
@@ -730,6 +756,8 @@ async function main(): Promise<void> {
     );
     const requested = process.argv.slice(2);
     const files = [
+      'tests/operations.integration.test.ts',
+      'tests/operations-browser.integration.test.ts',
       'tests/resilience.integration.test.ts',
       'tests/resilience-load.integration.test.ts',
       'tests/workers.integration.test.ts',
@@ -769,6 +797,10 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_OPERATIONS_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_operations@',
+            ),
             FLOW_TEST_CONTAINER: name,
             FLOW_TEST_INTEGRITY_URL: url.replace(
               'flow_test_admin@',

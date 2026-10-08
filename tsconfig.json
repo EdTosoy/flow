@@ -58,6 +58,9 @@
     },
     {
       "path": "libs/integrity-postgres"
+    },
+    {
+      "path": "libs/operations-read-postgres"
     }
   ]
 }

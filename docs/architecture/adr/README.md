@@ -24,3 +24,5 @@ ADR-008 is now accepted for Phase 7 synthetic complete-declaration N:1 settlemen
 [ADR-014 — Operational exceptions](014-operational-exceptions.md) is accepted for the synthetic Phase 8 review/disposition scope, preserving independent reconciliation proof.
 
 [ADR-015 — Frozen system financial controls](015-versioned-financial-controls.md) records Phase 9 versioned snapshot coordination, unknown completeness and canonical exposure.
+
+- [ADR-016 — Server-only operations read application](016-operations-read-application.md)

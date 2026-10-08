@@ -4,7 +4,7 @@ import prettier from 'eslint-config-prettier';
 import oracleBoundary from './tools/oracle-boundary.mjs';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', 'node_modules/**', '.nx/**'] },
+  { ignores: ['**/dist/**', 'node_modules/**', '.nx/**', '**/.next/**'] },
   ...tseslint.configs.recommended,
   {
     files: ['libs/**/*.ts', 'apps/**/*.ts', 'apps/**/*.tsx'],
@@ -16,6 +16,17 @@ export default tseslint.config(
           enforceBuildableLibDependency: true,
           allow: [],
           depConstraints: [
+            {
+              sourceTag: 'layer:operations-read',
+              onlyDependOnLibsWithTags: ['layer:integrity-postgres'],
+            },
+            {
+              sourceTag: 'layer:ops',
+              onlyDependOnLibsWithTags: [
+                'layer:operations-read',
+                'layer:money',
+              ],
+            },
             {
               sourceTag: 'layer:integrity-postgres',
               onlyDependOnLibsWithTags: [],
@@ -113,7 +124,10 @@ export default tseslint.config(
   {
     files: ['**/*.{ts,tsx,js,mjs}'],
     plugins: { 'flow-boundaries': oracleBoundary },
-    rules: { 'flow-boundaries/no-oracle-import': 'error' },
+    rules: {
+      'flow-boundaries/no-oracle-import': 'error',
+      'flow-boundaries/operations-browser': 'error',
+    },
   },
   prettier,
 );

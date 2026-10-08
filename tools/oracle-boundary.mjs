@@ -17,11 +17,128 @@ function privateFile(file) {
     relative.startsWith('libs/simulator-oracle/') ||
     relative === 'tools/simulator.ts' ||
     relative === 'tools/test-postgres.ts' ||
+    relative === 'tools/ops-demo.ts' ||
     relative.startsWith('tests/')
   );
 }
 export default {
   rules: {
+    'operations-browser': {
+      meta: {
+        type: 'problem',
+        schema: [],
+        messages: {
+          server:
+            'Database/privileged modules are server-only; browser closures cannot reach them.',
+        },
+      },
+      create(context) {
+        const file = context.filename,
+          relative = path.relative(root, file).replaceAll('\\', '/');
+        if (
+          !relative.startsWith('apps/ops/') ||
+          relative.startsWith('apps/ops/test/')
+        )
+          return {};
+        const client =
+          context.sourceCode.ast.body[0]?.directive === 'use client';
+        const server = relative.startsWith('apps/ops/server/');
+        if (
+          server &&
+          (client ||
+            !context.sourceCode.ast.body.some(
+              (n) =>
+                n.type === 'ImportDeclaration' &&
+                n.source.value === 'server-only',
+            ))
+        )
+          context.report({ node: context.sourceCode.ast, messageId: 'server' });
+        function unsafe(name, from, seen = new Set()) {
+          if (server)
+            return (
+              /^@flow\/(.*postgres)(\/|$)/.test(name) &&
+              name !== '@flow/operations-read-postgres'
+            );
+          if (
+            name === 'pg' ||
+            name.startsWith('pg/') ||
+            name === 'server-only' ||
+            /^@flow\/(.*postgres|simulator-oracle)(\/|$)/.test(name)
+          )
+            return true;
+          const resolved = ts.resolveModuleName(name, from, options, ts.sys)
+            .resolvedModule?.resolvedFileName;
+          if (
+            !resolved ||
+            resolved.includes('/node_modules/') ||
+            seen.has(resolved)
+          )
+            return false;
+          if (privateFile(resolved)) return true;
+          if (resolved.includes('/apps/ops/server/'))
+            return (
+              client || !/apps\/ops\/app\/(.*\/)?page\.tsx$/.test(relative)
+            );
+          if (!client) return false;
+          seen.add(resolved);
+          const source = ts.sys.readFile(resolved);
+          if (!source) return false;
+          const ast = ts.createSourceFile(
+            resolved,
+            source,
+            ts.ScriptTarget.Latest,
+            true,
+          );
+          let bad = false;
+          function visit(n) {
+            if (
+              (ts.isImportDeclaration(n) || ts.isExportDeclaration(n)) &&
+              n.moduleSpecifier &&
+              ts.isStringLiteral(n.moduleSpecifier) &&
+              unsafe(n.moduleSpecifier.text, resolved, seen)
+            )
+              bad = true;
+            if (
+              ts.isCallExpression(n) &&
+              n.arguments[0] &&
+              ts.isStringLiteral(n.arguments[0]) &&
+              (n.expression.kind === ts.SyntaxKind.ImportKeyword ||
+                n.expression.getText(ast) === 'require') &&
+              unsafe(n.arguments[0].text, resolved, seen)
+            )
+              bad = true;
+            ts.forEachChild(n, visit);
+          }
+          visit(ast);
+          return bad;
+        }
+        function check(n) {
+          if (n && typeof n.value === 'string' && unsafe(n.value, file))
+            context.report({ node: n, messageId: 'server' });
+        }
+        return {
+          ImportDeclaration(n) {
+            check(n.source);
+          },
+          ExportNamedDeclaration(n) {
+            check(n.source);
+          },
+          ExportAllDeclaration(n) {
+            check(n.source);
+          },
+          ImportExpression(n) {
+            check(n.source);
+          },
+          CallExpression(n) {
+            if (n.callee.type === 'Identifier' && n.callee.name === 'require')
+              check(n.arguments[0]);
+          },
+          TSImportType(n) {
+            check(n.source);
+          },
+        };
+      },
+    },
     'no-oracle-import': {
       meta: {
         type: 'problem',

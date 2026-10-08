@@ -582,7 +582,7 @@ The following are not yet implemented:
 - 1:N/N:M, partial allocation and later reconciliation policies
 - real bank ingestion/integrations
 - payment processor integration
-- frontend
+- public/customer frontend
 - external publication/remote consumer infrastructure
 - cloud infrastructure
 - AI investigation
@@ -619,4 +619,6 @@ Phase 9 implements frozen versioned financial controls over existing evidence. R
 
 Phase 10 is complete and verified for durable PostgreSQL outbox workers within the documented internal normalization scope. Read `docs/phase10/README.md`, `docs/phase10/verification.md` and ADRs 005–007 before worker changes. Preserve immutable outbox intent, atomic registration, DB-clock leases, fenced domain writes/completion, bounded at-least-once retries and retained attempt/terminal history. Work state is operational metadata, never financial truth. Manual requeue, new downstream workflows and external side effects remain deferred.
 
-Phase 11 is complete and verified within its documented synthetic/local resilience scope. Read `docs/phase11/README.md` and `docs/phase11/verification.md` before changes to the independent read-only integrity surface or test harness. The sweep must never repair or replace financial truth, promote UNKNOWN, or import simulator oracle/test failure capabilities. Preserve every prior verification gate, after-scenario sweep, retained history witness and failure boundary. Local restart is not HA/disaster-recovery proof. Phase 12, new product/accounting features, UI/integrations/cloud/AI and new queues remain deferred.
+Phase 11 is complete and verified within its documented synthetic/local resilience scope. Read `docs/phase11/README.md` and `docs/phase11/verification.md` before changes to the independent read-only integrity surface or test harness. The sweep must never repair or replace financial truth, promote UNKNOWN, or import simulator oracle/test failure capabilities. Preserve every prior verification gate, after-scenario sweep, retained history witness and failure boundary. Local restart is not HA/disaster-recovery proof. Phase 13, new product/accounting features, financial UI mutations, real integrations/cloud/AI and new queues remain deferred.
+
+Phase 12 is complete and verified for the explicitly local/internal read-only Next.js operations application. Read apps/ops/AGENTS.md, libs/operations-read-postgres/AGENTS.md, Phase 12 documentation and ADR-016 before application/read changes. UI must consume authoritative results through approved server-only reads; no financial interpretation in React, owner credentials, raw payload/oracle access, web mutation, UNKNOWN promotion or cross-currency total. Phase 12 acceptance is recorded in its verification report; Phase 13 and production identity/deployment remain deferred.

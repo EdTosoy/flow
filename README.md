@@ -1,6 +1,6 @@
 # Financial reconciliation and exception management
 
-Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. Phase 5 adds separate immutable bank observations, statement/balance evidence and bank-internal controls. Phase 6 implements exact 1:1 reconciliation, and Phase 7 extends it with explicit complete-declaration N:1 groups. Phase 8 adds separate operational exception management. No application host is implemented.
+Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. Phase 5 adds separate immutable bank observations, statement/balance evidence and bank-internal controls. Phase 6 implements exact 1:1 reconciliation, and Phase 7 extends it with explicit complete-declaration N:1 groups. Phase 8 adds separate operational exception management; Phase 9 adds frozen financial controls; Phase 10 adds PostgreSQL workers; Phase 11 adds independent integrity and adversarial verification. Phase 12 introduces a local read-only operator dashboard.
 
 **Promise:** no unexplained financial discrepancy should fail silently.
 
@@ -13,7 +13,7 @@ pnpm install --frozen-lockfile
 pnpm verify
 ```
 
-Prerequisites: Node 24, pnpm 11.27.0 and Docker. Integration tests own a disposable real PostgreSQL container; no existing database is reset. No real processor/bank integration, frontend or cloud infrastructure is implemented. Internal PostgreSQL workers are implemented in Phase 10.
+Prerequisites: Node 24, pnpm 11.27.0, Docker and Chromium for the browser gate (`pnpm exec playwright install chromium`, or an installed system Chromium). Integration tests own a disposable real PostgreSQL container; no existing database is reset. No real processor/bank integration, public/customer frontend or cloud infrastructure is implemented. Internal PostgreSQL workers are implemented in Phase 10.
 
 Read the [Phase 2 simulator model, configuration and reproduction procedure](docs/phase2/README.md) and [verification evidence](docs/phase2/verification.md). Generate safe input locally with `pnpm simulator generate --seed 828192 --payments 10000`; explicit private oracle export is a separate test-only option.
 
@@ -33,7 +33,7 @@ Phase 7 adds explicit complete-declaration N:1 settlement-bank reconciliation on
 
 A separate exception domain supports deterministic case generation, review, evidence/notes, auditable assignment/classification, structured resolution and explicit reopening/supersession. Accepted risk closes operations while money stays unreconciled. Verified closure cites existing fresh later-run proof; it creates no allocation. [Model and CLI](docs/phase8/README.md), [verification](docs/phase8/verification.md), [ADR-014](docs/architecture/adr/014-operational-exceptions.md).
 
-Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, new downstream worker policies, frontend, real integrations, cloud and AI remain deferred.
+Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, new downstream worker policies, web financial actions, real integrations, cloud and AI remain deferred.
 
 ## Phase 9 financial controls
 
@@ -41,4 +41,12 @@ Versioned frozen control runs coordinate source/processing completeness, process
 
 Phase 10 is complete and verified for internal PostgreSQL async workers: [protocol and developer commands](docs/phase10/README.md), [verification](docs/phase10/verification.md).
 
-Phase 11 is complete and verified for independent read-only system integrity checks and synthetic/local adversarial resilience: [scope and commands](docs/phase11/README.md), [executed evidence](docs/phase11/verification.md). Use `pnpm integrity <book-id> [explicit-run-id ...]` with a narrow integrity-reader credential. Structural integrity and financial PASS/FAIL/UNKNOWN remain separate. Phase 12 remains deferred.
+Phase 11 is complete and verified for independent read-only system integrity checks and synthetic/local adversarial resilience: [scope and commands](docs/phase11/README.md), [executed evidence](docs/phase11/verification.md). Use `pnpm integrity <book-id> [explicit-run-id ...]` with a narrow integrity-reader credential. Structural integrity and financial PASS/FAIL/UNKNOWN remain separate. Phase 12 adds the read-only application described below; financial web actions remain deferred.
+
+## Local operations dashboard (Phase 12)
+
+A read-only Next.js operator application investigates reconciliation, exceptions, controls, durable work and current integrity. Exact currency values and PASS/FAIL/UNKNOWN remain explicit; case closure does not prove reconciliation. Production identity/deployment and all web mutations remain deferred.
+
+Follow [local provisioning/demo commands](docs/phase12/README.md), set only the narrow `DATABASE_OPERATIONS_URL`, build with `pnpm build`, then run `pnpm ops:start` on http://127.0.0.1:3000. Use `pnpm ops:dev` for local development. [Verification and limitations](docs/phase12/verification.md).
+
+![Local synthetic financial operations overview](docs/phase12/screenshots/overview.png)
