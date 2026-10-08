@@ -1,5 +1,6 @@
 import 'server-only';
 import { Pool } from 'pg';
+import { observe, telemetry, log } from './telemetry';
 import {
   PostgresOperations,
   identifier,
@@ -41,11 +42,7 @@ export function scope(search: Search): {
     filters,
   };
 }
-export async function read(
-  kind: Operation,
-  book: string | null,
-  filters: Record<string, string | undefined> = {},
-) {
+function reader() {
   const url = process.env['DATABASE_OPERATIONS_URL'];
   if (!url) throw new ReadUnavailable('UNAVAILABLE');
   if (!pool) {
@@ -54,29 +51,25 @@ export async function read(
       max: 4,
       connectionTimeoutMillis: 3000,
       idleTimeoutMillis: 10000,
+      application_name: 'flow-operations',
     });
     pool.on('error', () =>
-      console.error(
-        JSON.stringify({ event: 'operations_idle_connection_reset' }),
-      ),
-    );
-  }
-  try {
-    return await new PostgresOperations(pool).read(kind, book, filters);
-  } catch (error) {
-    // Intentionally omit error messages, SQL, connection strings, payloads and stack traces.
-    console.error(
-      JSON.stringify({
-        event: 'operations_read_failed',
-        operation: kind,
-        category:
-          error instanceof InvalidRead
-            ? 'INVALID_REQUEST'
-            : error instanceof ReadUnavailable
-              ? error.category
-              : 'UNAVAILABLE',
+      log('idle_connection', 'FAILURE', {
+        classification: 'DATABASE_UNAVAILABLE',
       }),
     );
-    throw error;
   }
+  return new PostgresOperations(pool, observe);
+}
+export async function ready() {
+  await reader().ready();
+}
+export async function read(
+  kind: Operation,
+  book: string | null,
+  filters: Record<string, string | undefined> = {},
+) {
+  const result = await reader().read(kind, book, filters);
+  telemetry.observedModel(kind, result);
+  return result;
 }

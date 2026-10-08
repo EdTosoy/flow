@@ -1,5 +1,6 @@
 import 'server-only';
 import Link from 'next/link';
+import { request, unavailable } from './telemetry';
 import { read, scope, type Search } from './read';
 import {
   InvalidRead,
@@ -64,7 +65,7 @@ const states: Record<string, string[]> = {
     'SUCCEEDED',
   ],
 };
-export async function OpsPage({
+async function renderPage({
   section,
   search,
   id,
@@ -246,6 +247,7 @@ export async function OpsPage({
       </Shell>
     );
   } catch (error) {
+    unavailable(error);
     const invalid = error instanceof InvalidRead;
     const missing =
       error instanceof ReadUnavailable && error.category === 'NOT_FOUND';
@@ -277,4 +279,10 @@ export async function OpsPage({
       </Shell>
     );
   }
+}
+
+export async function OpsPage(props: Parameters<typeof renderPage>[0]) {
+  return request('page_' + (operations[props.section] ?? 'overview'), () =>
+    renderPage(props),
+  );
 }
