@@ -1,4 +1,11 @@
-import type { Pool } from 'pg';
+import type { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
+import { classify, type ReadObservation, type Observer } from './telemetry';
+export {
+  classify,
+  Telemetry,
+  type ReadObservation,
+  type Observer,
+} from './telemetry';
 import { health, type IntegritySummary } from '@flow/integrity-postgres';
 export type Json =
   null | boolean | number | string | Json[] | { [key: string]: Json };
@@ -30,7 +37,12 @@ export class InvalidRead extends Error {
   }
 }
 export class ReadUnavailable extends Error {
-  constructor(readonly category: 'NOT_FOUND' | 'UNAVAILABLE') {
+  constructor(
+    readonly category: 'NOT_FOUND' | 'UNAVAILABLE',
+    readonly classification = category === 'NOT_FOUND'
+      ? 'NOT_FOUND'
+      : 'DATABASE_UNAVAILABLE',
+  ) {
     super(
       category === 'NOT_FOUND'
         ? 'Requested scope was not found'
@@ -166,13 +178,118 @@ export function parameters(
   }
   return options;
 }
+const capabilitySql = `SELECT NOT r.rolsuper AND NOT r.rolcreatedb AND NOT r.rolcreaterole AND NOT r.rolbypassrls AND pg_has_role(current_user,'flow_operations_reader','MEMBER') AND NOT pg_has_role(current_user,'flow_ledger_owner','MEMBER') AND NOT EXISTS(SELECT FROM pg_roles w WHERE w.rolname IN ('flow_ledger_writer','flow_ingestion_writer','flow_processor_writer','flow_bank_writer','flow_reconciliation_writer','flow_exception_writer','flow_control_writer','flow_worker') AND pg_has_role(current_user,w.oid,'MEMBER')) AS ok FROM pg_roles r WHERE r.rolname=current_user`;
 /** No arbitrary SQL port; each read observes a single, bounded authoritative snapshot. */
 export class PostgresOperations {
-  constructor(private readonly reader: Pool) {}
+  /** Technical connectivity/capability only; no financial sweep or assurance check. */
+  async ready(): Promise<void> {
+    const start = performance.now();
+    const o: ReadObservation = {
+      operation: 'ready',
+      durationMs: 0,
+      databaseMs: 0,
+      queryCount: 0,
+      rows: 0,
+      outcome: 'SUCCESS',
+      classification: 'NONE',
+    };
+    let client: PoolClient | undefined;
+    let discard = false;
+    const onError = () => {
+      discard = true;
+    };
+    try {
+      client = await this.reader.connect();
+      client.on('error', onError);
+      const query = async (sql: string) => {
+        o.queryCount++;
+        const began = performance.now();
+        try {
+          // The pinned pg driver accepts this option; @types/pg omits it on QueryConfig.
+          const config = { text: sql, query_timeout: 1200 };
+          return await client!.query(config);
+        } finally {
+          o.databaseMs += performance.now() - began;
+        }
+      };
+      await query('BEGIN READ ONLY');
+      await query(
+        "SET LOCAL statement_timeout='1000ms'; SET LOCAL idle_in_transaction_session_timeout='1000ms'",
+      );
+      if (!(await query(capabilitySql)).rows[0]?.ok)
+        throw new ReadUnavailable('UNAVAILABLE', 'PERMISSION_DENIED');
+      if (
+        !(
+          await query(
+            "SELECT has_function_privilege(current_user,'operations.read_v1(uuid,text,jsonb)','EXECUTE') AS ok",
+          )
+        ).rows[0]?.ok
+      )
+        throw new ReadUnavailable('UNAVAILABLE', 'PERMISSION_DENIED');
+      await query('COMMIT');
+    } catch (error) {
+      o.outcome = 'FAILURE';
+      o.classification = classify(error);
+      discard = true;
+      throw new ReadUnavailable('UNAVAILABLE', o.classification);
+    } finally {
+      // Destroy failed probe clients: rollback is unnecessary and no read locks remain stranded.
+      client?.removeListener('error', onError);
+      client?.release(discard);
+      o.durationMs = performance.now() - start;
+      try {
+        this.observe?.(o);
+      } catch {
+        /* no correctness dependency on telemetry */
+      }
+    }
+  }
+  constructor(
+    private readonly reader: Pool,
+    private readonly observe?: Observer,
+    private readonly timeoutMs = 30000,
+  ) {
+    if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 30000)
+      throw new InvalidRead();
+  }
   async read(
     kind: Operation,
     bookId: string | null,
     input: Record<string, string | undefined> = {},
+  ): Promise<ReadResult> {
+    const observation: ReadObservation = {
+      operation: kind,
+      durationMs: 0,
+      databaseMs: 0,
+      queryCount: 0,
+      rows: 0,
+      outcome: 'SUCCESS',
+      classification: 'NONE',
+    };
+    const start = performance.now();
+    try {
+      const result = await this.perform(kind, bookId, input, observation);
+      observation.rows = result.items?.length ?? (result.data ? 1 : 0);
+      return result;
+    } catch (error) {
+      observation.outcome = 'FAILURE';
+      observation.classification = classify(error);
+      throw error;
+    } finally {
+      observation.durationMs = performance.now() - start;
+      // Observability must never change query semantics or cleanup.
+      try {
+        this.observe?.(observation);
+      } catch {
+        /* diagnostics are best effort */
+      }
+    }
+  }
+  private async perform(
+    kind: Operation,
+    bookId: string | null,
+    input: Record<string, string | undefined>,
+    observation: ReadObservation,
   ): Promise<ReadResult> {
     if (
       ![
@@ -196,32 +313,46 @@ export class PostgresOperations {
     const client = await this.reader.connect().catch(() => {
       throw new ReadUnavailable('UNAVAILABLE');
     });
+    const query = async <T extends QueryResultRow = QueryResultRow>(
+      text: string,
+      values?: unknown[],
+    ): Promise<QueryResult<T>> => {
+      const start = performance.now();
+      observation.queryCount++;
+      try {
+        const config = {
+          text,
+          values,
+          query_timeout: this.timeoutMs + 1000,
+        };
+        return await client.query<T>(config);
+      } finally {
+        observation.databaseMs += performance.now() - start;
+      }
+    };
     let discard = false;
     const onError = () => {
       discard = true;
     };
     client.on('error', onError);
     try {
-      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
-      await client.query(
-        "SET LOCAL statement_timeout='30s'; SET LOCAL idle_in_transaction_session_timeout='30s'",
+      await query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      await query(
+        `SET LOCAL statement_timeout='${this.timeoutMs}ms'; SET LOCAL idle_in_transaction_session_timeout='30s'`,
       );
       // Enforce a narrow login even when misconfigured with owner credentials.
-      const caps = (
-        await client.query<{ ok: boolean }>(
-          `SELECT NOT r.rolsuper AND NOT r.rolcreatedb AND NOT r.rolcreaterole AND NOT r.rolbypassrls AND pg_has_role(current_user,'flow_operations_reader','MEMBER') AND NOT pg_has_role(current_user,'flow_ledger_owner','MEMBER') AND NOT EXISTS(SELECT FROM pg_roles w WHERE w.rolname IN ('flow_ledger_writer','flow_ingestion_writer','flow_processor_writer','flow_bank_writer','flow_reconciliation_writer','flow_exception_writer','flow_control_writer','flow_worker') AND pg_has_role(current_user,w.oid,'MEMBER')) AS ok FROM pg_roles r WHERE r.rolname=current_user`,
-        )
-      ).rows[0];
-      if (!caps?.ok) throw new ReadUnavailable('UNAVAILABLE');
+      const caps = (await query<{ ok: boolean }>(capabilitySql)).rows[0];
+      if (!caps?.ok)
+        throw new ReadUnavailable('UNAVAILABLE', 'PERMISSION_DENIED');
       const result = (
-        await client.query<{ result: ReadResult }>(
+        await query<{ result: ReadResult }>(
           'SELECT operations.read_v1($1::uuid,$2,$3::jsonb) AS result',
           [book, kind, JSON.stringify(opts)],
         )
       ).rows[0]!.result;
       if (result.version !== 'operations-read-v1')
         throw new ReadUnavailable('UNAVAILABLE');
-      await client.query('COMMIT');
+      await query('COMMIT');
       result.nextCursor = null;
       if (result.items && result.items.length > (opts['limit'] as number)) {
         result.items.pop();
@@ -244,17 +375,27 @@ export class PostgresOperations {
         );
       return result;
     } catch (error) {
-      try {
-        await client.query('ROLLBACK');
-      } catch {
+      if (
+        discard ||
+        (error instanceof Error && error.message === 'Query read timeout')
+      ) {
         discard = true;
+      } else {
+        try {
+          await query('ROLLBACK');
+        } catch {
+          discard = true;
+        }
       }
       if (error instanceof ReadUnavailable) throw error;
       const code =
         typeof error === 'object' && error !== null && 'code' in error
           ? error.code
           : undefined;
-      throw new ReadUnavailable(code === 'P0012' ? 'NOT_FOUND' : 'UNAVAILABLE');
+      throw new ReadUnavailable(
+        code === 'P0012' ? 'NOT_FOUND' : 'UNAVAILABLE',
+        classify(error),
+      );
     } finally {
       client.removeListener('error', onError);
       client.release(discard);

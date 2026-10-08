@@ -20,6 +20,7 @@ import type { SystemInput } from '@flow/simulator';
 import { PostgresOperations } from '@flow/operations-read-postgres';
 import { seedDemo, type DemoPools } from '../tools/ops-demo';
 import { clean, witness } from './helpers/resilience';
+import { distribution } from './helpers/profile-reads';
 const exec = promisify(execFile);
 const keys: Record<keyof DemoPools, string> = {
   admin: 'ADMIN',
@@ -70,12 +71,43 @@ test(
     const dir = await mkdtemp(join(tmpdir(), 'flow-ops-public-'));
     let child: ChildProcess | undefined;
     let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+    const serverLogs: Record<string, unknown>[] = [];
+    const memory: Record<string, unknown>[] = [];
+    let pendingLog = '';
+    function receiveLogs(chunk: Buffer) {
+      pendingLog += chunk.toString();
+      const lines = pendingLog.split('\n');
+      pendingLog = lines.pop()!;
+      for (const line of lines) {
+        try {
+          const record = JSON.parse(line);
+          if (record.subsystem === 'operations') {
+            serverLogs.push(record);
+            if (serverLogs.length > 1000) serverLogs.shift();
+          }
+        } catch {
+          /* framework startup lines */
+        }
+      }
+    }
+    async function measureMemory() {
+      const status = await readFile('/proc/' + child!.pid + '/status', 'utf8');
+      memory.push(
+        Object.fromEntries(
+          status
+            .split('\n')
+            .filter((line) => /^(VmRSS|VmHWM):/.test(line))
+            .map((line) => line.trim().split(/:\s*/)),
+        ),
+      );
+    }
     try {
+      const scale = process.env['FLOW_PROFILE_LARGE'] ? 2 : 1;
       const configs = [
-        { seed: 71200, paymentCount: 40, batchSizeRange: [5, 10] },
+        { seed: 71200, paymentCount: 40 * scale, batchSizeRange: [5, 10] },
         {
           seed: 71201,
-          paymentCount: 12,
+          paymentCount: 12 * scale,
           batchSizeRange: [1, 1],
           anomalies: {
             'missing-bank-transaction': { count: 2 },
@@ -83,8 +115,8 @@ test(
             'incorrect-amount': { count: 2 },
           },
         },
-        { seed: 71202, paymentCount: 12, batchSizeRange: [1, 1] },
-        { seed: 71203, paymentCount: 8, batchSizeRange: [2, 2] },
+        { seed: 71202, paymentCount: 12 * scale, batchSizeRange: [1, 1] },
+        { seed: 71203, paymentCount: 8 * scale, batchSizeRange: [2, 2] },
       ];
       const inputs: SystemInput[] = [];
       for (const [i, config] of configs.entries()) {
@@ -140,6 +172,12 @@ test(
         )
       ).rows[0];
       assert(dataset.receipts >= 1000);
+      if (process.env['FLOW_PROFILE_READS']) {
+        const { profileReads } = await import('./helpers/profile-reads.js');
+        await profileReads(p.admin, op, demo, dataset);
+        await clean(p.admin, demo.bookId, demo.reconciliationRunIds);
+        return;
+      }
       const exposed = await reads.read('overview', demo.bookId, {
         evaluation: demo.evaluationId,
       });
@@ -169,6 +207,10 @@ test(
       );
       const retain = await witness(p.admin);
       const queryMeasurements: Record<string, number> = {};
+      const queryDistributions: Record<
+        string,
+        ReturnType<typeof distribution>
+      > = {};
       for (const [name, kind, args] of [
         ['overview', 'overview', { evaluation: demo.evaluationId }],
         ['exceptionList', 'exceptions', {}],
@@ -176,12 +218,14 @@ test(
         ['controlsList', 'controls', { evaluation: demo.evaluationId }],
       ] as const) {
         const samples: number[] = [];
-        for (let i = 0; i < 3; i++) {
+        await reads.read(kind, demo.bookId, args);
+        for (let i = 0; i < 5; i++) {
           const begin = performance.now();
           await reads.read(kind, demo.bookId, args);
           samples.push(performance.now() - begin);
         }
-        queryMeasurements[name] = samples.sort((a, b) => a - b)[1]!;
+        queryDistributions[name] = distribution(samples);
+        queryMeasurements[name] = queryDistributions[name]!.medianMs;
       }
       const plans: Record<string, unknown> = {};
       const queries = {
@@ -226,14 +270,19 @@ test(
         ],
         {
           env: {
-            ...process.env,
+            ...Object.fromEntries(
+              Object.entries(process.env).filter(
+                ([key]) => !/^(DATABASE_|FLOW_TEST_|OPS_)/.test(key),
+              ),
+            ),
+            OPS_SLOW_READ_MS: '500',
             DATABASE_OPERATIONS_URL: process.env['FLOW_TEST_OPERATIONS_URL'],
             NEXT_TELEMETRY_DISABLED: '1',
           },
           stdio: ['ignore', 'pipe', 'pipe'],
         },
       );
-      child.stdout?.resume();
+      child.stdout?.on('data', receiveLogs);
       child.stderr?.resume();
       const started = performance.now();
       let ready = false;
@@ -252,6 +301,23 @@ test(
         await new Promise((r) => setTimeout(r, 50));
       }
       assert(ready, 'Production server ready within bound');
+      await measureMemory();
+      const live = await fetch(base + '/health/live', {
+        headers: { 'x-flow-request-id': 'untrusted-secret' },
+      });
+      assert.equal(live.status, 200);
+      const correlationId = live.headers.get('x-flow-request-id')!;
+      assert.match(correlationId, /^[0-9a-f-]{36}$/);
+      assert.notEqual(correlationId, 'untrusted-secret');
+      assert.equal((await live.json()).status, 'LIVE');
+      const readyResponse = await fetch(base + '/health/ready');
+      assert.equal(
+        readyResponse.status,
+        200,
+        'Technical readiness despite financial FAIL/UNKNOWN',
+      );
+      assert.equal((await readyResponse.json()).financialAssurance, 'SEPARATE');
+
       let executable = process.env['PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH'];
       if (!executable) {
         try {
@@ -274,7 +340,21 @@ test(
       });
       const overview =
         base + '/?book=' + demo.bookId + '&evaluation=' + demo.evaluationId;
-      await page.goto(overview);
+      const initialLoad = performance.now();
+      const overviewResponse = await page.goto(overview);
+      const overviewCorrelationId =
+        overviewResponse!.headers()['x-flow-request-id'];
+      const initialLoadMs = performance.now() - initialLoad;
+      const navigation = await page.evaluate(() => {
+        const n = performance.getEntriesByType(
+          'navigation',
+        )[0] as PerformanceNavigationTiming;
+        return {
+          ttfbMs: n.responseStart - n.requestStart,
+          domContentLoadedMs: n.domContentLoadedEventEnd - n.startTime,
+          loadMs: n.loadEventEnd - n.startTime,
+        };
+      });
       await page
         .getByRole('heading', { name: 'Financial operations', exact: true })
         .waitFor();
@@ -334,6 +414,10 @@ test(
         'REVOKE EXECUTE ON FUNCTION operations.read_v1(uuid,text,jsonb) FROM flow_operations_reader',
       );
       try {
+        const unavailableReady = await fetch(base + '/health/ready');
+        assert.equal(unavailableReady.status, 503);
+        assert.equal((await unavailableReady.json()).status, 'UNAVAILABLE');
+        assert.equal((await fetch(base + '/health/live')).status, 200);
         await page.goto(overview);
         await page
           .getByRole('heading', { name: 'Operations data unavailable' })
@@ -367,13 +451,13 @@ test(
       );
       await page.keyboard.press('Enter');
       assert.equal(await page.locator(':focus').getAttribute('id'), 'main');
-      await mkdir('docs/phase12/screenshots', { recursive: true });
+      await mkdir(join(dir, 'screenshots'), { recursive: true });
       await page.evaluate(() => {
         (document.activeElement as HTMLElement)?.blur();
         window.scrollTo(0, 0);
       });
       await page.screenshot({
-        path: 'docs/phase12/screenshots/overview.png',
+        path: join(dir, 'screenshots/overview.png'),
         fullPage: true,
       });
       await page.setViewportSize({ width: 640, height: 900 });
@@ -392,6 +476,74 @@ test(
         false,
       );
       assert.deepEqual(errors, []);
+      await measureMemory();
+      const connections = (
+        await p.admin.query(
+          "SELECT count(*)::integer AS total,count(*) FILTER(WHERE state='idle in transaction')::integer AS stranded FROM pg_stat_activity WHERE application_name='flow-operations'",
+        )
+      ).rows[0];
+      assert(connections.total <= 4);
+      assert.equal(connections.stranded, 0);
+      const metricsResponse = await fetch(base + '/metrics');
+      assert.equal(metricsResponse.status, 200);
+      const metrics = await metricsResponse.text();
+      assert(metrics.includes('flow_read_duration_seconds_bucket'));
+      assert(
+        metrics.includes('flow_server_errors_total{surface="readiness"} 1'),
+      );
+      assert(
+        metrics.includes('flow_last_observed_control_total{status="UNKNOWN"}'),
+      );
+      assert(
+        metrics.includes(
+          'flow_last_observed_work_total{state="FAILED_TERMINAL"}',
+        ),
+      );
+      assert(!metrics.includes(demo.bookId));
+      assert(!metrics.includes(demo.evaluationId));
+      assert(metrics.length < 30000);
+      assert(
+        serverLogs.some(
+          (log) =>
+            log.correlationId === correlationId && log.operation === 'liveness',
+        ),
+      );
+      assert(
+        serverLogs.some(
+          (log) =>
+            log.classification === 'PERMISSION_DENIED' &&
+            log.outcome === 'FAILURE',
+        ),
+      );
+      assert(
+        serverLogs.some(
+          (log) =>
+            log.correlationId === overviewCorrelationId &&
+            log.operation === 'overview' &&
+            log.queryCount === 5,
+        ),
+      );
+      assert(!JSON.stringify(serverLogs).includes('untrusted-secret'));
+      for (const log of serverLogs)
+        assert(
+          Object.keys(log).every((key) =>
+            [
+              'timestamp',
+              'level',
+              'subsystem',
+              'operation',
+              'correlationId',
+              'outcome',
+              'durationMs',
+              'databaseMs',
+              'queryCount',
+              'rows',
+              'classification',
+              'slow',
+            ].includes(key),
+          ),
+        );
+
       await retain();
       await clean(p.admin, demo.bookId, demo.reconciliationRunIds);
       // Production client artifacts never contain database ports/connection strings or privileged implementations.
@@ -405,8 +557,10 @@ test(
         return result;
       }
       const chunks = await scan('apps/ops/.next/static');
+      let clientJsBytes = 0;
       for (const file of chunks) {
         const source = await readFile(file, 'utf8');
+        clientJsBytes += Buffer.byteLength(source);
         for (const forbidden of [
           'FLOW_TEST_OPERATIONS_URL',
           'DATABASE_OPERATIONS_URL',
@@ -426,6 +580,14 @@ test(
             plans,
             clientChunks: chunks.length,
             browserErrors: errors.length,
+            queryDistributions,
+            clientJsBytes,
+            initialLoadMs,
+            navigation,
+            memory,
+            structuredLogCount: serverLogs.length,
+            metricsBytes: metrics.length,
+            serverPool: connections,
             browserVersion: browser.version(),
             assurance: demo.assurance,
           }),

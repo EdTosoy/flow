@@ -59,6 +59,8 @@ async function main(): Promise<void> {
         'fsync=on',
         '-c',
         'synchronous_commit=on',
+        '-c',
+        'track_functions=all',
       ],
       { timeout: 120000 },
     );
@@ -660,7 +662,7 @@ async function main(): Promise<void> {
         )
       ).rows,
     );
-    await migrate(admin);
+    await migrate(admin, '011_operations_reads.sql');
     if (
       (await snapshot9()) !== beforeOperations ||
       JSON.stringify(
@@ -674,6 +676,37 @@ async function main(): Promise<void> {
       throw new Error('Operations migration changed historical truth or work');
     console.log(
       'Populated Phase 11 -> Phase 12 unchanged financial/work state PASS',
+    );
+    const readsBeforeBatching = JSON.stringify(
+      (
+        await admin.query(
+          'SELECT id,controls.snapshot(command,frozen_at) AS snapshot FROM controls.run ORDER BY id',
+        )
+      ).rows,
+    );
+    await migrate(admin);
+    if (
+      (await snapshot9()) !== beforeOperations ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+          )
+        ).rows,
+      ) !== workBeforeOperations ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT id,controls.snapshot(command,frozen_at) AS snapshot FROM controls.run ORDER BY id',
+          )
+        ).rows,
+      ) !== readsBeforeBatching
+    )
+      throw new Error(
+        'Phase 13 changed frozen proof semantics, historical truth or work',
+      );
+    console.log(
+      'Populated Phase 12 -> Phase 13 unchanged exact control snapshots/financial/work state PASS',
     );
     const historicalRows = (
       await admin.query(
@@ -758,6 +791,7 @@ async function main(): Promise<void> {
     const files = [
       'tests/operations.integration.test.ts',
       'tests/operations-browser.integration.test.ts',
+      'tests/observability.integration.test.ts',
       'tests/resilience.integration.test.ts',
       'tests/resilience-load.integration.test.ts',
       'tests/workers.integration.test.ts',

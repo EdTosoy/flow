@@ -4,18 +4,18 @@ Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was
 
 ## Design package
 
-| Document | Responsibility |
-| --- | --- |
-| [Invariant catalog](invariants.md) | Numbered controls, enforcement, tests, failures |
-| [Conceptual data model](data-model.md) | Identities, ownership, relationships, constraints |
-| [State machines](state-machines.md) | Legal transitions and transaction guards |
-| [Reconciliation semantics](reconciliation.md) | Proof requirements, grouped matching, completeness |
-| [Transactions and outbox](transactions-and-outbox.md) | Atomic writes, locking, leases, retries, durability |
-| [Failure and risk analysis](failure-and-risk-analysis.md) | Scenarios A–J, threat ranking, trust limits |
-| [Verification and operations](verification-and-operations.md) | Tests, simulator, metrics, runbooks |
-| [Implementation sequence](implementation-sequence.md) | Dependency order, gates, open decisions, deferrals |
-| [ADRs](adr/README.md) | Consequential architectural choices |
-| [Phase 1 implementation](../phase1/README.md) | Actual schema, packages, privileges, command/idempotency/reversal semantics |
+| Document                                                      | Responsibility                                                              |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [Invariant catalog](invariants.md)                            | Numbered controls, enforcement, tests, failures                             |
+| [Conceptual data model](data-model.md)                        | Identities, ownership, relationships, constraints                           |
+| [State machines](state-machines.md)                           | Legal transitions and transaction guards                                    |
+| [Reconciliation semantics](reconciliation.md)                 | Proof requirements, grouped matching, completeness                          |
+| [Transactions and outbox](transactions-and-outbox.md)         | Atomic writes, locking, leases, retries, durability                         |
+| [Failure and risk analysis](failure-and-risk-analysis.md)     | Scenarios A–J, threat ranking, trust limits                                 |
+| [Verification and operations](verification-and-operations.md) | Tests, simulator, metrics, runbooks                                         |
+| [Implementation sequence](implementation-sequence.md)         | Dependency order, gates, open decisions, deferrals                          |
+| [ADRs](adr/README.md)                                         | Consequential architectural choices                                         |
+| [Phase 1 implementation](../phase1/README.md)                 | Actual schema, packages, privileges, command/idempotency/reversal semantics |
 
 ## Executive decision
 
@@ -41,20 +41,20 @@ An item can be reconciled for one relationship and still pending for another. A 
 
 An arrow means **imports/uses public contract of**, not a database foreign-key direction. Foundation modules do not import domain modules. Domain code has no dependency on NestJS, Next.js, Drizzle, the worker scheduler, simulator, or telemetry exporters. Persistence adapters and the application composition layer supply those implementations.
 
-| Bounded module | Owns | Allowed domain dependencies |
-| --- | --- | --- |
-| Money/shared financial primitives | Money, currency metadata, exact arithmetic, amount bounds, time/identity value types; no generic business dumping ground | None |
-| Ingestion | Source accounts, batches/manifests, raw receipts, canonical source identities/revisions, source coverage | Shared |
-| Normalization | Versioned typed interpretations, parse dispositions, supported source mappings | Ingestion read contracts, shared |
-| Payments | Internal payment expectations and capture/refund/chargeback activities, approved business transitions | Shared |
-| Ledger | Accounts, journals/entries, posting/reversal API, business-effect idempotency, integrity verification | Shared |
-| Settlements | Expected/reported payout, batch composition, processor reports and bank observations; owns bank model initially | Normalization read contracts, shared |
-| Reconciliation | Comparable items/facets, rules, immutable run populations, decisions, match groups, current allocations, control evaluations | Read contracts of normalization, payments, ledger, settlements; shared |
-| Exceptions | Cases, evidence, assignments, reviews, resolution dispositions; no direct financial edits | Shared |
-| Audit | Append-only attributable decision records and controlled query API | Shared identities/contracts |
-| Async/outbox | Durable events, per-handler work, attempts, leases, retry/recovery | Shared contracts; no domain imports |
-| Observability | Log/metric/trace adapters, freshness and independent control-check scheduling | Shared contracts; no domain ownership |
-| Simulator | Seeded scenarios, source artifacts, delivery fault schedule | Shared format contracts only; no runtime production import of simulator |
+| Bounded module                    | Owns                                                                                                                         | Allowed domain dependencies                                             |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Money/shared financial primitives | Money, currency metadata, exact arithmetic, amount bounds, time/identity value types; no generic business dumping ground     | None                                                                    |
+| Ingestion                         | Source accounts, batches/manifests, raw receipts, canonical source identities/revisions, source coverage                     | Shared                                                                  |
+| Normalization                     | Versioned typed interpretations, parse dispositions, supported source mappings                                               | Ingestion read contracts, shared                                        |
+| Payments                          | Internal payment expectations and capture/refund/chargeback activities, approved business transitions                        | Shared                                                                  |
+| Ledger                            | Accounts, journals/entries, posting/reversal API, business-effect idempotency, integrity verification                        | Shared                                                                  |
+| Settlements                       | Expected/reported payout, batch composition, processor reports and bank observations; owns bank model initially              | Normalization read contracts, shared                                    |
+| Reconciliation                    | Comparable items/facets, rules, immutable run populations, decisions, match groups, current allocations, control evaluations | Read contracts of normalization, payments, ledger, settlements; shared  |
+| Exceptions                        | Cases, evidence, assignments, reviews, resolution dispositions; no direct financial edits                                    | Shared                                                                  |
+| Audit                             | Append-only attributable decision records and controlled query API                                                           | Shared identities/contracts                                             |
+| Async/outbox                      | Durable events, per-handler work, attempts, leases, retry/recovery                                                           | Shared contracts; no domain imports                                     |
+| Observability                     | Log/metric/trace adapters, freshness and independent control-check scheduling                                                | Shared contracts; no domain ownership                                   |
+| Simulator                         | Seeded scenarios, source artifacts, delivery fault schedule                                                                  | Shared format contracts only; no runtime production import of simulator |
 
 Application use cases sit above these modules. They coordinate payments + ledger + audit + outbox inside a shared transaction, or reconciliation + exceptions + audit. Exceptions do not import reconciliation and reconciliation does not import exceptions: the coordinator connects them through IDs and results. Typed cross-module foreign keys are valid; arbitrary writes to another module's tables are not. The ledger never calls the payments module to decide accounting correctness. Settlement observations never directly mark reconciliation complete.
 
@@ -101,30 +101,30 @@ The diagram shows runtime composition, not permission to introduce circular libr
 
 ## Terminology
 
-| Term | Precise meaning |
-| --- | --- |
-| Payment | Internal business object expressing an obligation/intent to accept funds; not a processor event or ledger entry. Capture is a separate activity. |
-| Payment activity | Independently identified internal capture, refund, refund portion, chargeback, or adjustment with its own amount and lifecycle. |
-| Processor transaction | External processor balance-affecting fact, such as a charge, fee, refund, or dispute movement. An API payment object, webhook envelope, and balance transaction have different identities. |
-| Settlement | An expected or processor-reported transfer from processor balance toward a bank account; bank receipt is a separate observation. |
-| Settlement batch | Versioned processor-reported set of balance components assigned to a payout. A payout without itemized membership has unverified composition. |
-| Bank transaction | External bank observation of a credit/debit, with pending/booked status, booking/value dates, source identity, and revisions. |
-| Ledger account | Currency-specific accounting bucket in a book with an immutable accounting classification and normal balance side. |
-| Ledger transaction / journal | Atomic, posted collection of debit and credit entries representing one accounting action. “Transaction” without a qualifier is avoided. |
-| Ledger entry | One positive minor-unit debit or credit to one account in one journal; never an external-source row. |
-| Source record | Immutable received row/event observation, including exact source representation and provenance. Retransmissions remain observations even when they refer to one canonical fact. |
-| Source fact/revision | Canonical, scoped external object identity and an immutable reported version of that object's facts. Distinct from delivery identity. |
-| Normalized record | Immutable, versioned interpretation of a source revision using a named parser/normalizer. Normalization adds meaning, not accounting truth. |
-| Reconciliation | Evaluation of a defined financial relationship over a declared population using explicit evidence and versioned rules. |
-| Match | A proposed or confirmed correspondence of items satisfying one rule; a candidate is not financial proof. |
-| Match group | Auditable evidence bundle with members, roles, signs, and relationship scope supporting a 1:1, N:1, or approved 1:N equation. |
-| Exception | Explicit case for an unresolved discrepancy, unsupported fact, processing failure, or breached control. Not every not-yet-due item is an exception. |
-| Reversal | New journal exactly negating the entries of a specified original journal; the original stays posted. Replacement accounting is another new journal. |
-| Idempotency key | Scoped stable identity of an intended operation/effect; same key and payload returns the original result, conflicting payload is rejected. Not a random key per retry. |
-| Reconciliation run | Immutable population snapshot and rule version, plus resumable processing and append-only outcomes. Completion means population accounting finished, not all items reconciled. |
-| Reconciled | Proven relationship for specified items, facet, evidence revisions, and rule; does not imply end-to-end settlement or source completeness. |
-| Resolved | Exception workflow conclusion with a disposition; accepted risk can be resolved without being reconciled. |
-| Control total | Independent count/amount/balance assertion over a stated source/account/currency/period with explicit coverage quality. |
+| Term                         | Precise meaning                                                                                                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Payment                      | Internal business object expressing an obligation/intent to accept funds; not a processor event or ledger entry. Capture is a separate activity.                                           |
+| Payment activity             | Independently identified internal capture, refund, refund portion, chargeback, or adjustment with its own amount and lifecycle.                                                            |
+| Processor transaction        | External processor balance-affecting fact, such as a charge, fee, refund, or dispute movement. An API payment object, webhook envelope, and balance transaction have different identities. |
+| Settlement                   | An expected or processor-reported transfer from processor balance toward a bank account; bank receipt is a separate observation.                                                           |
+| Settlement batch             | Versioned processor-reported set of balance components assigned to a payout. A payout without itemized membership has unverified composition.                                              |
+| Bank transaction             | External bank observation of a credit/debit, with pending/booked status, booking/value dates, source identity, and revisions.                                                              |
+| Ledger account               | Currency-specific accounting bucket in a book with an immutable accounting classification and normal balance side.                                                                         |
+| Ledger transaction / journal | Atomic, posted collection of debit and credit entries representing one accounting action. “Transaction” without a qualifier is avoided.                                                    |
+| Ledger entry                 | One positive minor-unit debit or credit to one account in one journal; never an external-source row.                                                                                       |
+| Source record                | Immutable received row/event observation, including exact source representation and provenance. Retransmissions remain observations even when they refer to one canonical fact.            |
+| Source fact/revision         | Canonical, scoped external object identity and an immutable reported version of that object's facts. Distinct from delivery identity.                                                      |
+| Normalized record            | Immutable, versioned interpretation of a source revision using a named parser/normalizer. Normalization adds meaning, not accounting truth.                                                |
+| Reconciliation               | Evaluation of a defined financial relationship over a declared population using explicit evidence and versioned rules.                                                                     |
+| Match                        | A proposed or confirmed correspondence of items satisfying one rule; a candidate is not financial proof.                                                                                   |
+| Match group                  | Auditable evidence bundle with members, roles, signs, and relationship scope supporting a 1:1, N:1, or approved 1:N equation.                                                              |
+| Exception                    | Explicit case for an unresolved discrepancy, unsupported fact, processing failure, or breached control. Not every not-yet-due item is an exception.                                        |
+| Reversal                     | New journal exactly negating the entries of a specified original journal; the original stays posted. Replacement accounting is another new journal.                                        |
+| Idempotency key              | Scoped stable identity of an intended operation/effect; same key and payload returns the original result, conflicting payload is rejected. Not a random key per retry.                     |
+| Reconciliation run           | Immutable population snapshot and rule version, plus resumable processing and append-only outcomes. Completion means population accounting finished, not all items reconciled.             |
+| Reconciled                   | Proven relationship for specified items, facet, evidence revisions, and rule; does not imply end-to-end settlement or source completeness.                                                 |
+| Resolved                     | Exception workflow conclusion with a disposition; accepted risk can be resolved without being reconciled.                                                                                  |
+| Control total                | Independent count/amount/balance assertion over a stated source/account/currency/period with explicit coverage quality.                                                                    |
 
 ## Evidence and technical references
 
@@ -178,4 +178,8 @@ Phase 11 independently verifies the supported system through a read-only integri
 
 ## Phase 12 operations read boundary
 
-The local Next.js operations application composes dedicated versioned, scoped PostgreSQL reads through a server-only boundary. The database capability exposes no table/command writes or raw payloads. Presentation consumes established domain summaries/canonical controls/integrity, with explicit historical freshness and UNKNOWN. No separate NestJS service is necessary for these read-only operations. [ADR-016](adr/016-operations-read-application.md); [application and local workflow](../phase12/README.md); [verification](../phase12/verification.md). Phase 13, production identity/deployment and financial web actions remain deferred.
+The local Next.js operations application composes dedicated versioned, scoped PostgreSQL reads through a server-only boundary. The database capability exposes no table/command writes or raw payloads. Presentation consumes established domain summaries/canonical controls/integrity, with explicit historical freshness and UNKNOWN. No separate NestJS service is necessary for these read-only operations. [ADR-016](adr/016-operations-read-application.md); [application and local workflow](../phase12/README.md); [verification](../phase12/verification.md). Production identity/deployment and financial web actions remain deferred.
+
+## Phase 13 measured reads and observability
+
+[Phase 13](../phase13/README.md) retains ADR-016 and all existing financial predicates. Statement-local proof scope/payment reuse and complete manifest assembly eliminate measured repeated work; no cross-request financial cache or materialization is introduced. Server-only logs/metrics use bounded labels and correlation metadata, and technical liveness/readiness remain separate from existing financial assurance. The reader gains no write privilege. [Executed observations and verification](../phase13/verification.md). Phase 14, production identity/deployment, financial mutations and real integrations remain deferred.

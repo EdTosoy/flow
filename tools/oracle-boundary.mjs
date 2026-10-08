@@ -77,7 +77,8 @@ export default {
           if (privateFile(resolved)) return true;
           if (resolved.includes('/apps/ops/server/'))
             return (
-              client || !/apps\/ops\/app\/(.*\/)?page\.tsx$/.test(relative)
+              client ||
+              !/apps\/ops\/app\/(.*\/)?(?:page\.tsx|route\.ts)$/.test(relative)
             );
           if (!client) return false;
           seen.add(resolved);
