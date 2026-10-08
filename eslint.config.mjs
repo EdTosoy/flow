@@ -17,6 +17,10 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:integrity-postgres',
+              onlyDependOnLibsWithTags: [],
+            },
+            {
               sourceTag: 'layer:worker-postgres',
               onlyDependOnLibsWithTags: ['layer:ingestion-domain'],
             },

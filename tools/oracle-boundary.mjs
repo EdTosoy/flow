@@ -16,7 +16,8 @@ function privateFile(file) {
   return (
     relative.startsWith('libs/simulator-oracle/') ||
     relative === 'tools/simulator.ts' ||
-    relative.startsWith('tests/simulator-')
+    relative === 'tools/test-postgres.ts' ||
+    relative.startsWith('tests/')
   );
 }
 export default {

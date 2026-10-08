@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { before, after, test } from 'node:test';
+import { before, after, afterEach, test } from 'node:test';
 import { Pool, type PoolClient } from 'pg';
 import fc from 'fast-check';
 import { PostgresIngestion } from '@flow/ingestion-postgres';
@@ -12,6 +12,15 @@ import {
   type Claim,
 } from '@flow/worker-postgres';
 import { commitDropProxy } from './helpers/commit-proxy';
+import { clean } from './helpers/resilience';
+const sweepBooks = new Set<string>();
+afterEach(async () => {
+  try {
+    for (const book of sweepBooks) await clean(admin, book);
+  } finally {
+    sweepBooks.clear();
+  }
+});
 const adminUrl = process.env['FLOW_TEST_ADMIN_URL']!,
   url = process.env['FLOW_TEST_WORKER_URL']!,
   ingestionUrl = process.env['FLOW_TEST_INGESTION_URL']!;
@@ -30,6 +39,7 @@ before(async () => {
 });
 async function fixture(count = 1, policy: Record<string, number> = {}) {
   const bookId = randomUUID();
+  sweepBooks.add(bookId);
   await admin.query(
     "INSERT INTO ledger.book(id,code,environment) VALUES($1,$2,'synthetic')",
     [bookId, 'worker-' + bookId],

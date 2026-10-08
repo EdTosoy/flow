@@ -11,12 +11,14 @@ import { type CaseCommand, type CaseView } from '@flow/exception-domain';
 import { PostgresReconciliation } from '@flow/reconciliation-postgres';
 import {
   fixture,
+  installInvariantSweeps,
   entry,
   report,
   importEvidence,
   money,
 } from './helpers/reconciliation-fixture';
 import { commitDropProxy } from './helpers/commit-proxy';
+installInvariantSweeps();
 const au = process.env['FLOW_TEST_ADMIN_URL']!,
   eu = process.env['FLOW_TEST_EXCEPTION_URL']!;
 if (!au || !eu) throw new Error('Run pnpm test:integration');

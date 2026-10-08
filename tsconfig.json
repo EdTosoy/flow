@@ -55,6 +55,9 @@
     },
     {
       "path": "libs/worker-postgres"
+    },
+    {
+      "path": "libs/integrity-postgres"
     }
   ]
 }

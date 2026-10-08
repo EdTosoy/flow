@@ -15,12 +15,14 @@ import { PostgresExceptions } from '@flow/exception-postgres';
 import { PostgresLedger } from '@flow/ledger-postgres';
 import {
   fixture,
+  installInvariantSweeps,
   entry,
   report,
   importEvidence,
   money,
 } from './helpers/reconciliation-fixture';
 import { commitDropProxy } from './helpers/commit-proxy';
+installInvariantSweeps();
 const cu = process.env['FLOW_TEST_CONTROL_URL']!;
 if (!cu) throw new Error('Run pnpm test:integration');
 const admin = new Pool({
