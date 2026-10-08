@@ -1,6 +1,6 @@
 # ADR-006 — At-least-once delivery, idempotent financial effects
 
-Status: proposed. Date: 2026-10-07.
+Status: accepted for the Phase 10 internal normalization worker boundary; broader handler/publication/requeue policies remain planned. Date: 2026-10-07.
 
 ## Context
 
@@ -17,3 +17,7 @@ Correct canonicalization is an adapter/domain responsibility and must be documen
 ## Verification gate
 
 100 concurrent mixed-channel deliveries, conflicting payload, unknown commit acknowledgement, and order/permutation replay must converge or surface conflict, never duplicate value.
+
+## Phase 10 implementation clarification
+
+Phase 10 reuses ingestion revision/normalizer identity and atomic disposition/interpretation rather than a weaker worker-specific effect key. Domain COMMIT before acknowledgement can replay without duplication. Completion replay binds the original work/token/outcome to durable append-only history. At-least-once execution remains explicit. [Protocol](../../phase10/README.md); [executed evidence](../../phase10/verification.md).

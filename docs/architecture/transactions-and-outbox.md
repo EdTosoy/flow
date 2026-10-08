@@ -1,6 +1,6 @@
 # PostgreSQL transactions, concurrency and durable asynchronous work
 
-Phase 1 uses reviewed SQL routines and a `pg` adapter, with a typed caller-owned transaction port for later application composition. Drizzle adds no value to this controlled-write slice and remains available for later ordinary persistence. Only immutable outbox intent is implemented; all handler/work/lease/publication behavior below remains planned. [Concrete transactions and tests](../phase1/README.md).
+Phase 1 uses reviewed SQL routines and a `pg` adapter, with a typed caller-owned transaction port for later application composition. Drizzle adds no value to this controlled-write slice and remains available for later ordinary persistence. Phase 10 implements immediate work registration, leased/fenced PostgreSQL normalization and retained attempt history. Broader handlers, remote publication and manual requeue below remain planned; the implemented boundary is in [Phase 10](../phase10/README.md). [Concrete transactions and tests](../phase1/README.md).
 
 ## Durability and access boundary
 
@@ -108,4 +108,4 @@ Case generation and each human decision atomically commit immutable case/event/e
 
 ## Phase 9 implemented boundary
 
-System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 and later infrastructure/UI/integration/AI remain deferred.
+System-wide controls now coordinate existing source/domain/reconciliation/ledger evidence through immutable `financial-controls-v1` evaluations. DRAFT → SEALED → EVALUATING → COMPLETED stages freeze a coherent book population, retain typed scoped evidence and exact per-currency expected/observed totals, and require complete results/atomic audit/outbox. UNKNOWN period closure remains distinct from individual matching. Cases add operational disposition, never additive exposure or reconciliation proof. See [Phase 9 semantics](../phase9/README.md), [verification](../phase9/verification.md) and [ADR-015](adr/015-versioned-financial-controls.md). Phase 10 implements internal durable worker processing separately; later infrastructure/UI/integration/AI remain deferred.

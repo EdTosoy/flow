@@ -2,7 +2,7 @@
 
 These are acceptance requirements, not implemented guarantees. DB means PostgreSQL under the runtime role; DB owners/superusers remain a privileged trust boundary. The [transaction design](transactions-and-outbox.md) defines controlled routines, guards, and retry semantics. A monitor detects corruption; it does not replace write-time prevention.
 
-Phase 1 implements/verifies INV-001/002/003/009 and the ledger-creation portions of INV-006/016. INV-008 is realized only as atomic durable outbox intent; delivery/recovery workers are deferred. All source/reconciliation/AI/control-projection requirements remain future gates. The [Phase 1 acceptance evidence](../phase1/verification.md) defines the exact verified boundary, including conservative reversal scope and actual database permissions.
+Phase 1 implements/verifies INV-001/002/003/009 and the ledger-creation portions of INV-006/016. Phase 1 realizes INV-008 as atomic durable outbox intent; Phase 10 adds the explicitly scoped internal normalization delivery/recovery worker boundary below. All source/reconciliation/AI/control-projection requirements remain future gates. The [Phase 1 acceptance evidence](../phase1/verification.md) defines the exact verified boundary, including conservative reversal scope and actual database permissions.
 
 For each invariant below: purpose, enforcement (database and application), test, and failure signature are explicit. PBT means property-based tests; all constraints/locking tests execute on real PostgreSQL.
 
@@ -162,3 +162,7 @@ Phase 6 realizes the synthetic 1:1 settlement_bank slice of INV-005/010/013/014 
 ## Phase 9 implemented control boundary
 
 Phase 9 independently evaluates the supported received-evidence portions of INV-002/009/010/011/012/013/014/015/017 without replacing write-time guarantees. Missing independent period evidence stays UNKNOWN. Financial exposure is canonical, excludes case duplication, preserves accepted risk and refuses unproven cross-side addition. Historical frozen evaluations and results remain immutable. [Semantics](../phase9/README.md); [verification](../phase9/verification.md).
+
+## Phase 10 worker boundary
+
+Phase 10 adds immediate durable outbox registration, explicit operational work state, append-only attempts, DB-clock leases, fenced domain writes, bounded deterministic retries and retained terminal failures. At-least-once normalization reuses existing domain idempotency; worker state is never financial truth. Completed domain notifications have no invented local workflow. Manual requeue, external publication, UI/integrations/cloud/AI and later phases remain deferred. See [protocol](../phase10/README.md) and [verification](../phase10/verification.md).

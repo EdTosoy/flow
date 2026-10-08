@@ -550,7 +550,7 @@ async function main(): Promise<void> {
     const phase8History = await caseSnapshot(),
       before9 = await priorSnapshot(),
       recon8 = await reconciliationSnapshot();
-    await migrate(admin);
+    await migrate(admin, '008_financial_controls.sql');
     if (
       (await caseSnapshot()) !== phase8History ||
       (await priorSnapshot()) !== before9 ||
@@ -560,6 +560,56 @@ async function main(): Promise<void> {
     console.log(
       'Populated Phase 8 -> Phase 9 preserves financial/case history PASS',
       phase8Cases.length,
+    );
+    const control = new (
+      await import('@flow/control-postgres')
+    ).PostgresControls(admin);
+    await control.run({
+      bookId: phase8Fixture.book,
+      runKey: 'phase10-upgrade-controls',
+      actorId: 'upgrade-system',
+      reconciliationRunIds: [phase8Run.id],
+      createCases: true,
+    });
+    const snapshot9 = async () =>
+      JSON.stringify(
+        await Promise.all(
+          [
+            'ledger.ledger_transaction',
+            'ledger.ledger_entry',
+            'audit.audit_event',
+            'outbox.outbox_event',
+            'ingestion.raw_record',
+            'ingestion.interpretation',
+            'ingestion.processing',
+            'reconciliation.run',
+            'reconciliation.current_allocation',
+            'exceptions.event',
+            'controls.run',
+            'controls.input',
+            'controls.result',
+            'controls.case_link',
+          ].map(
+            async (table) =>
+              (
+                await admin!.query(
+                  `SELECT coalesce(jsonb_agg(to_jsonb(x) ORDER BY to_jsonb(x)::text),'[]') AS rows FROM ${table} x`,
+                )
+              ).rows[0].rows,
+          ),
+        ),
+      );
+    const before10 = await snapshot9();
+    await migrate(admin);
+    if ((await snapshot9()) !== before10)
+      throw new Error('Phase 10 rewrote Phase 1–9 history');
+    const missing = await admin.query(
+      'SELECT count(*)::integer n FROM outbox.outbox_event o LEFT JOIN worker.registration r ON r.event_id=o.id WHERE r.event_id IS NULL',
+    );
+    if (missing.rows[0].n !== 0)
+      throw new Error('Phase 10 backfill omitted committed intent');
+    console.log(
+      'Populated Phase 9 -> Phase 10 exact prior history and complete registration PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -586,6 +636,9 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_control LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_control_writer',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_worker LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_worker',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
@@ -594,6 +647,9 @@ async function main(): Promise<void> {
     );
     const requested = process.argv.slice(2);
     const files = [
+      'tests/workers.integration.test.ts',
+      'tests/simulator-workers.integration.test.ts',
+      'tests/workers-load.integration.test.ts',
       'tests/controls.integration.test.ts',
       'tests/simulator-controls.integration.test.ts',
       'tests/exceptions.integration.test.ts',
@@ -627,6 +683,10 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_WORKER_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_worker@',
+            ),
             FLOW_TEST_CONTROL_URL: url.replace(
               'flow_test_admin@',
               'flow_test_control@',
