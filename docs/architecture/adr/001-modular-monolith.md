@@ -17,3 +17,7 @@ Cross-module commands can be atomic without distributed transactions. Domain/per
 ## Verification gate
 
 Nx module-boundary/cycle checks and pure domain tests at scaffold time; shared transaction integration tests for every cross-module financial command.
+
+## Phase 12 clarification
+
+[ADR-016](016-operations-read-application.md) implements the local read-only Next.js operations application directly through a dedicated PostgreSQL query package. A separate NestJS API remains a future option for authorized command/application workflows; it is not required for this investigation surface. Financial domains remain independent of the application.

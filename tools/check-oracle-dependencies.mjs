@@ -27,7 +27,7 @@ export function assertRuntimeDependencies(root) {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       if (
         entry.isDirectory() &&
-        !['node_modules', 'dist', '.git', '.nx'].includes(entry.name)
+        !['node_modules', 'dist', '.git', '.nx', '.next'].includes(entry.name)
       )
         scan(path.join(directory, entry.name));
     }

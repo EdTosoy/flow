@@ -33,7 +33,11 @@
       "@flow/exception-postgres": ["libs/exception-postgres/src/index.ts"],
       "@flow/control-domain": ["libs/control-domain/src/index.ts"],
       "@flow/control-postgres": ["libs/control-postgres/src/index.ts"],
-      "@flow/worker-postgres": ["libs/worker-postgres/src/index.ts"]
+      "@flow/worker-postgres": ["libs/worker-postgres/src/index.ts"],
+      "@flow/integrity-postgres": ["libs/integrity-postgres/src/index.ts"],
+      "@flow/operations-read-postgres": [
+        "libs/operations-read-postgres/src/index.ts"
+      ]
     }
   }
 }

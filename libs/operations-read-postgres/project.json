@@ -1,0 +1,23 @@
+{
+  "name": "operations-read-postgres",
+  "sourceRoot": "libs/operations-read-postgres/src",
+  "projectType": "library",
+  "tags": ["layer:operations-read", "trust:runtime"],
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/operations-read-postgres/test/*.test.ts"
+      },
+      "cache": false
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/operations-read-postgres"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    }
+  },
+  "implicitDependencies": ["integrity-postgres"]
+}

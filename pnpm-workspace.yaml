@@ -1,5 +1,6 @@
 packages:
   - libs/*
+  - apps/*
 saveExact: true
 strictPeerDependencies: true
 allowBuilds:

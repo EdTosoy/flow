@@ -26,6 +26,9 @@ test('oracle isolation rejects static, relative, dynamic, require and harness im
     "export type Truth = import('@flow/simulator-oracle').Oracle;",
     "export * from '../../tools/simulator';",
     "export * from '../../tests/simulator-ledger.integration.test';",
+    "export * from '../../tests/helpers/resilience';",
+    "export * from '../../tests/resilience.integration.test';",
+    "export * from '../../tools/test-postgres';",
     "export * from '../../libs/simulator-oracle/dist/index.js';",
   ] as const) {
     const [result] = await eslint.lintText(code, {
@@ -47,6 +50,14 @@ test('oracle isolation rejects static, relative, dynamic, require and harness im
 test('Nx prevents runtime simulator from depending on oracle and financial core from simulator', async () => {
   const eslint = new ESLint();
   for (const [file, code] of [
+    [
+      'libs/integrity-postgres/src/probe.ts',
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+    ],
+    [
+      'libs/integrity-postgres/src/write-probe.ts',
+      "import { PostgresLedger } from '@flow/ledger-postgres'; void PostgresLedger;",
+    ],
     [
       'libs/control-domain/src/probe.ts',
       "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",

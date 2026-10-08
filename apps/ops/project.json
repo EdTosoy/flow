@@ -1,0 +1,29 @@
+{
+  "name": "ops",
+  "sourceRoot": "apps/ops",
+  "projectType": "application",
+  "tags": ["layer:ops", "trust:runtime"],
+  "implicitDependencies": ["operations-read-postgres", "money"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm --filter @flow/ops build"
+      },
+      "outputs": ["{projectRoot}/.next"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --tsconfig apps/ops/tsconfig.json --test apps/ops/test/*.test.tsx"
+      },
+      "cache": false
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm --filter @flow/ops typecheck"
+      }
+    }
+  }
+}

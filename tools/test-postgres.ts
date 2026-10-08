@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { createServer } from 'node:net';
 import { randomUUID } from 'node:crypto';
 import { Pool } from 'pg';
 import { migrate } from './migrations';
@@ -9,6 +10,8 @@ import { fixture as reconciliationFixture } from '../tests/helpers/reconciliatio
 import { PostgresBank } from '@flow/bank-postgres';
 import { PostgresProcessor } from '@flow/processor-postgres';
 import { PostgresIngestion } from '@flow/ingestion-postgres';
+import { PostgresWorker } from '@flow/worker-postgres';
+import { PostgresIntegrity } from '@flow/integrity-postgres';
 
 const exec = promisify(execFile);
 const image =
@@ -20,6 +23,19 @@ async function main(): Promise<void> {
   let started = false;
   let admin: Pool | undefined;
   try {
+    // Pin the ephemeral host port explicitly: Docker's anonymous mapping can change on restart.
+    const reservation = createServer();
+    await new Promise<void>((resolve, reject) => {
+      reservation.once('error', reject);
+      reservation.listen(0, '127.0.0.1', resolve);
+    });
+    const address = reservation.address();
+    if (!address || typeof address === 'string')
+      throw new Error('Disposable port reservation failed');
+    const reservedPort = address.port;
+    await new Promise<void>((resolve, reject) =>
+      reservation.close((error) => (error ? reject(error) : resolve())),
+    );
     await exec(
       'docker',
       [
@@ -29,7 +45,7 @@ async function main(): Promise<void> {
         '--name',
         name,
         '--publish',
-        '127.0.0.1::5432',
+        '127.0.0.1:' + reservedPort + ':5432',
         '--env',
         'POSTGRES_USER=flow_test_admin',
         '--env',
@@ -51,6 +67,11 @@ async function main(): Promise<void> {
     const port = portResult.stdout.trim().split(':').at(-1)!;
     const url = `postgresql://flow_test_admin@127.0.0.1:${port}/flow_test`;
     admin = new Pool({ connectionString: url });
+    admin.on('error', () =>
+      console.log(
+        'Disposable administrative idle connection reset; reconnect on next query',
+      ),
+    );
     let ready = false;
     for (let i = 0; i < 100; i++) {
       try {
@@ -600,7 +621,7 @@ async function main(): Promise<void> {
         ),
       );
     const before10 = await snapshot9();
-    await migrate(admin);
+    await migrate(admin, '009_workers.sql');
     if ((await snapshot9()) !== before10)
       throw new Error('Phase 10 rewrote Phase 1–9 history');
     const missing = await admin.query(
@@ -610,6 +631,88 @@ async function main(): Promise<void> {
       throw new Error('Phase 10 backfill omitted committed intent');
     console.log(
       'Populated Phase 9 -> Phase 10 exact prior history and complete registration PASS',
+    );
+    const workerBefore11 = JSON.stringify(
+      (
+        await admin.query(
+          'SELECT to_jsonb(w) AS row FROM worker.work_item w ORDER BY id',
+        )
+      ).rows,
+    );
+    const prior11 = await snapshot9();
+    await migrate(admin, '010_integrity.sql');
+    if (
+      (await snapshot9()) !== prior11 ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT to_jsonb(w) AS row FROM worker.work_item w ORDER BY id',
+          )
+        ).rows,
+      ) !== workerBefore11
+    )
+      throw new Error('Phase 11 changed committed financial history or work');
+    const beforeOperations = await snapshot9();
+    const workBeforeOperations = JSON.stringify(
+      (
+        await admin.query(
+          'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+        )
+      ).rows,
+    );
+    await migrate(admin);
+    if (
+      (await snapshot9()) !== beforeOperations ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+          )
+        ).rows,
+      ) !== workBeforeOperations
+    )
+      throw new Error('Operations migration changed historical truth or work');
+    console.log(
+      'Populated Phase 11 -> Phase 12 unchanged financial/work state PASS',
+    );
+    const historicalRows = (
+      await admin.query(
+        "SELECT id::text AS identity, to_jsonb(j) AS row FROM ledger.ledger_transaction j UNION ALL SELECT id::text,to_jsonb(r) FROM ingestion.raw_record r UNION ALL SELECT revision_id::text||':'||normalizer_version,to_jsonb(i) FROM ingestion.interpretation i UNION ALL SELECT id::text,to_jsonb(r) FROM controls.run r ORDER BY identity",
+      )
+    ).rows;
+    const upgradeWorker = new PostgresWorker(admin);
+    await upgradeWorker.processBatch('upgrade-recovery', 1000);
+    for (const book of [
+      upgradeBook,
+      ingestionBook,
+      priorReconciliation.book,
+      phase8Fixture.book,
+    ]) {
+      const swept = await new PostgresIntegrity(admin).sweep(book);
+      if (swept.integrity !== 'PASS')
+        throw new Error(
+          'Populated upgrade integrity violation: ' +
+            JSON.stringify(swept.violations),
+        );
+    }
+    const recoveredRows = (
+      await admin.query(
+        "SELECT id::text AS identity, to_jsonb(j) AS row FROM ledger.ledger_transaction j UNION ALL SELECT id::text,to_jsonb(r) FROM ingestion.raw_record r UNION ALL SELECT revision_id::text||':'||normalizer_version,to_jsonb(i) FROM ingestion.interpretation i UNION ALL SELECT id::text,to_jsonb(r) FROM controls.run r ORDER BY identity",
+      )
+    ).rows;
+    const recovered = new Map(
+      recoveredRows.map((row) => [row.identity, JSON.stringify(row.row)]),
+    );
+    if (
+      historicalRows.some(
+        (row) => recovered.get(row.identity) !== JSON.stringify(row.row),
+      )
+    )
+      throw new Error(
+        'Historical compatible worker replay changed financial history',
+      );
+    console.log(
+      'Populated Phase 10 -> Phase 11 history/work preservation, compatible backlog recovery and independent sweeps PASS',
     );
     await migrate(admin); // Empty migration plus idempotent hash consistency gate.
     await admin.query(
@@ -639,6 +742,12 @@ async function main(): Promise<void> {
     await admin.query(
       'CREATE ROLE flow_test_worker LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_worker',
     );
+    await admin.query(
+      'CREATE ROLE flow_test_integrity LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_integrity_reader',
+    );
+    await admin.query(
+      'CREATE ROLE flow_test_operations LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_operations_reader',
+    );
     const version = await admin.query<{ version: string }>(
       'SHOW server_version',
     );
@@ -647,6 +756,10 @@ async function main(): Promise<void> {
     );
     const requested = process.argv.slice(2);
     const files = [
+      'tests/operations.integration.test.ts',
+      'tests/operations-browser.integration.test.ts',
+      'tests/resilience.integration.test.ts',
+      'tests/resilience-load.integration.test.ts',
       'tests/workers.integration.test.ts',
       'tests/simulator-workers.integration.test.ts',
       'tests/workers-load.integration.test.ts',
@@ -666,6 +779,7 @@ async function main(): Promise<void> {
       'tests/grouped-reconciliation.integration.test.ts',
       'tests/simulator-grouped-reconciliation.integration.test.ts',
       'tests/simulator-reconciliation.integration.test.ts',
+      'tests/resilience-restart.integration.test.ts',
     ];
     if (requested.some((file) => !files.includes(file)))
       throw new Error('Unknown integration test path');
@@ -683,6 +797,15 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_OPERATIONS_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_operations@',
+            ),
+            FLOW_TEST_CONTAINER: name,
+            FLOW_TEST_INTEGRITY_URL: url.replace(
+              'flow_test_admin@',
+              'flow_test_integrity@',
+            ),
             FLOW_TEST_WORKER_URL: url.replace(
               'flow_test_admin@',
               'flow_test_worker@',

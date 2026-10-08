@@ -4,6 +4,19 @@ import { PostgresIngestion } from '@flow/ingestion-postgres';
 import { PostgresProcessor } from '@flow/processor-postgres';
 import { PostgresBank } from '@flow/bank-postgres';
 import type { RunCommand } from '@flow/reconciliation-domain';
+import { afterEach } from 'node:test';
+import { clean } from './resilience';
+const sweepScopes = new Map<string, Pool>();
+/** Opt-in suite hook verifies every fixture created by the scenario, including failure paths. */
+export function installInvariantSweeps() {
+  afterEach(async () => {
+    try {
+      for (const [book, admin] of sweepScopes) await clean(admin, book);
+    } finally {
+      sweepScopes.clear();
+    }
+  });
+}
 export const reportTime = '2026-01-02T00:00:00.000Z',
   bankTime = '2026-01-03T00:00:00.000Z';
 export const money = (value: string, currency = 'PHP') => ({
@@ -86,6 +99,7 @@ export async function fixture(
   } = {},
 ) {
   const book = randomUUID();
+  sweepScopes.set(book, admin);
   await admin.query(
     "INSERT INTO ledger.book(id,code,environment) VALUES($1,$2,'synthetic')",
     [book, 'recon-' + book],

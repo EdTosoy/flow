@@ -10,12 +10,14 @@ import {
 } from '@flow/reconciliation-postgres';
 import {
   fixture,
+  installInvariantSweeps,
   entry,
   report,
   money,
   importEvidence,
 } from './helpers/reconciliation-fixture';
 import { commitDropProxy } from './helpers/commit-proxy';
+installInvariantSweeps();
 const au = process.env['FLOW_TEST_ADMIN_URL'],
   ru = process.env['FLOW_TEST_RECONCILIATION_URL'],
   iu = process.env['FLOW_TEST_INGESTION_URL'],

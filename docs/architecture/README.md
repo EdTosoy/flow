@@ -173,3 +173,9 @@ System-wide controls now coordinate existing source/domain/reconciliation/ledger
 ## Phase 10 worker boundary
 
 Phase 10 adds immediate durable outbox registration, explicit operational work state, append-only attempts, DB-clock leases, fenced domain writes, bounded deterministic retries and retained terminal failures. At-least-once normalization reuses existing domain idempotency; worker state is never financial truth. Completed domain notifications have no invented local workflow. Manual requeue, external publication, UI/integrations/cloud/AI and later phases remain deferred. See [protocol](../phase10/README.md) and [verification](../phase10/verification.md).
+
+Phase 11 independently verifies the supported system through a read-only integrity capability and controlled adversarial tests. It reuses existing control semantics and adds no financial writer or workflow. [Failure model and verifier](../phase11/README.md); [executed evidence](../phase11/verification.md). Local restart is not HA/disaster-recovery proof. Phase 12 adds the read-only application boundary described below.
+
+## Phase 12 operations read boundary
+
+The local Next.js operations application composes dedicated versioned, scoped PostgreSQL reads through a server-only boundary. The database capability exposes no table/command writes or raw payloads. Presentation consumes established domain summaries/canonical controls/integrity, with explicit historical freshness and UNKNOWN. No separate NestJS service is necessary for these read-only operations. [ADR-016](adr/016-operations-read-application.md); [application and local workflow](../phase12/README.md); [verification](../phase12/verification.md). Phase 13, production identity/deployment and financial web actions remain deferred.
