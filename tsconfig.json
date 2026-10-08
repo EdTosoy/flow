@@ -52,6 +52,9 @@
     },
     {
       "path": "libs/control-postgres"
+    },
+    {
+      "path": "libs/worker-postgres"
     }
   ]
 }

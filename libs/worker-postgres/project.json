@@ -1,0 +1,21 @@
+{
+  "name": "worker-postgres",
+  "sourceRoot": "libs/worker-postgres/src",
+  "projectType": "library",
+  "tags": ["layer:worker-postgres", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/worker-postgres"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/worker-postgres/test/*.test.ts"
+      }
+    }
+  }
+}

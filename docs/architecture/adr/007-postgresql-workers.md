@@ -1,6 +1,6 @@
 # ADR-007 — PostgreSQL-backed workers for V1
 
-Status: proposed. Date: 2026-10-07.
+Status: accepted for the Phase 10 internal normalization worker boundary; broader handler/publication/requeue policies remain planned. Date: 2026-10-07.
 
 ## Context
 
@@ -17,3 +17,7 @@ Avoids Redis/BullMQ, Kafka/Redpanda and their extra operating boundaries. DB wri
 ## Revisit and verification
 
 Revisit after load/soak shows a documented throughput/latency/availability need. Prove stale workers cannot commit, leases recover, blocked work remains visible and backlog drains under declared resources.
+
+## Phase 10 implementation clarification
+
+Phase 10 uses bounded READ COMMITTED SKIP LOCKED claims, DB-clock leases, increasing attempts and unique tokens. Each short domain write locks and fences work through COMMIT; separate acknowledgement closes only the current lease. Expired claims are recovered by polling, with bounded budgets and append-only EXPIRED history. Terminal work remains visible; manual requeue and generic operational exception cases are deferred. No broker or heartbeat is introduced for the bounded installed normalization handler. [Protocol](../../phase10/README.md); [executed evidence](../../phase10/verification.md).

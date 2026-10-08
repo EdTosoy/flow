@@ -13,7 +13,7 @@ pnpm install --frozen-lockfile
 pnpm verify
 ```
 
-Prerequisites: Node 24, pnpm 11.27.0 and Docker. Integration tests own a disposable real PostgreSQL container; no existing database is reset. No real processor/bank integration, frontend, worker or cloud infrastructure is implemented.
+Prerequisites: Node 24, pnpm 11.27.0 and Docker. Integration tests own a disposable real PostgreSQL container; no existing database is reset. No real processor/bank integration, frontend or cloud infrastructure is implemented. Internal PostgreSQL workers are implemented in Phase 10.
 
 Read the [Phase 2 simulator model, configuration and reproduction procedure](docs/phase2/README.md) and [verification evidence](docs/phase2/verification.md). Generate safe input locally with `pnpm simulator generate --seed 828192 --payments 10000`; explicit private oracle export is a separate test-only option.
 
@@ -33,8 +33,10 @@ Phase 7 adds explicit complete-declaration N:1 settlement-bank reconciliation on
 
 A separate exception domain supports deterministic case generation, review, evidence/notes, auditable assignment/classification, structured resolution and explicit reopening/supersession. Accepted risk closes operations while money stays unreconciled. Verified closure cites existing fresh later-run proof; it creates no allocation. [Model and CLI](docs/phase8/README.md), [verification](docs/phase8/verification.md), [ADR-014](docs/architecture/adr/014-operational-exceptions.md).
 
-Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, Phase 9 controls, workers, frontend, real integrations, cloud and AI remain deferred.
+Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, new downstream worker policies, frontend, real integrations, cloud and AI remain deferred.
 
 ## Phase 9 financial controls
 
-Versioned frozen control runs coordinate source/processing completeness, processor and bank totals, reconciliation coverage, allocation and ledger integrity, exposure and aging. UNKNOWN evidence stays explicit; operationally accepted risk remains unreconciled. See [implementation](docs/phase9/README.md) and [verification](docs/phase9/verification.md). `pnpm controls run <command-json>` and `pnpm controls pipeline <reconciliation arguments>` use separate synthetic runtime credentials. No Phase 10 worker infrastructure is implemented.
+Versioned frozen control runs coordinate source/processing completeness, processor and bank totals, reconciliation coverage, allocation and ledger integrity, exposure and aging. UNKNOWN evidence stays explicit; operationally accepted risk remains unreconciled. See [implementation](docs/phase9/README.md) and [verification](docs/phase9/verification.md). `pnpm controls run <command-json>` and `pnpm controls pipeline <reconciliation arguments>` use separate synthetic runtime credentials. Phase 10 adds separate durable internal worker processing without changing these frozen control evaluations.
+
+Phase 10 is complete and verified for internal PostgreSQL async workers: [protocol and developer commands](docs/phase10/README.md), [verification](docs/phase10/verification.md).
