@@ -1,5 +1,13 @@
 # Implementation sequence and design gates
 
+## Current status
+
+Phases 1–15 are implemented and verified within their documented scopes. Phase 15 demonstrated protected AWS deployment, real hosted Stripe sandbox capture/fee ingestion and actual runtime destruction. Bank evidence remains synthetic. [Current architecture](current-system.md) and the [latest verification report](../phase15/verification.md) provide the entry points; **Phase 16 AI is explicitly deferred**.
+
+The roadmap below preserves the original proposal and successive scope updates. Its proposed ordering and acceptance gates differ from some implemented milestones; use each phase's README and verification report for what actually shipped. Historical authorization statements are not current project status or permission to start new work.
+
+## Original Phase 0 roadmap
+
 This sequence is a recommendation, not authorization to implement or deploy. Phase 0 creates documents only. Each later milestone is the smallest coherent slice with its own control gate; dependencies do not require building the entire future UI first.
 
 Update: the user approved Phase 0 and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) follows that financial-core scope; Phase 2 was subsequently authorized for deterministic simulation only; see its [model and boundaries](../phase2/README.md) and [verification](../phase2/verification.md). No Phase 3 or later work is authorized. A dedicated correction/replacement approval workflow and account closure remain later features; generic full reversal and same-transaction command composition are sufficient for this milestone.

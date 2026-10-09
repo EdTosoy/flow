@@ -1,4 +1,8 @@
-# Phase 0 architecture
+# Architecture catalog
+
+Start with the [current system architecture](current-system.md) for implemented Phase 1–15 boundaries, diagrams and a code map. The [latest verification report](../phase15/verification.md) records actual hosted deployment and teardown. Phase 16 AI is deferred.
+
+## Original Phase 0 design baseline
 
 Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was documentation only. The user subsequently approved the baseline and authorized Phase 1 only. [Phase 1 implementation](../phase1/README.md) makes financial-core choices concrete; [verification](../phase1/verification.md) distinguishes executed guarantees from future controls. The original inspection and validation below describe Phase 0 historical evidence, not the current installed workspace. Phase 2 was subsequently authorized for the [deterministic simulator](../phase2/README.md) only; its [verification](../phase2/verification.md) records the implemented boundary. Phase 3 is subsequently authorized only for [ingestion and versioned normalization](../phase3/README.md); its [verification](../phase3/verification.md) records the evidence foundation and preserves all later-phase deferrals.
 
@@ -21,7 +25,9 @@ Phase 14 adds the first external processor adapter within the existing modular m
 | [ADRs](adr/README.md)                                         | Consequential architectural choices                                         |
 | [Phase 1 implementation](../phase1/README.md)                 | Actual schema, packages, privileges, command/idempotency/reversal semantics |
 
-## Executive decision
+## Executive decision — original Phase 0 proposal
+
+The proposal below includes future components and workflows. The implemented system uses Node.js ingress/workers and a Next.js read-only application directly; NestJS, Drizzle and independent payment orchestration are not implemented. Consult the [current architecture](current-system.md) before treating the proposed layout as a code map.
 
 Use an Nx/pnpm/TypeScript monorepo with a Next.js operations UI, NestJS API, and NestJS/TypeScript worker. They share independently testable domain libraries and one PostgreSQL database. Different processes do not imply independently owned services. Docker supplies local PostgreSQL and eventually repeatable development environments. Drizzle may implement ordinary persistence; reviewed SQL migrations, posting routines, constraints, and locks remain first-class where financial correctness requires them. No ORM is allowed to weaken an invariant.
 
@@ -101,7 +107,7 @@ flowchart TD
   OR[Isolated oracle evaluator] -. reads results only .-> DB
 ```
 
-The diagram shows runtime composition, not permission to introduce circular library imports. Simulator ground truth never flows into the system under test.
+This original proposal diagram shows intended composition, not the current deployed processes or permission to introduce circular library imports. Simulator ground truth never flows into the system under test. The implemented diagram is in the [current system guide](current-system.md).
 
 ## Terminology
 

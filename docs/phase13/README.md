@@ -1,5 +1,7 @@
 # Phase 13 — Measured read performance and local observability
 
+This page preserves the Phase 13 local performance scope. [Phase 14](../phase14/README.md) subsequently added Stripe sandbox evidence; [Phase 15](../phase15/README.md) added and verified the protected ephemeral AWS demo. Deferrals below describe the original milestone, not the current repository status. Phase 16 AI remains deferred.
+
 Phase 13 improves the existing local/internal read-only operations application. No financial policy, command identity, allocation rule, accounting workflow or external infrastructure changes. The [verification record](verification.md) contains executed measurements, query plans, acceptance mapping and limitations.
 
 ## Proof work and optimization

@@ -584,7 +584,7 @@ The following are not yet implemented:
 - live payment processor integration (Phase 14 sandbox adapter status is recorded below)
 - public/customer frontend
 - external publication/remote consumer infrastructure
-- cloud infrastructure
+- production/always-on cloud deployment (Phase 15 ephemeral demo status is recorded below)
 - AI investigation
 
 Do not assume deferred functionality already exists.
