@@ -528,6 +528,11 @@ export function Run({ model, book, evaluation }: Context) {
               a = obj(m['allocation']);
             return (
               <article className="evidence-item" key={t(m['id'])}>
+                {m['processorProvenance'] && (
+                  <Details
+                    data={{ processorProvenance: m['processorProvenance'] }}
+                  />
+                )}
                 <div className="panel-heading">
                   <h3>
                     {t(m['side'])} · <Id value={t(m['id'])} />

@@ -4,6 +4,8 @@ Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was
 
 ## Design package
 
+Phase 14 adds the first external processor adapter within the existing modular monolith: a dedicated sandbox webhook ingress and the existing PostgreSQL worker. [ADR-017](adr/017-external-processor-ingress.md) records its authentication, durable acceptance and asynchronous interpretation boundaries; [Phase 14](../phase14/README.md) documents implemented scope and unsupported evidence. Real Stripe sandbox verification remains explicitly separate from deterministic local verification. The operations application retains read-only credentials.
+
 | Document                                                      | Responsibility                                                              |
 | ------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | [Invariant catalog](invariants.md)                            | Numbered controls, enforcement, tests, failures                             |

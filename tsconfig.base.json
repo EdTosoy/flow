@@ -37,7 +37,10 @@
       "@flow/integrity-postgres": ["libs/integrity-postgres/src/index.ts"],
       "@flow/operations-read-postgres": [
         "libs/operations-read-postgres/src/index.ts"
-      ]
+      ],
+      "@flow/stripe-integration": ["libs/stripe-integration/src/index.ts"],
+      "@flow/stripe-postgres": ["libs/stripe-postgres/src/index.ts"],
+      "@flow/integrations": ["apps/integrations/src/index.ts"]
     }
   }
 }

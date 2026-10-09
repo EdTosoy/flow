@@ -9,6 +9,9 @@ import {
 export type { BankEntryObservation, BankStatementObservation } from './bank';
 
 export const NORMALIZER_VERSIONS = [
+  'external-event-v1',
+  'processor-movement-v1',
+  'processor-settlement-v1',
   'synthetic-movement-v1',
   'synthetic-movement-v2',
   'synthetic-settlement-v1',
@@ -39,6 +42,7 @@ export interface BatchCommand {
   readonly expectedCount?: number;
   readonly expectedSequence?: { readonly from: number; readonly to: number };
   readonly manifestBytes?: Uint8Array;
+  readonly preferredNormalizerVersion?: NormalizerVersion;
 }
 export interface Observation {
   readonly type: 'movement';
@@ -57,15 +61,25 @@ export interface SettlementObservation {
   readonly occurredAt: string;
   readonly direction: 'inflow' | 'outflow' | 'zero';
   readonly transferReference: string;
-  readonly componentKind: 'synthetic-movement';
+  readonly componentKind: 'synthetic-movement' | 'processor-movement';
   readonly componentIds: readonly string[];
   /** Supplemental complete transfer declaration; only settlement-group-v1 supplies it. */
   readonly payoutMemberIds?: readonly string[] | null;
+}
+export interface ExternalEventObservation {
+  readonly type: 'external-event';
+  readonly externalId: string;
+  readonly occurredAt: string;
+  readonly provider: string;
+  readonly eventType: string;
+  readonly apiVersion: string | null;
+  readonly objectId: string;
 }
 export type NormalizationResult =
   | {
       readonly state: 'NORMALIZED';
       readonly observation:
+        | ExternalEventObservation
         | Observation
         | SettlementObservation
         | BankEntryObservation
@@ -173,6 +187,81 @@ export function normalize(
     parsed = JSON.parse(decoded);
   } catch {
     return { state: 'FAILED', code: 'INVALID_JSON' };
+  }
+  if (
+    version === 'external-event-v1' ||
+    version === 'processor-movement-v1' ||
+    version === 'processor-settlement-v1'
+  ) {
+    try {
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
+        throw new TypeError();
+      const o = parsed as Record<string, unknown>;
+      if (o['externalId'] !== externalId || externalId === null)
+        return { state: 'FAILED', code: 'IDENTITY_MISMATCH' };
+      boundedText(externalId);
+      utcTime(o['occurredAt']);
+      if (version === 'external-event-v1') {
+        if (
+          Object.keys(o).sort().join(',') !==
+            'apiVersion,eventType,externalId,objectId,occurredAt,provider,type' ||
+          o['type'] !== 'external-event'
+        )
+          throw new TypeError();
+        boundedText(o['provider']);
+        boundedText(o['eventType']);
+        boundedText(o['objectId']);
+        if (o['apiVersion'] !== null) boundedText(o['apiVersion']);
+        return {
+          state: 'NORMALIZED',
+          observation: o as unknown as ExternalEventObservation,
+        };
+      }
+      const m = Money.fromJSON(o['amount']);
+      if (
+        o['direction'] !==
+        (m.amountMinor > 0n
+          ? 'inflow'
+          : m.amountMinor < 0n
+            ? 'outflow'
+            : 'zero')
+      )
+        throw new TypeError();
+      if (version === 'processor-movement-v1') {
+        if (
+          Object.keys(o).sort().join(',') !==
+            'amount,direction,externalId,occurredAt,parentReference,reference,subtype,type' ||
+          o['type'] !== 'movement' ||
+          !['capture', 'fee', 'refund', 'chargeback'].includes(
+            String(o['subtype']),
+          )
+        )
+          throw new TypeError();
+        boundedText(o['reference']);
+        if (o['parentReference'] !== null) boundedText(o['parentReference']);
+        return {
+          state: 'NORMALIZED',
+          observation: o as unknown as Observation,
+        };
+      }
+      if (
+        Object.keys(o).sort().join(',') !==
+          'amount,componentIds,componentKind,direction,externalId,occurredAt,transferReference,type' ||
+        o['type'] !== 'settlement' ||
+        o['componentKind'] !== 'processor-movement' ||
+        !Array.isArray(o['componentIds']) ||
+        o['componentIds'].length > 10000
+      )
+        throw new TypeError();
+      boundedText(o['transferReference']);
+      o['componentIds'].forEach(boundedText);
+      return {
+        state: 'NORMALIZED',
+        observation: o as unknown as SettlementObservation,
+      };
+    } catch {
+      return { state: 'FAILED', code: 'INVALID_STRUCTURE' };
+    }
   }
   if (
     version === 'synthetic-bank-entry-v1' ||
@@ -350,6 +439,13 @@ export function batchPayload(command: BatchCommand): string {
   )
     throw new TypeError('Invalid source window');
   return canonicalJson({
+    ...(command.preferredNormalizerVersion === undefined
+      ? {}
+      : {
+          preferredNormalizerVersion: normalizerVersion(
+            command.preferredNormalizerVersion,
+          ),
+        }),
     sourceAccountId: command.sourceAccountId,
     batchKey: command.batchKey,
     actorId: command.actorId,

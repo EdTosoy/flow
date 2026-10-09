@@ -17,6 +17,28 @@ export default tseslint.config(
           allow: [],
           depConstraints: [
             {
+              sourceTag: 'layer:stripe-integration',
+              onlyDependOnLibsWithTags: [
+                'layer:money',
+                'layer:ingestion-domain',
+              ],
+            },
+            {
+              sourceTag: 'layer:stripe-postgres',
+              onlyDependOnLibsWithTags: [
+                'layer:stripe-integration',
+                'layer:ingestion-domain',
+                'layer:worker-postgres',
+              ],
+            },
+            {
+              sourceTag: 'layer:integrations',
+              onlyDependOnLibsWithTags: [
+                'layer:stripe-integration',
+                'layer:stripe-postgres',
+              ],
+            },
+            {
               sourceTag: 'layer:operations-read',
               onlyDependOnLibsWithTags: ['layer:integrity-postgres'],
             },
@@ -127,6 +149,16 @@ export default tseslint.config(
     rules: {
       'flow-boundaries/no-oracle-import': 'error',
       'flow-boundaries/operations-browser': 'error',
+    },
+  },
+  {
+    files: ['libs/**/src/**/*.ts'],
+    ignores: ['libs/stripe-integration/**', 'libs/stripe-postgres/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['stripe', 'stripe/*', '@flow/stripe-*'] },
+      ],
     },
   },
   prettier,

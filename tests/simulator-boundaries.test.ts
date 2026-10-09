@@ -46,6 +46,22 @@ test('oracle isolation rejects static, relative, dynamic, require and harness im
     { filePath: path.join(root, 'apps/probe/index.ts') },
   );
   assert.equal(allowed!.errorCount, 0);
+  for (const file of [
+    'stripe-worker.ts',
+    'stripe-backfill.ts',
+    'stripe-config.ts',
+  ]) {
+    const [result] = await eslint.lintText(
+      "import { generateSimulation } from '@flow/simulator-oracle'; void generateSimulation;",
+      { filePath: path.join(root, 'tools', file) },
+    );
+    assert(
+      result!.messages.some(
+        (m) => m.ruleId === 'flow-boundaries/no-oracle-import',
+      ),
+      file,
+    );
+  }
 });
 test('Nx prevents runtime simulator from depending on oracle and financial core from simulator', async () => {
   const eslint = new ESLint();
