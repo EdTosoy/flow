@@ -70,3 +70,9 @@ The bank side remains explicitly synthetic, so this is **real Stripe sandbox pro
 See [Phase 14 integration and setup](docs/phase14/README.md), [external verification evidence](docs/phase14/verification.md), and [ADR-017](docs/architecture/adr/017-external-processor-ingress.md).
 
 Live Stripe processing, payment initiation, checkout/billing/subscriptions, Stripe Connect, real bank integration, cloud deployment, production identity, AI-assisted investigation, new queue infrastructure and web financial mutations remain deferred.
+
+## Ephemeral AWS demo (Phase 15)
+
+Phase 15 is implemented and verified with a persistent Terraform bootstrap and a disposable AWS demo runtime. Actual ECS Fargate, HTTPS ALB and private Single-AZ RDS deployment, protected dashboard, hosted Stripe sandbox charge/fee ingestion and overlapping backfill passed; the runtime was then destroyed and removal verified. No NAT gateway is used. Stripe remains sandbox-only and bank evidence synthetic. Cloudflare stays the parent DNS provider with one-time delegation of `flow.edtosoy.com` to a persistent Route 53 child zone. This is a portfolio demo, not a high-availability production service.
+
+Follow [the staged bootstrap and mandatory DNS checkpoint](docs/phase15/README.md). [Verification](docs/phase15/verification.md) distinguishes local checks, AWS bootstrap, hosted external proof and runtime destruction. Deployment is not yet fully verified and is not production readiness. No Phase 16 work is authorized.
