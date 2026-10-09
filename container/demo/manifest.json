@@ -1,0 +1,30 @@
+{
+  "configuration": {
+    "amountMinorRange": ["10000", "1000000"],
+    "anomalies": {},
+    "batchSizeRange": [10, 30],
+    "chargebackCount": 0,
+    "delayMilliseconds": 604800000,
+    "feeBasisPoints": 300,
+    "feeFixedMinor": "0",
+    "fullRefundCount": 0,
+    "partialRefundCount": 0,
+    "paymentCount": 30,
+    "seed": 15015,
+    "startTime": "2026-01-01T00:00:00.000Z",
+    "version": "phase2-v1"
+  },
+  "configurationSha256": "a8c6e827fc1de278acb252bbde803c2742883d9a62b0dfec04a664ffd2a1630e",
+  "inputSha256": "5aabf84364913b2b338523cb5ccc2e7e5a446fdca382428f0276105ca6ef4ae0",
+  "recordCounts": {
+    "bankObservations": 2,
+    "captureAttempts": 30,
+    "internalExpectations": 30,
+    "processorEvents": 60,
+    "settlements": 2
+  },
+  "scenarioId": "syn_scenario_a8c6e827fc1de278acb252bbde803c27",
+  "seed": 15015,
+  "simulatorVersion": "phase2-v1",
+  "startTime": "2026-01-01T00:00:00.000Z"
+}

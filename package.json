@@ -10,9 +10,9 @@
     "build": "nx run-many -t build --skip-nx-cache",
     "typecheck": "tsc -p tsconfig.check.json --noEmit && pnpm --filter @flow/ops typecheck",
     "lint": "nx graph --file=.nx/phase1-project-graph.json && eslint . --max-warnings 0 && node tools/check-oracle-dependencies.mjs",
-    "format": "prettier --write '**/*.{ts,tsx,mjs,json,yaml,css}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md' 'docs/phase10/*.md' 'docs/phase11/*.md' 'docs/phase12/*.md' 'docs/phase13/*.md' 'docs/phase14/*.md'",
-    "format:check": "prettier --check '**/*.{ts,tsx,mjs,json,yaml,css}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md' 'docs/phase10/*.md' 'docs/phase11/*.md' 'docs/phase12/*.md' 'docs/phase13/*.md' 'docs/phase14/*.md'",
-    "test:unit": "nx run-many -t test --skip-nx-cache && pnpm test:boundaries && pnpm test:stripe:contract",
+    "format": "prettier --write '**/*.{ts,tsx,mjs,json,yaml,css}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md' 'docs/phase10/*.md' 'docs/phase11/*.md' 'docs/phase12/*.md' 'docs/phase13/*.md' 'docs/phase14/*.md' 'docs/phase15/*.md'",
+    "format:check": "prettier --check '**/*.{ts,tsx,mjs,json,yaml,css}' README.md 'docs/phase1/*.md' 'docs/phase2/*.md' 'docs/phase3/*.md' 'docs/phase4/*.md' 'docs/phase5/*.md' 'docs/phase6/*.md' 'docs/phase7/*.md' 'docs/phase8/*.md' 'docs/phase9/*.md' 'docs/phase10/*.md' 'docs/phase11/*.md' 'docs/phase12/*.md' 'docs/phase13/*.md' 'docs/phase14/*.md' 'docs/phase15/*.md'",
+    "test:unit": "nx run-many -t test --skip-nx-cache && pnpm test:boundaries && pnpm test:stripe:contract && pnpm test:deployment",
     "test:integration": "tsx tools/test-postgres.ts",
     "db:migrate": "tsx tools/migrate.ts",
     "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm typecheck && pnpm test:unit && pnpm test:integration",
@@ -38,12 +38,20 @@
     "stripe:backfill": "tsx tools/stripe-backfill.ts",
     "stripe:verify:sandbox": "tsx tools/stripe-verify-sandbox.ts",
     "test:stripe": "tsx tools/test-postgres.ts tests/stripe.integration.test.ts",
-    "test:stripe:contract": "tsx --test tests/stripe-http.test.ts"
+    "test:stripe:contract": "tsx --test tests/stripe-http.test.ts",
+    "aws:deploy": "tsx tools/deploy.ts",
+    "test:deployment": "tsx --test tests/deployment.test.ts tests/demo-access.test.ts",
+    "aws:demo": "tsx tools/demo-deploy.ts",
+    "aws:observe": "tsx tools/demo-observe.ts"
   },
   "devDependencies": {
     "@nx/eslint-plugin": "23.2.1",
+    "@playwright/test": "1.63.0",
     "@types/node": "24.19.1",
     "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
     "eslint": "10.12.0",
     "eslint-config-prettier": "10.1.8",
     "fast-check": "4.10.2",
@@ -52,9 +60,6 @@
     "prettier": "3.9.9",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.71.1",
-    "@playwright/test": "1.63.0",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0"
+    "typescript-eslint": "8.71.1"
   }
 }

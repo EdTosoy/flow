@@ -4,6 +4,8 @@ Status: approved Phase 0 design baseline, 2026-10-07. Original Phase 0 scope was
 
 ## Design package
 
+Phase 15 is implemented and verified for an ephemeral AWS portfolio demo: protected operations, private RDS, hosted Stripe sandbox ingestion and actual runtime destruction. Persistent bootstrap and the confirmed Cloudflare child-zone delegation remain. [ADR-018](adr/018-ephemeral-aws-demo.md), [Phase 15](../phase15/README.md) and its [verification](../phase15/verification.md) record the boundaries and executed evidence. This is not production readiness. Phase 16 remains deferred.
+
 Phase 14 adds the first external processor adapter within the existing modular monolith: a dedicated sandbox webhook ingress and the existing PostgreSQL worker. [ADR-017](adr/017-external-processor-ingress.md) records its authentication, durable acceptance and asynchronous interpretation boundaries; [Phase 14](../phase14/README.md) documents implemented scope and unsupported evidence. Real Stripe sandbox verification remains explicitly separate from deterministic local verification. The operations application retains read-only credentials.
 
 | Document                                                      | Responsibility                                                              |

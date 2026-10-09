@@ -28,3 +28,5 @@ ADR-008 is now accepted for Phase 7 synthetic complete-declaration N:1 settlemen
 - [ADR-016 — Server-only operations read application](016-operations-read-application.md)
 
 - [ADR-017 — Dedicated authenticated external processor evidence ingress](017-external-processor-ingress.md)
+
+- [ADR-018 — Persistent bootstrap and disposable AWS demo runtime](018-ephemeral-aws-demo.md)

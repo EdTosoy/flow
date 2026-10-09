@@ -18,6 +18,8 @@ function privateFile(file) {
     relative === 'tools/simulator.ts' ||
     relative === 'tools/test-postgres.ts' ||
     relative === 'tools/ops-demo.ts' ||
+    relative === 'tools/ops-demo-seed.ts' ||
+    relative === 'tools/cloud-provision.ts' ||
     relative.startsWith('tests/') ||
     relative.includes('/test/') ||
     relative === 'tools/stripe-verify-sandbox.ts'

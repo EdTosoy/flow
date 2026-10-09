@@ -47,9 +47,12 @@ async function main(): Promise<void> {
     const port = Number(process.env['STRIPE_INGRESS_PORT'] ?? 4242);
     if (!Number.isInteger(port) || port < 1 || port > 65535)
       throw new Error('Invalid ingress port');
+    const host = process.env['STRIPE_INGRESS_HOST'] ?? '127.0.0.1';
+    if (host !== '127.0.0.1' && host !== '0.0.0.0')
+      throw new Error('Invalid ingress host');
     await new Promise<void>((resolve, reject) => {
       server.once('error', reject);
-      server.listen(port, '127.0.0.1', () => {
+      server.listen(port, host, () => {
         server.removeListener('error', reject);
         resolve();
       });

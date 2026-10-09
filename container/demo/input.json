@@ -1,0 +1,1200 @@
+{
+  "bankObservations": [
+    {
+      "amount": { "amountMinor": "12689005", "currency": "PHP" },
+      "bookedAt": "2026-01-03T00:26:00.000Z",
+      "id": "syn_bank_3f80c5338df630935bd0b3d65303a9c5",
+      "sourceAccountId": "syn_bank_account_8242ce9ceea4955b2d0e2f85aaebc6b5",
+      "status": "booked",
+      "transferReference": "syn_transfer_88efbc6dfcba33f734dd72fd1b831a11"
+    },
+    {
+      "amount": { "amountMinor": "2091348", "currency": "PHP" },
+      "bookedAt": "2026-01-03T00:29:00.000Z",
+      "id": "syn_bank_adc4fc64fd86c3c150ae95869861216b",
+      "sourceAccountId": "syn_bank_account_8242ce9ceea4955b2d0e2f85aaebc6b5",
+      "status": "booked",
+      "transferReference": "syn_transfer_f0d84dfb48f2631090a565a922add7d0"
+    }
+  ],
+  "captureAttempts": [
+    {
+      "attemptId": "syn_attempt_ddfe3f9f4af3583f0e43e2078b8d261f",
+      "commandKey": "syn_command_d7b0f1fa0db0c73d3de3a91c9f2a4c81",
+      "expectation": {
+        "amount": { "amountMinor": "262606", "currency": "PHP" },
+        "id": "syn_internal_capture_8bfc8e2dd2c07d7b9686e32b1e8318d7",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:00:00.453Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_cbcf776318d3938bc958d1d5b3d3e657"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_4dff62542c02f5b4969618d08e1511cc",
+      "commandKey": "syn_command_dba43af3456834e8df01cea58c83d7f3",
+      "expectation": {
+        "amount": { "amountMinor": "346914", "currency": "PHP" },
+        "id": "syn_internal_capture_b60c2c0ce0560aec39d048325bb06a2f",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:01:00.589Z",
+        "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+        "paymentReference": "syn_pay_3f5fa8b84ca0b1b1ebc71960ed89438d"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_58fa10465cd5ac25d8e189734f4cd674",
+      "commandKey": "syn_command_339ea589483dff9cdb2c2e14a59255ff",
+      "expectation": {
+        "amount": { "amountMinor": "211799", "currency": "PHP" },
+        "id": "syn_internal_capture_d3d6dc56091e6d09781cfe10317cfcc4",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:02:00.285Z",
+        "payerId": "syn_payer_f372a4e54a03ddc918f8c095567e8f52",
+        "paymentReference": "syn_pay_8eaf621ba622f6db982f2f74bacff617"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_c56ec55b6e4e1bda0c5ad852edfc5a1d",
+      "commandKey": "syn_command_bc00dc1ea17ce3bb83adafec276ece1e",
+      "expectation": {
+        "amount": { "amountMinor": "543280", "currency": "PHP" },
+        "id": "syn_internal_capture_580fd17a40e12325ce712a32219ce0f6",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:03:00.011Z",
+        "payerId": "syn_payer_0754157adfc95bab9fe8b5210ee5daef",
+        "paymentReference": "syn_pay_b8dc933536ea139e4c73d67972c3bdf8"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_68d98d584b905e794eed95dbd11cd06f",
+      "commandKey": "syn_command_ef5d385ba55b1f08d0087774ecc82c7e",
+      "expectation": {
+        "amount": { "amountMinor": "992407", "currency": "PHP" },
+        "id": "syn_internal_capture_2d5cc6520a2fe6d4571f197386268d2a",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:04:00.961Z",
+        "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+        "paymentReference": "syn_pay_31704f7e7c52662ddffc7d4c4de9d8ec"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_52365164bb1a78e8c20482c214cba64f",
+      "commandKey": "syn_command_c528050e8fa1983f3218a9e7eedd8b97",
+      "expectation": {
+        "amount": { "amountMinor": "479128", "currency": "PHP" },
+        "id": "syn_internal_capture_b5642d9faba449e9e6ec7556a44d9f77",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:05:00.299Z",
+        "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+        "paymentReference": "syn_pay_aedaa7b3b89d19a1f9d19c9585afbbb1"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_11e9666b3e20d5af430fb1fd0cc09601",
+      "commandKey": "syn_command_1fc7b61fef3b6842909f2315c15d8fdc",
+      "expectation": {
+        "amount": { "amountMinor": "321309", "currency": "PHP" },
+        "id": "syn_internal_capture_a4ad5a9666bcce1f2fa24f5f27d394cc",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:06:00.599Z",
+        "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+        "paymentReference": "syn_pay_e9b33d328c280c4cc9f918b7f6af1a7a"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_84995e563346fda51128a58b9e8f0a5c",
+      "commandKey": "syn_command_e0711683b0baf1828165d3909200fa74",
+      "expectation": {
+        "amount": { "amountMinor": "33480", "currency": "PHP" },
+        "id": "syn_internal_capture_fbc803e0984cc3008c9f6349a2335e15",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:07:00.521Z",
+        "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+        "paymentReference": "syn_pay_610526145109e9a48a840975fdb64f07"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_2b24f1ac6a8f25915c80c1eef44dd68d",
+      "commandKey": "syn_command_1028998471f6447a156a846e603ff993",
+      "expectation": {
+        "amount": { "amountMinor": "743132", "currency": "PHP" },
+        "id": "syn_internal_capture_ef73c9a1f4c5e647d9131ca0fb9fd88f",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:08:00.525Z",
+        "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+        "paymentReference": "syn_pay_9ab44d6dfef050e2ba1ccd631d74dd75"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_12fda2b6ebbd44c331efb291866f54ed",
+      "commandKey": "syn_command_9b27c0f0ca642ef051ce95437f533aa2",
+      "expectation": {
+        "amount": { "amountMinor": "164065", "currency": "PHP" },
+        "id": "syn_internal_capture_949df98fca9e85a6f2396d25bcde8cf2",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:09:00.850Z",
+        "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+        "paymentReference": "syn_pay_3f7289f1dcecf159557c5cc9e7b83e68"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_9ce94c66cf448b3b9300b9f672af1df5",
+      "commandKey": "syn_command_8e61ed3184b7cd63ef27bba8f524c2e7",
+      "expectation": {
+        "amount": { "amountMinor": "522139", "currency": "PHP" },
+        "id": "syn_internal_capture_41af7d5d1391ea0333af84c1e1e3d8b5",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:10:00.961Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_caff0c5fc67edde23da20f9da7b86c18"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_e78b815b454d1848527ed557d01c6e6c",
+      "commandKey": "syn_command_76a71f654a45231640baeb76b8d5a989",
+      "expectation": {
+        "amount": { "amountMinor": "287402", "currency": "PHP" },
+        "id": "syn_internal_capture_8bcaa6520b013cdc233a78a307f53728",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:11:00.457Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_02b51e6091f8db5d9f37916770f9a987"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_7ae3e735f425fe63f82a28d2654b7391",
+      "commandKey": "syn_command_36786c022c556b9bd605096dfb34ffe6",
+      "expectation": {
+        "amount": { "amountMinor": "101607", "currency": "PHP" },
+        "id": "syn_internal_capture_c82d266223c83b63e7e1bcce8424f495",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:12:00.890Z",
+        "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+        "paymentReference": "syn_pay_941ff9d298ddd4a147adeb0d04a7ed3f"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_88bdc14dc2f3f0b838c7029c654e7960",
+      "commandKey": "syn_command_8f0329d0d2ca805c381ceb5d59afa756",
+      "expectation": {
+        "amount": { "amountMinor": "833352", "currency": "PHP" },
+        "id": "syn_internal_capture_ec2d21f9817a8d8873e460ff9dfd9a54",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:13:00.042Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_c89337ca23698d07d822a980767aea10"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_05a4cb93256d46d34299a67c63abfaa8",
+      "commandKey": "syn_command_adac0728fda34ace5ab4a3e477066847",
+      "expectation": {
+        "amount": { "amountMinor": "525145", "currency": "PHP" },
+        "id": "syn_internal_capture_a839a28fa7cee2437a3c3651de509062",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:14:00.627Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_fcd7ec534beb67ce61e514709bb038de"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_ddabaaaf85759eff784bc78b3ffa14df",
+      "commandKey": "syn_command_5dcac3508c47a3fffd0471f5c3f38a10",
+      "expectation": {
+        "amount": { "amountMinor": "674618", "currency": "PHP" },
+        "id": "syn_internal_capture_c30c5d6834576264a19f5451c78a9b12",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:15:00.397Z",
+        "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+        "paymentReference": "syn_pay_170fd6a310fd247a98874c2b45493639"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_0e5d0da8de41c2178a656dcc764aea3e",
+      "commandKey": "syn_command_cb297023e8bdfd2b11567a103a05cfbc",
+      "expectation": {
+        "amount": { "amountMinor": "923646", "currency": "PHP" },
+        "id": "syn_internal_capture_f5de73a70f655e9daf9a532d8ecac5e0",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:16:00.066Z",
+        "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+        "paymentReference": "syn_pay_3c980ceb91fe41f1c983ed405e0e0ddc"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_6bf1c98c51658aa12b8b220ad3c48252",
+      "commandKey": "syn_command_25d81149d6c2989637aeda576bd10ed0",
+      "expectation": {
+        "amount": { "amountMinor": "233842", "currency": "PHP" },
+        "id": "syn_internal_capture_f70b629fab00cacdc4449df00dd03458",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:17:00.784Z",
+        "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+        "paymentReference": "syn_pay_3f7a7d42ad5e5d34338cbe6779890e90"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_7a859af43c5bc7016f3c8f92cf30a047",
+      "commandKey": "syn_command_3c4c42c6c1615a410207c26e1d6613d8",
+      "expectation": {
+        "amount": { "amountMinor": "761332", "currency": "PHP" },
+        "id": "syn_internal_capture_9d9db9013c8f05a28793665b50512851",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:18:00.738Z",
+        "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+        "paymentReference": "syn_pay_ae98e8e882c69f11fc38836302a17def"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_5afd5e48b210f7b3a4edd2168b55a7b7",
+      "commandKey": "syn_command_bd857f3e020d7a088d2ac35290f83a39",
+      "expectation": {
+        "amount": { "amountMinor": "673194", "currency": "PHP" },
+        "id": "syn_internal_capture_cbdb0b345023b05f9f41f4d2da3e9ea5",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:19:00.561Z",
+        "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+        "paymentReference": "syn_pay_2d499ac3750de4435ad5728ec749ee36"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_11f6e43bf83e61b96c7ccb29a89634a5",
+      "commandKey": "syn_command_5c50efb0f05be40a38d31208a12a57f6",
+      "expectation": {
+        "amount": { "amountMinor": "43212", "currency": "PHP" },
+        "id": "syn_internal_capture_25706cec6a15b2f28856c4fc1aea67cf",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:20:00.761Z",
+        "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+        "paymentReference": "syn_pay_e8154aa6562527525ac74105fbd8834f"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_2cc48151a6312daf395d6aea3bf6dd5f",
+      "commandKey": "syn_command_a628a4d352aeae944d2ec1d68fd0feae",
+      "expectation": {
+        "amount": { "amountMinor": "869467", "currency": "PHP" },
+        "id": "syn_internal_capture_10f2899dc8cced946f64e37fd1325dad",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:21:00.394Z",
+        "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+        "paymentReference": "syn_pay_36e4a73a27f306bf951958872c3b61d7"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_cb3d3b3c029b8702002e031d10c48ba2",
+      "commandKey": "syn_command_7cbb61057cc01f384e45200c1ce6a7b8",
+      "expectation": {
+        "amount": { "amountMinor": "686252", "currency": "PHP" },
+        "id": "syn_internal_capture_d9f21f41efbe8b6e7f8874a09121554d",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:22:00.438Z",
+        "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+        "paymentReference": "syn_pay_c30be481556f40cf35085096ba9ea0e0"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_543e567b05072adcf404ddb87229beb2",
+      "commandKey": "syn_command_268f1b7eef498be8c721a9d299d6aacf",
+      "expectation": {
+        "amount": { "amountMinor": "208123", "currency": "PHP" },
+        "id": "syn_internal_capture_183109bcdff7c3861c71db1971b0a17d",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:23:00.418Z",
+        "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+        "paymentReference": "syn_pay_ed52c9dfb14aedf3fb44f74fdd0adca9"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_5965f40557645f85894f5f6b2320991f",
+      "commandKey": "syn_command_5a612290fcc005e68ceffb25eedfa87b",
+      "expectation": {
+        "amount": { "amountMinor": "759216", "currency": "PHP" },
+        "id": "syn_internal_capture_204fcb262753cc7af0cf8a624c7cf2df",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:24:00.036Z",
+        "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+        "paymentReference": "syn_pay_7b34c6cec347b0198b26c29744041621"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_203759f6898e86c8ae45624431fa027a",
+      "commandKey": "syn_command_01c89794f4434bb61c80fe5279eb3156",
+      "expectation": {
+        "amount": { "amountMinor": "191493", "currency": "PHP" },
+        "id": "syn_internal_capture_d7919877e61976c88b1246fa101082e9",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:25:00.509Z",
+        "payerId": "syn_payer_0754157adfc95bab9fe8b5210ee5daef",
+        "paymentReference": "syn_pay_a5e90799972f006562cedd1dd9a6eb6f"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_62bd91ebe1a42808c87dc568c5626487",
+      "commandKey": "syn_command_ab89aeff82607161c80362660cee15c2",
+      "expectation": {
+        "amount": { "amountMinor": "689275", "currency": "PHP" },
+        "id": "syn_internal_capture_d88422193052f28686b0a8be90af7a02",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:26:00.517Z",
+        "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+        "paymentReference": "syn_pay_0d73f0b744ddf5601da4ec945b9483c7"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_4fdc3b6a35dedcbbf1b1ba010146da9f",
+      "commandKey": "syn_command_b10a3cdbb50fa681f3ad81eca25d076c",
+      "expectation": {
+        "amount": { "amountMinor": "641876", "currency": "PHP" },
+        "id": "syn_internal_capture_cb54096163fe3fe84b7f2946d148d107",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:27:00.868Z",
+        "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+        "paymentReference": "syn_pay_5943a7a7d3dc132d8191813a0b06f13b"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_856dd0004f5d8d4c45229ae05a095121",
+      "commandKey": "syn_command_bd11a7543f188eac98fbce98b9004784",
+      "expectation": {
+        "amount": { "amountMinor": "990738", "currency": "PHP" },
+        "id": "syn_internal_capture_d1e7f81a03533b7ae65e6f87c309f500",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:28:00.123Z",
+        "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+        "paymentReference": "syn_pay_8e5fa827e1735e1054f65424c77988cf"
+      }
+    },
+    {
+      "attemptId": "syn_attempt_ab3b1b2d760718757809b4553247c38a",
+      "commandKey": "syn_command_8d10bd54fdb766c8dbb90b7db2158854",
+      "expectation": {
+        "amount": { "amountMinor": "523414", "currency": "PHP" },
+        "id": "syn_internal_capture_a9dbff17cdf958e9413c96e445d07583",
+        "kind": "capture",
+        "occurredAt": "2026-01-01T00:29:00.364Z",
+        "payerId": "syn_payer_f372a4e54a03ddc918f8c095567e8f52",
+        "paymentReference": "syn_pay_25eed6d1825ae64b92e51a5cd727f511"
+      }
+    }
+  ],
+  "internalExpectations": [
+    {
+      "amount": { "amountMinor": "262606", "currency": "PHP" },
+      "id": "syn_internal_capture_8bfc8e2dd2c07d7b9686e32b1e8318d7",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:00:00.453Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_cbcf776318d3938bc958d1d5b3d3e657"
+    },
+    {
+      "amount": { "amountMinor": "346914", "currency": "PHP" },
+      "id": "syn_internal_capture_b60c2c0ce0560aec39d048325bb06a2f",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:01:00.589Z",
+      "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+      "paymentReference": "syn_pay_3f5fa8b84ca0b1b1ebc71960ed89438d"
+    },
+    {
+      "amount": { "amountMinor": "211799", "currency": "PHP" },
+      "id": "syn_internal_capture_d3d6dc56091e6d09781cfe10317cfcc4",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:02:00.285Z",
+      "payerId": "syn_payer_f372a4e54a03ddc918f8c095567e8f52",
+      "paymentReference": "syn_pay_8eaf621ba622f6db982f2f74bacff617"
+    },
+    {
+      "amount": { "amountMinor": "543280", "currency": "PHP" },
+      "id": "syn_internal_capture_580fd17a40e12325ce712a32219ce0f6",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:03:00.011Z",
+      "payerId": "syn_payer_0754157adfc95bab9fe8b5210ee5daef",
+      "paymentReference": "syn_pay_b8dc933536ea139e4c73d67972c3bdf8"
+    },
+    {
+      "amount": { "amountMinor": "992407", "currency": "PHP" },
+      "id": "syn_internal_capture_2d5cc6520a2fe6d4571f197386268d2a",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:04:00.961Z",
+      "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+      "paymentReference": "syn_pay_31704f7e7c52662ddffc7d4c4de9d8ec"
+    },
+    {
+      "amount": { "amountMinor": "479128", "currency": "PHP" },
+      "id": "syn_internal_capture_b5642d9faba449e9e6ec7556a44d9f77",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:05:00.299Z",
+      "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+      "paymentReference": "syn_pay_aedaa7b3b89d19a1f9d19c9585afbbb1"
+    },
+    {
+      "amount": { "amountMinor": "321309", "currency": "PHP" },
+      "id": "syn_internal_capture_a4ad5a9666bcce1f2fa24f5f27d394cc",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:06:00.599Z",
+      "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+      "paymentReference": "syn_pay_e9b33d328c280c4cc9f918b7f6af1a7a"
+    },
+    {
+      "amount": { "amountMinor": "33480", "currency": "PHP" },
+      "id": "syn_internal_capture_fbc803e0984cc3008c9f6349a2335e15",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:07:00.521Z",
+      "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+      "paymentReference": "syn_pay_610526145109e9a48a840975fdb64f07"
+    },
+    {
+      "amount": { "amountMinor": "743132", "currency": "PHP" },
+      "id": "syn_internal_capture_ef73c9a1f4c5e647d9131ca0fb9fd88f",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:08:00.525Z",
+      "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+      "paymentReference": "syn_pay_9ab44d6dfef050e2ba1ccd631d74dd75"
+    },
+    {
+      "amount": { "amountMinor": "164065", "currency": "PHP" },
+      "id": "syn_internal_capture_949df98fca9e85a6f2396d25bcde8cf2",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:09:00.850Z",
+      "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+      "paymentReference": "syn_pay_3f7289f1dcecf159557c5cc9e7b83e68"
+    },
+    {
+      "amount": { "amountMinor": "522139", "currency": "PHP" },
+      "id": "syn_internal_capture_41af7d5d1391ea0333af84c1e1e3d8b5",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:10:00.961Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_caff0c5fc67edde23da20f9da7b86c18"
+    },
+    {
+      "amount": { "amountMinor": "287402", "currency": "PHP" },
+      "id": "syn_internal_capture_8bcaa6520b013cdc233a78a307f53728",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:11:00.457Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_02b51e6091f8db5d9f37916770f9a987"
+    },
+    {
+      "amount": { "amountMinor": "101607", "currency": "PHP" },
+      "id": "syn_internal_capture_c82d266223c83b63e7e1bcce8424f495",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:12:00.890Z",
+      "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+      "paymentReference": "syn_pay_941ff9d298ddd4a147adeb0d04a7ed3f"
+    },
+    {
+      "amount": { "amountMinor": "833352", "currency": "PHP" },
+      "id": "syn_internal_capture_ec2d21f9817a8d8873e460ff9dfd9a54",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:13:00.042Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_c89337ca23698d07d822a980767aea10"
+    },
+    {
+      "amount": { "amountMinor": "525145", "currency": "PHP" },
+      "id": "syn_internal_capture_a839a28fa7cee2437a3c3651de509062",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:14:00.627Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_fcd7ec534beb67ce61e514709bb038de"
+    },
+    {
+      "amount": { "amountMinor": "674618", "currency": "PHP" },
+      "id": "syn_internal_capture_c30c5d6834576264a19f5451c78a9b12",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:15:00.397Z",
+      "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+      "paymentReference": "syn_pay_170fd6a310fd247a98874c2b45493639"
+    },
+    {
+      "amount": { "amountMinor": "923646", "currency": "PHP" },
+      "id": "syn_internal_capture_f5de73a70f655e9daf9a532d8ecac5e0",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:16:00.066Z",
+      "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+      "paymentReference": "syn_pay_3c980ceb91fe41f1c983ed405e0e0ddc"
+    },
+    {
+      "amount": { "amountMinor": "233842", "currency": "PHP" },
+      "id": "syn_internal_capture_f70b629fab00cacdc4449df00dd03458",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:17:00.784Z",
+      "payerId": "syn_payer_b89d9758f1079afce1e3f97ebdd63155",
+      "paymentReference": "syn_pay_3f7a7d42ad5e5d34338cbe6779890e90"
+    },
+    {
+      "amount": { "amountMinor": "761332", "currency": "PHP" },
+      "id": "syn_internal_capture_9d9db9013c8f05a28793665b50512851",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:18:00.738Z",
+      "payerId": "syn_payer_f126b4f207105b21529f482ef1ce98eb",
+      "paymentReference": "syn_pay_ae98e8e882c69f11fc38836302a17def"
+    },
+    {
+      "amount": { "amountMinor": "673194", "currency": "PHP" },
+      "id": "syn_internal_capture_cbdb0b345023b05f9f41f4d2da3e9ea5",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:19:00.561Z",
+      "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+      "paymentReference": "syn_pay_2d499ac3750de4435ad5728ec749ee36"
+    },
+    {
+      "amount": { "amountMinor": "43212", "currency": "PHP" },
+      "id": "syn_internal_capture_25706cec6a15b2f28856c4fc1aea67cf",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:20:00.761Z",
+      "payerId": "syn_payer_56c464c57207cc39f0e745a0fe66a815",
+      "paymentReference": "syn_pay_e8154aa6562527525ac74105fbd8834f"
+    },
+    {
+      "amount": { "amountMinor": "869467", "currency": "PHP" },
+      "id": "syn_internal_capture_10f2899dc8cced946f64e37fd1325dad",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:21:00.394Z",
+      "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+      "paymentReference": "syn_pay_36e4a73a27f306bf951958872c3b61d7"
+    },
+    {
+      "amount": { "amountMinor": "686252", "currency": "PHP" },
+      "id": "syn_internal_capture_d9f21f41efbe8b6e7f8874a09121554d",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:22:00.438Z",
+      "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+      "paymentReference": "syn_pay_c30be481556f40cf35085096ba9ea0e0"
+    },
+    {
+      "amount": { "amountMinor": "208123", "currency": "PHP" },
+      "id": "syn_internal_capture_183109bcdff7c3861c71db1971b0a17d",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:23:00.418Z",
+      "payerId": "syn_payer_d104eb13dcca0b435be9383a2c5323be",
+      "paymentReference": "syn_pay_ed52c9dfb14aedf3fb44f74fdd0adca9"
+    },
+    {
+      "amount": { "amountMinor": "759216", "currency": "PHP" },
+      "id": "syn_internal_capture_204fcb262753cc7af0cf8a624c7cf2df",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:24:00.036Z",
+      "payerId": "syn_payer_d985e706c9fe2164a024f49fb3b93c46",
+      "paymentReference": "syn_pay_7b34c6cec347b0198b26c29744041621"
+    },
+    {
+      "amount": { "amountMinor": "191493", "currency": "PHP" },
+      "id": "syn_internal_capture_d7919877e61976c88b1246fa101082e9",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:25:00.509Z",
+      "payerId": "syn_payer_0754157adfc95bab9fe8b5210ee5daef",
+      "paymentReference": "syn_pay_a5e90799972f006562cedd1dd9a6eb6f"
+    },
+    {
+      "amount": { "amountMinor": "689275", "currency": "PHP" },
+      "id": "syn_internal_capture_d88422193052f28686b0a8be90af7a02",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:26:00.517Z",
+      "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+      "paymentReference": "syn_pay_0d73f0b744ddf5601da4ec945b9483c7"
+    },
+    {
+      "amount": { "amountMinor": "641876", "currency": "PHP" },
+      "id": "syn_internal_capture_cb54096163fe3fe84b7f2946d148d107",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:27:00.868Z",
+      "payerId": "syn_payer_4d7772d85e81c03d96d6995990ce7666",
+      "paymentReference": "syn_pay_5943a7a7d3dc132d8191813a0b06f13b"
+    },
+    {
+      "amount": { "amountMinor": "990738", "currency": "PHP" },
+      "id": "syn_internal_capture_d1e7f81a03533b7ae65e6f87c309f500",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:28:00.123Z",
+      "payerId": "syn_payer_3340f0aeb1ee57d0a92bfc8c31b2ad07",
+      "paymentReference": "syn_pay_8e5fa827e1735e1054f65424c77988cf"
+    },
+    {
+      "amount": { "amountMinor": "523414", "currency": "PHP" },
+      "id": "syn_internal_capture_a9dbff17cdf958e9413c96e445d07583",
+      "kind": "capture",
+      "occurredAt": "2026-01-01T00:29:00.364Z",
+      "payerId": "syn_payer_f372a4e54a03ddc918f8c095567e8f52",
+      "paymentReference": "syn_pay_25eed6d1825ae64b92e51a5cd727f511"
+    }
+  ],
+  "processorEvents": [
+    {
+      "deliveredAt": "2026-01-01T00:00:01.453Z",
+      "deliveryId": "syn_delivery_17d9fb5d69eaac3fd16206b81d6aaff2",
+      "eventId": "syn_event_468f07140e01af583dc8f94cee022d64",
+      "occurredAt": "2026-01-01T00:00:00.453Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"262606\",\"currency\":\"PHP\"},\"id\":\"syn_capture_f510c4264bead67756ac0dd806218f24\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:00:00.453Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_cbcf776318d3938bc958d1d5b3d3e657\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:00:02.453Z",
+      "deliveryId": "syn_delivery_e3008cdefb79bf58a257e4658e75e7df",
+      "eventId": "syn_event_933b1a97b5e7305ec30494e75aaa9d6c",
+      "occurredAt": "2026-01-01T00:00:01.453Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-7878\",\"currency\":\"PHP\"},\"id\":\"syn_fee_8c18f7bc6c49763873c33da8509a3230\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:00:01.453Z\",\"parentCaptureId\":\"syn_capture_f510c4264bead67756ac0dd806218f24\",\"paymentReference\":\"syn_pay_cbcf776318d3938bc958d1d5b3d3e657\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:01:01.589Z",
+      "deliveryId": "syn_delivery_42eac48fbb8c093dcf8d0ff67ecda208",
+      "eventId": "syn_event_e82fb7a5da3f58ba408515d6ed749fca",
+      "occurredAt": "2026-01-01T00:01:00.589Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"346914\",\"currency\":\"PHP\"},\"id\":\"syn_capture_0a477c20733e56c9c16e96835906fe6a\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:01:00.589Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_3f5fa8b84ca0b1b1ebc71960ed89438d\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:01:02.589Z",
+      "deliveryId": "syn_delivery_e9659d403b27ee0759d06adf62c4e0da",
+      "eventId": "syn_event_8a9780ff341aeda0bdbf0947083f96bc",
+      "occurredAt": "2026-01-01T00:01:01.589Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-10407\",\"currency\":\"PHP\"},\"id\":\"syn_fee_9e61f55a1e0dc117241345be7c1c1c1d\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:01:01.589Z\",\"parentCaptureId\":\"syn_capture_0a477c20733e56c9c16e96835906fe6a\",\"paymentReference\":\"syn_pay_3f5fa8b84ca0b1b1ebc71960ed89438d\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:02:01.285Z",
+      "deliveryId": "syn_delivery_9f6f44cf032e50043c17635a3d2409f9",
+      "eventId": "syn_event_1048ecfa99eeb44354e7482841ccb9dc",
+      "occurredAt": "2026-01-01T00:02:00.285Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"211799\",\"currency\":\"PHP\"},\"id\":\"syn_capture_c224e520564a78bc220d8652801e3070\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:02:00.285Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_8eaf621ba622f6db982f2f74bacff617\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:02:02.285Z",
+      "deliveryId": "syn_delivery_5aa93dbab3365e79070c1adefcdb055a",
+      "eventId": "syn_event_86275a28668ea59d990a0a27d908dfb3",
+      "occurredAt": "2026-01-01T00:02:01.285Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-6353\",\"currency\":\"PHP\"},\"id\":\"syn_fee_7efd7ba507bc81ff12556c324d7f2704\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:02:01.285Z\",\"parentCaptureId\":\"syn_capture_c224e520564a78bc220d8652801e3070\",\"paymentReference\":\"syn_pay_8eaf621ba622f6db982f2f74bacff617\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:03:01.011Z",
+      "deliveryId": "syn_delivery_2ce775fed18360096393807589e86bc7",
+      "eventId": "syn_event_63a447932c13a1c59c9e2e4047b4f99b",
+      "occurredAt": "2026-01-01T00:03:00.011Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"543280\",\"currency\":\"PHP\"},\"id\":\"syn_capture_0810acadb871aa43c36cb0f18d8bef69\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:03:00.011Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_b8dc933536ea139e4c73d67972c3bdf8\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:03:02.011Z",
+      "deliveryId": "syn_delivery_5f11640e37fa6ed4d48417df73df018b",
+      "eventId": "syn_event_0b39d12b2fa337afe3d5231983cfcd24",
+      "occurredAt": "2026-01-01T00:03:01.011Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-16298\",\"currency\":\"PHP\"},\"id\":\"syn_fee_56f1c8b8dd9936ee6dda3faad76f9edd\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:03:01.011Z\",\"parentCaptureId\":\"syn_capture_0810acadb871aa43c36cb0f18d8bef69\",\"paymentReference\":\"syn_pay_b8dc933536ea139e4c73d67972c3bdf8\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:04:01.961Z",
+      "deliveryId": "syn_delivery_48a5a3768616848dbba5cb29af0ba2db",
+      "eventId": "syn_event_56623187421284d0f9b5f12e32f1486c",
+      "occurredAt": "2026-01-01T00:04:00.961Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"992407\",\"currency\":\"PHP\"},\"id\":\"syn_capture_f9ecb9c9f44a31cd8b8057d3993e17ac\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:04:00.961Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_31704f7e7c52662ddffc7d4c4de9d8ec\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:04:02.961Z",
+      "deliveryId": "syn_delivery_893dea87c245ee6fe67e4f6f8c6cd4d8",
+      "eventId": "syn_event_115cd8b6a332ddebab70584bea3ffd6d",
+      "occurredAt": "2026-01-01T00:04:01.961Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-29772\",\"currency\":\"PHP\"},\"id\":\"syn_fee_fe4a008de88e9f746dfc4a19a98c6392\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:04:01.961Z\",\"parentCaptureId\":\"syn_capture_f9ecb9c9f44a31cd8b8057d3993e17ac\",\"paymentReference\":\"syn_pay_31704f7e7c52662ddffc7d4c4de9d8ec\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:05:01.299Z",
+      "deliveryId": "syn_delivery_07d0568c5ef56d89562df52b36a01c64",
+      "eventId": "syn_event_ee6b8ae99c9b8e97ace76b5986eb8117",
+      "occurredAt": "2026-01-01T00:05:00.299Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"479128\",\"currency\":\"PHP\"},\"id\":\"syn_capture_57f1947ae9fcdfe87d156d767053a759\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:05:00.299Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_aedaa7b3b89d19a1f9d19c9585afbbb1\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:05:02.299Z",
+      "deliveryId": "syn_delivery_8224b6434565fd951637545d109e9e2e",
+      "eventId": "syn_event_4b681ee0e4b9b6e567a96ccfcb0e49c3",
+      "occurredAt": "2026-01-01T00:05:01.299Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-14373\",\"currency\":\"PHP\"},\"id\":\"syn_fee_200fc7543dc4e283dadda1749c38a1c1\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:05:01.299Z\",\"parentCaptureId\":\"syn_capture_57f1947ae9fcdfe87d156d767053a759\",\"paymentReference\":\"syn_pay_aedaa7b3b89d19a1f9d19c9585afbbb1\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:06:01.599Z",
+      "deliveryId": "syn_delivery_2950dfa7d3fdb2f6fc2ff8ab1370ba2c",
+      "eventId": "syn_event_4f2da962e8b7961162462663217155e9",
+      "occurredAt": "2026-01-01T00:06:00.599Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"321309\",\"currency\":\"PHP\"},\"id\":\"syn_capture_b321b61dd4ae16f10676d4d892d984f0\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:06:00.599Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_e9b33d328c280c4cc9f918b7f6af1a7a\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:06:02.599Z",
+      "deliveryId": "syn_delivery_bb40cad0bd36f4c4eb3f1faaf6a70b4f",
+      "eventId": "syn_event_63b9143e5ca39ba2f2167a2ebbea43f7",
+      "occurredAt": "2026-01-01T00:06:01.599Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-9639\",\"currency\":\"PHP\"},\"id\":\"syn_fee_cf44c9a0319edc2787a52c3242b602cb\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:06:01.599Z\",\"parentCaptureId\":\"syn_capture_b321b61dd4ae16f10676d4d892d984f0\",\"paymentReference\":\"syn_pay_e9b33d328c280c4cc9f918b7f6af1a7a\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:07:01.521Z",
+      "deliveryId": "syn_delivery_73ea0344eb170e76c3e45adb4c58bbc1",
+      "eventId": "syn_event_528cc97e1e5ab9587d58a4bce0986a7a",
+      "occurredAt": "2026-01-01T00:07:00.521Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"33480\",\"currency\":\"PHP\"},\"id\":\"syn_capture_0425289b3a20686c559868351818f24d\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:07:00.521Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_610526145109e9a48a840975fdb64f07\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:07:02.521Z",
+      "deliveryId": "syn_delivery_73b052824bdd3cace10c9f0758c3f31a",
+      "eventId": "syn_event_f8f75652be8de066cf92157a108a3b3a",
+      "occurredAt": "2026-01-01T00:07:01.521Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-1004\",\"currency\":\"PHP\"},\"id\":\"syn_fee_c2a9e4c7a11f58f8a22fbca2e834a9f0\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:07:01.521Z\",\"parentCaptureId\":\"syn_capture_0425289b3a20686c559868351818f24d\",\"paymentReference\":\"syn_pay_610526145109e9a48a840975fdb64f07\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:08:01.525Z",
+      "deliveryId": "syn_delivery_495f134f6bde2ab5d360e3f0700d6b78",
+      "eventId": "syn_event_d0d458bc7e67fe6673f56f4d2e162644",
+      "occurredAt": "2026-01-01T00:08:00.525Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"743132\",\"currency\":\"PHP\"},\"id\":\"syn_capture_b547a8b1e424ad5d40c87769ec86afcd\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:08:00.525Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_9ab44d6dfef050e2ba1ccd631d74dd75\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:08:02.525Z",
+      "deliveryId": "syn_delivery_e250ee5d75f5ac30ee27ec5fb11a5f1b",
+      "eventId": "syn_event_7e1755b42241561fc93c71c68658ed92",
+      "occurredAt": "2026-01-01T00:08:01.525Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-22293\",\"currency\":\"PHP\"},\"id\":\"syn_fee_e04aa73f45e40022b8d5bbc1c8ad9144\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:08:01.525Z\",\"parentCaptureId\":\"syn_capture_b547a8b1e424ad5d40c87769ec86afcd\",\"paymentReference\":\"syn_pay_9ab44d6dfef050e2ba1ccd631d74dd75\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:09:01.850Z",
+      "deliveryId": "syn_delivery_b167b15e2257bdc4e972abb31e3174d3",
+      "eventId": "syn_event_b27a6a59b9e450249aa4bdb32d2cb0ff",
+      "occurredAt": "2026-01-01T00:09:00.850Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"164065\",\"currency\":\"PHP\"},\"id\":\"syn_capture_9654362105b64131c940a6d839f6a3c8\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:09:00.850Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_3f7289f1dcecf159557c5cc9e7b83e68\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:09:02.850Z",
+      "deliveryId": "syn_delivery_17dade014b7f147ed4fec769ba2e4662",
+      "eventId": "syn_event_de246e581ee11ff5a3d1720f0f09e3cf",
+      "occurredAt": "2026-01-01T00:09:01.850Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-4921\",\"currency\":\"PHP\"},\"id\":\"syn_fee_9ff21820490be40487cc8575f9eccd25\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:09:01.850Z\",\"parentCaptureId\":\"syn_capture_9654362105b64131c940a6d839f6a3c8\",\"paymentReference\":\"syn_pay_3f7289f1dcecf159557c5cc9e7b83e68\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:10:01.961Z",
+      "deliveryId": "syn_delivery_af5d265d2798f87f7a87ba45839868e0",
+      "eventId": "syn_event_473239fb0fb4a941b68391edf544af33",
+      "occurredAt": "2026-01-01T00:10:00.961Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"522139\",\"currency\":\"PHP\"},\"id\":\"syn_capture_8c9a7183e09cebae0077b13d81a7a634\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:10:00.961Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_caff0c5fc67edde23da20f9da7b86c18\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:10:02.961Z",
+      "deliveryId": "syn_delivery_18f8c57786e8fa50699c2bb1c9add25c",
+      "eventId": "syn_event_963aa35c732f6c30f41cd4bd44d3d2bb",
+      "occurredAt": "2026-01-01T00:10:01.961Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-15664\",\"currency\":\"PHP\"},\"id\":\"syn_fee_57b76c2d170d3fb72f7d44b2aa560771\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:10:01.961Z\",\"parentCaptureId\":\"syn_capture_8c9a7183e09cebae0077b13d81a7a634\",\"paymentReference\":\"syn_pay_caff0c5fc67edde23da20f9da7b86c18\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:11:01.457Z",
+      "deliveryId": "syn_delivery_cc23f418eb5c05817b5316834fb75cae",
+      "eventId": "syn_event_c0225c039db736adad7431ad004cbb7a",
+      "occurredAt": "2026-01-01T00:11:00.457Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"287402\",\"currency\":\"PHP\"},\"id\":\"syn_capture_2ca43c7435bfa085d4fe2bacfa66ecfb\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:11:00.457Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_02b51e6091f8db5d9f37916770f9a987\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:11:02.457Z",
+      "deliveryId": "syn_delivery_583344d92810cf80ca2bb51b01e13de8",
+      "eventId": "syn_event_7438824b44f8ee2fc17c09e8fa242062",
+      "occurredAt": "2026-01-01T00:11:01.457Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-8622\",\"currency\":\"PHP\"},\"id\":\"syn_fee_b8ded6a77fca82e33c5c141cb320da73\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:11:01.457Z\",\"parentCaptureId\":\"syn_capture_2ca43c7435bfa085d4fe2bacfa66ecfb\",\"paymentReference\":\"syn_pay_02b51e6091f8db5d9f37916770f9a987\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:12:01.890Z",
+      "deliveryId": "syn_delivery_1c4792c66fdc20dead25f50229fa1f7b",
+      "eventId": "syn_event_b01ab9111dc6d3a429d0bc01d5c50849",
+      "occurredAt": "2026-01-01T00:12:00.890Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"101607\",\"currency\":\"PHP\"},\"id\":\"syn_capture_17f10503e0136b57955bbdc3af7992bb\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:12:00.890Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_941ff9d298ddd4a147adeb0d04a7ed3f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:12:02.890Z",
+      "deliveryId": "syn_delivery_cc7ccdb46455ae49df652aaca37b23fc",
+      "eventId": "syn_event_85a11be163919e9c2e8d6e4ced99f21b",
+      "occurredAt": "2026-01-01T00:12:01.890Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-3048\",\"currency\":\"PHP\"},\"id\":\"syn_fee_799098edb18a3d449c4d6383e822dc8e\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:12:01.890Z\",\"parentCaptureId\":\"syn_capture_17f10503e0136b57955bbdc3af7992bb\",\"paymentReference\":\"syn_pay_941ff9d298ddd4a147adeb0d04a7ed3f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:13:01.042Z",
+      "deliveryId": "syn_delivery_2fc3edc925a8b8c519b7e4d9ffb0ca39",
+      "eventId": "syn_event_88577a01448afb5fc93d75dc26431ad2",
+      "occurredAt": "2026-01-01T00:13:00.042Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"833352\",\"currency\":\"PHP\"},\"id\":\"syn_capture_0a89fc8cb7e3cce9ca3f1b6b4fada5b7\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:13:00.042Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_c89337ca23698d07d822a980767aea10\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:13:02.042Z",
+      "deliveryId": "syn_delivery_1a2eddae7390f83fb041cfd4f66078ad",
+      "eventId": "syn_event_1b96836277ca513eebb1930c7b80c3d3",
+      "occurredAt": "2026-01-01T00:13:01.042Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-25000\",\"currency\":\"PHP\"},\"id\":\"syn_fee_53bb765bf304101c37129da9fd0894de\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:13:01.042Z\",\"parentCaptureId\":\"syn_capture_0a89fc8cb7e3cce9ca3f1b6b4fada5b7\",\"paymentReference\":\"syn_pay_c89337ca23698d07d822a980767aea10\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:14:01.627Z",
+      "deliveryId": "syn_delivery_4c493a4949eecef50a542b5e9421e2a7",
+      "eventId": "syn_event_3e1939a9e156a86668b9a65559f9db46",
+      "occurredAt": "2026-01-01T00:14:00.627Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"525145\",\"currency\":\"PHP\"},\"id\":\"syn_capture_1b0a8c918a91ba9e2c2beb21a32543a1\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:14:00.627Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_fcd7ec534beb67ce61e514709bb038de\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:14:02.627Z",
+      "deliveryId": "syn_delivery_2cac1c3b117e6b3a27ebfea0e339a3ff",
+      "eventId": "syn_event_b31dcce062cdeb99246424e0519259d9",
+      "occurredAt": "2026-01-01T00:14:01.627Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-15754\",\"currency\":\"PHP\"},\"id\":\"syn_fee_3b5b9539a79f1ff6dda089104dee8f67\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:14:01.627Z\",\"parentCaptureId\":\"syn_capture_1b0a8c918a91ba9e2c2beb21a32543a1\",\"paymentReference\":\"syn_pay_fcd7ec534beb67ce61e514709bb038de\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:15:01.397Z",
+      "deliveryId": "syn_delivery_aefc800bdf3ad0daf0bf421e93d56225",
+      "eventId": "syn_event_63cebef2e89aa6a736dbf3a905dae351",
+      "occurredAt": "2026-01-01T00:15:00.397Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"674618\",\"currency\":\"PHP\"},\"id\":\"syn_capture_f77fadf1d501fbf186ba35d07ba783b2\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:15:00.397Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_170fd6a310fd247a98874c2b45493639\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:15:02.397Z",
+      "deliveryId": "syn_delivery_4d0f2041912d9de339f25360e3521a80",
+      "eventId": "syn_event_79f2b2fe2331e9838502d9b7581136ba",
+      "occurredAt": "2026-01-01T00:15:01.397Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-20238\",\"currency\":\"PHP\"},\"id\":\"syn_fee_1751516878dae5ef2f3f21f3301e3248\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:15:01.397Z\",\"parentCaptureId\":\"syn_capture_f77fadf1d501fbf186ba35d07ba783b2\",\"paymentReference\":\"syn_pay_170fd6a310fd247a98874c2b45493639\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:16:01.066Z",
+      "deliveryId": "syn_delivery_55c9c7290098691c6d01b868d9e7077b",
+      "eventId": "syn_event_a63861da18a6e2af2867c8a361ac690e",
+      "occurredAt": "2026-01-01T00:16:00.066Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"923646\",\"currency\":\"PHP\"},\"id\":\"syn_capture_c8dc101ce8a89b9d47d7bd3e24fe8b77\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:16:00.066Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_3c980ceb91fe41f1c983ed405e0e0ddc\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:16:02.066Z",
+      "deliveryId": "syn_delivery_756736f10d33b0296e26208a22b8aaa6",
+      "eventId": "syn_event_5c5b0626956238baea0e44e14058fa26",
+      "occurredAt": "2026-01-01T00:16:01.066Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-27709\",\"currency\":\"PHP\"},\"id\":\"syn_fee_78721fe197613bf844302886d97b2ad0\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:16:01.066Z\",\"parentCaptureId\":\"syn_capture_c8dc101ce8a89b9d47d7bd3e24fe8b77\",\"paymentReference\":\"syn_pay_3c980ceb91fe41f1c983ed405e0e0ddc\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:17:01.784Z",
+      "deliveryId": "syn_delivery_c90326a9e7386d3ecb1117c7967ae534",
+      "eventId": "syn_event_7ea9c0f3e543c0c613f989e1a28bda7d",
+      "occurredAt": "2026-01-01T00:17:00.784Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"233842\",\"currency\":\"PHP\"},\"id\":\"syn_capture_db59ef00150418663cf2f28073ad083a\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:17:00.784Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_3f7a7d42ad5e5d34338cbe6779890e90\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:17:02.784Z",
+      "deliveryId": "syn_delivery_2f3b25ab81050bcfc353fc1e33d1b234",
+      "eventId": "syn_event_3fda66bb23b84bf8894d576364637bc5",
+      "occurredAt": "2026-01-01T00:17:01.784Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-7015\",\"currency\":\"PHP\"},\"id\":\"syn_fee_68c794c00eab9a82897d49927b54bcb5\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:17:01.784Z\",\"parentCaptureId\":\"syn_capture_db59ef00150418663cf2f28073ad083a\",\"paymentReference\":\"syn_pay_3f7a7d42ad5e5d34338cbe6779890e90\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:18:01.738Z",
+      "deliveryId": "syn_delivery_d9fbd762deb24c92ce14d7b0cd8286f2",
+      "eventId": "syn_event_8c4d8e218f5e70daab02dab28a05ed48",
+      "occurredAt": "2026-01-01T00:18:00.738Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"761332\",\"currency\":\"PHP\"},\"id\":\"syn_capture_3ed07e41a4388b9ddf7e75acba5d7717\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:18:00.738Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_ae98e8e882c69f11fc38836302a17def\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:18:02.738Z",
+      "deliveryId": "syn_delivery_5af998a1d91942bb4db2b96a2508814e",
+      "eventId": "syn_event_a5190298b03b2070fb2d77120def3a36",
+      "occurredAt": "2026-01-01T00:18:01.738Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-22839\",\"currency\":\"PHP\"},\"id\":\"syn_fee_6bff83446602eb70ef2fbb20d9b93029\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:18:01.738Z\",\"parentCaptureId\":\"syn_capture_3ed07e41a4388b9ddf7e75acba5d7717\",\"paymentReference\":\"syn_pay_ae98e8e882c69f11fc38836302a17def\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:19:01.561Z",
+      "deliveryId": "syn_delivery_b3710a71f46250632431ec0b43e1e6df",
+      "eventId": "syn_event_ea3e3352e23c5dc0e4e82d1467d3628d",
+      "occurredAt": "2026-01-01T00:19:00.561Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"673194\",\"currency\":\"PHP\"},\"id\":\"syn_capture_d98610a4d9a18da72a85e0a326cc0dfd\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:19:00.561Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_2d499ac3750de4435ad5728ec749ee36\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:19:02.561Z",
+      "deliveryId": "syn_delivery_fdf508621b01a44174200157d42b78f2",
+      "eventId": "syn_event_3b0fa52bd7307693b6391f123ab21714",
+      "occurredAt": "2026-01-01T00:19:01.561Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-20195\",\"currency\":\"PHP\"},\"id\":\"syn_fee_4d6169444cd1ef12195d5f91de7ddbb1\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:19:01.561Z\",\"parentCaptureId\":\"syn_capture_d98610a4d9a18da72a85e0a326cc0dfd\",\"paymentReference\":\"syn_pay_2d499ac3750de4435ad5728ec749ee36\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:20:01.761Z",
+      "deliveryId": "syn_delivery_33adcbeb8c0d8d2260466beab63f436a",
+      "eventId": "syn_event_7eafdfa5d0beeb02716f808a1525c581",
+      "occurredAt": "2026-01-01T00:20:00.761Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"43212\",\"currency\":\"PHP\"},\"id\":\"syn_capture_008769b076c3f304c5433329f1351398\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:20:00.761Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_e8154aa6562527525ac74105fbd8834f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:20:02.761Z",
+      "deliveryId": "syn_delivery_e4039713fc44e975920c3bcf4e34d70c",
+      "eventId": "syn_event_9ad13b12a3bc4327557678b92ea0c4b4",
+      "occurredAt": "2026-01-01T00:20:01.761Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-1296\",\"currency\":\"PHP\"},\"id\":\"syn_fee_e9172558d9cecab9ab99edcce5fe13ae\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:20:01.761Z\",\"parentCaptureId\":\"syn_capture_008769b076c3f304c5433329f1351398\",\"paymentReference\":\"syn_pay_e8154aa6562527525ac74105fbd8834f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:21:01.394Z",
+      "deliveryId": "syn_delivery_cca07653a2bbd5047054d3bbd1b62492",
+      "eventId": "syn_event_5ed35bab8ba2bfb69a1c47864a1c63e1",
+      "occurredAt": "2026-01-01T00:21:00.394Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"869467\",\"currency\":\"PHP\"},\"id\":\"syn_capture_a5ac8a71b9fe40a597246f0cbf521185\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:21:00.394Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_36e4a73a27f306bf951958872c3b61d7\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:21:02.394Z",
+      "deliveryId": "syn_delivery_3d88a7d7057c6820095f6e70bbcf1a23",
+      "eventId": "syn_event_0a2fb4dd759b81218366c1026fb41cee",
+      "occurredAt": "2026-01-01T00:21:01.394Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-26084\",\"currency\":\"PHP\"},\"id\":\"syn_fee_2fecda345980b2efc6bad6c41e7cf171\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:21:01.394Z\",\"parentCaptureId\":\"syn_capture_a5ac8a71b9fe40a597246f0cbf521185\",\"paymentReference\":\"syn_pay_36e4a73a27f306bf951958872c3b61d7\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:22:01.438Z",
+      "deliveryId": "syn_delivery_65424f5924d4c9c98d7be9ae49e6e489",
+      "eventId": "syn_event_96b8fb10765f4dc0830d54b0673463a0",
+      "occurredAt": "2026-01-01T00:22:00.438Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"686252\",\"currency\":\"PHP\"},\"id\":\"syn_capture_1220c72031f6aa3fa5d74be9342e4c7d\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:22:00.438Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_c30be481556f40cf35085096ba9ea0e0\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:22:02.438Z",
+      "deliveryId": "syn_delivery_a1a1a8606acd1b22a83dce1313406277",
+      "eventId": "syn_event_bd6db45ef6b5cf0ead9b6037fa8a195f",
+      "occurredAt": "2026-01-01T00:22:01.438Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-20587\",\"currency\":\"PHP\"},\"id\":\"syn_fee_2707e986250e069732f08be2076406ed\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:22:01.438Z\",\"parentCaptureId\":\"syn_capture_1220c72031f6aa3fa5d74be9342e4c7d\",\"paymentReference\":\"syn_pay_c30be481556f40cf35085096ba9ea0e0\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:23:01.418Z",
+      "deliveryId": "syn_delivery_166c97a9872009d3a43e8d8bd2504c4b",
+      "eventId": "syn_event_f8583e636c6f7930b945f6288aeebf16",
+      "occurredAt": "2026-01-01T00:23:00.418Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"208123\",\"currency\":\"PHP\"},\"id\":\"syn_capture_b738565eee74e4a89f049880a0de6c07\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:23:00.418Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_ed52c9dfb14aedf3fb44f74fdd0adca9\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:23:02.418Z",
+      "deliveryId": "syn_delivery_2752098a2afe160c1a0c0ad29c366eaf",
+      "eventId": "syn_event_c8859a9d4e65cdcd25df3f3ecf510449",
+      "occurredAt": "2026-01-01T00:23:01.418Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-6243\",\"currency\":\"PHP\"},\"id\":\"syn_fee_ab2a74f46689ed9b9e899ee315055b1e\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:23:01.418Z\",\"parentCaptureId\":\"syn_capture_b738565eee74e4a89f049880a0de6c07\",\"paymentReference\":\"syn_pay_ed52c9dfb14aedf3fb44f74fdd0adca9\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:24:01.036Z",
+      "deliveryId": "syn_delivery_0ca1f98c6df371e164082e0432236b65",
+      "eventId": "syn_event_bc4d2531bdd31aec483607815fff79fe",
+      "occurredAt": "2026-01-01T00:24:00.036Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"759216\",\"currency\":\"PHP\"},\"id\":\"syn_capture_95f7c866affb663cdd60fe540772d718\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:24:00.036Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_7b34c6cec347b0198b26c29744041621\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:24:02.036Z",
+      "deliveryId": "syn_delivery_a0fbb8a83201355309f0d11a89c421a8",
+      "eventId": "syn_event_ce7fa5df2b0d09201d50a071c272c2b6",
+      "occurredAt": "2026-01-01T00:24:01.036Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-22776\",\"currency\":\"PHP\"},\"id\":\"syn_fee_5f8694499aefd83e621f858c45fe9569\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:24:01.036Z\",\"parentCaptureId\":\"syn_capture_95f7c866affb663cdd60fe540772d718\",\"paymentReference\":\"syn_pay_7b34c6cec347b0198b26c29744041621\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:25:01.509Z",
+      "deliveryId": "syn_delivery_ae685c517b8730a290c14b7739e7f71c",
+      "eventId": "syn_event_5b440323b903142987b47be47022f84c",
+      "occurredAt": "2026-01-01T00:25:00.509Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"191493\",\"currency\":\"PHP\"},\"id\":\"syn_capture_63a2216bd6591473901d8b2399853ff5\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:25:00.509Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_a5e90799972f006562cedd1dd9a6eb6f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:25:02.509Z",
+      "deliveryId": "syn_delivery_e63d23b45965b15623d4b423155a55ea",
+      "eventId": "syn_event_62fe558ddf6eb2dccc764afbb6d9316f",
+      "occurredAt": "2026-01-01T00:25:01.509Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-5744\",\"currency\":\"PHP\"},\"id\":\"syn_fee_7770e38b604cf8c134a3ed12376ca0d9\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:25:01.509Z\",\"parentCaptureId\":\"syn_capture_63a2216bd6591473901d8b2399853ff5\",\"paymentReference\":\"syn_pay_a5e90799972f006562cedd1dd9a6eb6f\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:26:01.517Z",
+      "deliveryId": "syn_delivery_c1379c6d73511ce5f25d9da546ec8de4",
+      "eventId": "syn_event_d5366ea7ab87434cdddbbee589fcf21b",
+      "occurredAt": "2026-01-01T00:26:00.517Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"689275\",\"currency\":\"PHP\"},\"id\":\"syn_capture_a1b75ace406f32f322ac894fdc196b2e\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:26:00.517Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_0d73f0b744ddf5601da4ec945b9483c7\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:26:02.517Z",
+      "deliveryId": "syn_delivery_3715cbc2120f67db2d1211ea2d7aae17",
+      "eventId": "syn_event_e0a7717ae174e0e9b9000e3977735902",
+      "occurredAt": "2026-01-01T00:26:01.517Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-20678\",\"currency\":\"PHP\"},\"id\":\"syn_fee_de13213657d671b2387f6fa2315777e7\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:26:01.517Z\",\"parentCaptureId\":\"syn_capture_a1b75ace406f32f322ac894fdc196b2e\",\"paymentReference\":\"syn_pay_0d73f0b744ddf5601da4ec945b9483c7\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:27:01.868Z",
+      "deliveryId": "syn_delivery_82f104dec8b5a7f98326def8ee97a6cf",
+      "eventId": "syn_event_97af872a7c81c1fe42f494ed23d60bca",
+      "occurredAt": "2026-01-01T00:27:00.868Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"641876\",\"currency\":\"PHP\"},\"id\":\"syn_capture_e1e0b6b1e34f1724076f3a93dab052fd\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:27:00.868Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_5943a7a7d3dc132d8191813a0b06f13b\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:27:02.868Z",
+      "deliveryId": "syn_delivery_051f8f305fcfec8247fc6618469f5f3f",
+      "eventId": "syn_event_da2f5a9bc461b6611ead25d1c35e782c",
+      "occurredAt": "2026-01-01T00:27:01.868Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-19256\",\"currency\":\"PHP\"},\"id\":\"syn_fee_15442cc527a70d58cd34b0990f25c339\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:27:01.868Z\",\"parentCaptureId\":\"syn_capture_e1e0b6b1e34f1724076f3a93dab052fd\",\"paymentReference\":\"syn_pay_5943a7a7d3dc132d8191813a0b06f13b\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:28:01.123Z",
+      "deliveryId": "syn_delivery_ef5e169760fdadaf84e10dcf8f1ceb21",
+      "eventId": "syn_event_dc3a43dab0fb95a7765cc261a04fa335",
+      "occurredAt": "2026-01-01T00:28:00.123Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"990738\",\"currency\":\"PHP\"},\"id\":\"syn_capture_7904b931d996aba06587259f317f4a92\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:28:00.123Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_8e5fa827e1735e1054f65424c77988cf\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:28:02.123Z",
+      "deliveryId": "syn_delivery_8f227a3934ee05fb9e5639382bfd7ed6",
+      "eventId": "syn_event_ebbaf4ec4082b40b70a8316c1e7939cd",
+      "occurredAt": "2026-01-01T00:28:01.123Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-29722\",\"currency\":\"PHP\"},\"id\":\"syn_fee_4389ebeeb3020b19ccafa6774d26e86c\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:28:01.123Z\",\"parentCaptureId\":\"syn_capture_7904b931d996aba06587259f317f4a92\",\"paymentReference\":\"syn_pay_8e5fa827e1735e1054f65424c77988cf\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:29:01.364Z",
+      "deliveryId": "syn_delivery_dc975a54b64c48a35dae1f0602fe6ee3",
+      "eventId": "syn_event_01c4c3213e2df7158a7152c14fbe73c9",
+      "occurredAt": "2026-01-01T00:29:00.364Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"523414\",\"currency\":\"PHP\"},\"id\":\"syn_capture_a5626cf04e5219adeaea84f3dec13be0\",\"kind\":\"capture\",\"occurredAt\":\"2026-01-01T00:29:00.364Z\",\"parentCaptureId\":null,\"paymentReference\":\"syn_pay_25eed6d1825ae64b92e51a5cd727f511\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    },
+    {
+      "deliveredAt": "2026-01-01T00:29:02.364Z",
+      "deliveryId": "syn_delivery_afe21a15eb126dc35fa0deca8724860a",
+      "eventId": "syn_event_be2c2b030c263f4b7bd39df76c15e17c",
+      "occurredAt": "2026-01-01T00:29:01.364Z",
+      "payload": "{\"amount\":{\"amountMinor\":\"-15702\",\"currency\":\"PHP\"},\"id\":\"syn_fee_85cbda74425043e4a0fb2f6661b64563\",\"kind\":\"fee\",\"occurredAt\":\"2026-01-01T00:29:01.364Z\",\"parentCaptureId\":\"syn_capture_a5626cf04e5219adeaea84f3dec13be0\",\"paymentReference\":\"syn_pay_25eed6d1825ae64b92e51a5cd727f511\"}",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+    }
+  ],
+  "scope": {
+    "bankAccountId": "syn_bank_account_8242ce9ceea4955b2d0e2f85aaebc6b5",
+    "environment": "synthetic",
+    "merchantId": "syn_merchant_8bf63abb47f160e75faa4984e67fd3fe",
+    "processorAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5"
+  },
+  "settlements": [
+    {
+      "chargebacks": { "amountMinor": "0", "currency": "PHP" },
+      "componentIds": [
+        "syn_capture_f510c4264bead67756ac0dd806218f24",
+        "syn_fee_8c18f7bc6c49763873c33da8509a3230",
+        "syn_capture_0a477c20733e56c9c16e96835906fe6a",
+        "syn_fee_9e61f55a1e0dc117241345be7c1c1c1d",
+        "syn_capture_c224e520564a78bc220d8652801e3070",
+        "syn_fee_7efd7ba507bc81ff12556c324d7f2704",
+        "syn_capture_0810acadb871aa43c36cb0f18d8bef69",
+        "syn_fee_56f1c8b8dd9936ee6dda3faad76f9edd",
+        "syn_capture_f9ecb9c9f44a31cd8b8057d3993e17ac",
+        "syn_fee_fe4a008de88e9f746dfc4a19a98c6392",
+        "syn_capture_57f1947ae9fcdfe87d156d767053a759",
+        "syn_fee_200fc7543dc4e283dadda1749c38a1c1",
+        "syn_capture_b321b61dd4ae16f10676d4d892d984f0",
+        "syn_fee_cf44c9a0319edc2787a52c3242b602cb",
+        "syn_capture_0425289b3a20686c559868351818f24d",
+        "syn_fee_c2a9e4c7a11f58f8a22fbca2e834a9f0",
+        "syn_capture_b547a8b1e424ad5d40c87769ec86afcd",
+        "syn_fee_e04aa73f45e40022b8d5bbc1c8ad9144",
+        "syn_capture_9654362105b64131c940a6d839f6a3c8",
+        "syn_fee_9ff21820490be40487cc8575f9eccd25",
+        "syn_capture_8c9a7183e09cebae0077b13d81a7a634",
+        "syn_fee_57b76c2d170d3fb72f7d44b2aa560771",
+        "syn_capture_2ca43c7435bfa085d4fe2bacfa66ecfb",
+        "syn_fee_b8ded6a77fca82e33c5c141cb320da73",
+        "syn_capture_17f10503e0136b57955bbdc3af7992bb",
+        "syn_fee_799098edb18a3d449c4d6383e822dc8e",
+        "syn_capture_0a89fc8cb7e3cce9ca3f1b6b4fada5b7",
+        "syn_fee_53bb765bf304101c37129da9fd0894de",
+        "syn_capture_1b0a8c918a91ba9e2c2beb21a32543a1",
+        "syn_fee_3b5b9539a79f1ff6dda089104dee8f67",
+        "syn_capture_f77fadf1d501fbf186ba35d07ba783b2",
+        "syn_fee_1751516878dae5ef2f3f21f3301e3248",
+        "syn_capture_c8dc101ce8a89b9d47d7bd3e24fe8b77",
+        "syn_fee_78721fe197613bf844302886d97b2ad0",
+        "syn_capture_db59ef00150418663cf2f28073ad083a",
+        "syn_fee_68c794c00eab9a82897d49927b54bcb5",
+        "syn_capture_3ed07e41a4388b9ddf7e75acba5d7717",
+        "syn_fee_6bff83446602eb70ef2fbb20d9b93029",
+        "syn_capture_d98610a4d9a18da72a85e0a326cc0dfd",
+        "syn_fee_4d6169444cd1ef12195d5f91de7ddbb1",
+        "syn_capture_008769b076c3f304c5433329f1351398",
+        "syn_fee_e9172558d9cecab9ab99edcce5fe13ae",
+        "syn_capture_a5ac8a71b9fe40a597246f0cbf521185",
+        "syn_fee_2fecda345980b2efc6bad6c41e7cf171",
+        "syn_capture_1220c72031f6aa3fa5d74be9342e4c7d",
+        "syn_fee_2707e986250e069732f08be2076406ed",
+        "syn_capture_b738565eee74e4a89f049880a0de6c07",
+        "syn_fee_ab2a74f46689ed9b9e899ee315055b1e",
+        "syn_capture_95f7c866affb663cdd60fe540772d718",
+        "syn_fee_5f8694499aefd83e621f858c45fe9569",
+        "syn_capture_63a2216bd6591473901d8b2399853ff5",
+        "syn_fee_7770e38b604cf8c134a3ed12376ca0d9",
+        "syn_capture_a1b75ace406f32f322ac894fdc196b2e",
+        "syn_fee_de13213657d671b2387f6fa2315777e7"
+      ],
+      "fees": { "amountMinor": "392430", "currency": "PHP" },
+      "gross": { "amountMinor": "13081435", "currency": "PHP" },
+      "id": "syn_settlement_6747f94c5bd140f0d3147c3b533650a4",
+      "net": { "amountMinor": "12689005", "currency": "PHP" },
+      "refunds": { "amountMinor": "0", "currency": "PHP" },
+      "reportedAt": "2026-01-02T00:26:00.000Z",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5",
+      "transferReference": "syn_transfer_88efbc6dfcba33f734dd72fd1b831a11"
+    },
+    {
+      "chargebacks": { "amountMinor": "0", "currency": "PHP" },
+      "componentIds": [
+        "syn_capture_e1e0b6b1e34f1724076f3a93dab052fd",
+        "syn_fee_15442cc527a70d58cd34b0990f25c339",
+        "syn_capture_7904b931d996aba06587259f317f4a92",
+        "syn_fee_4389ebeeb3020b19ccafa6774d26e86c",
+        "syn_capture_a5626cf04e5219adeaea84f3dec13be0",
+        "syn_fee_85cbda74425043e4a0fb2f6661b64563"
+      ],
+      "fees": { "amountMinor": "64680", "currency": "PHP" },
+      "gross": { "amountMinor": "2156028", "currency": "PHP" },
+      "id": "syn_settlement_c0aa1bb9d7f03759f2d76f04e8c8880b",
+      "net": { "amountMinor": "2091348", "currency": "PHP" },
+      "refunds": { "amountMinor": "0", "currency": "PHP" },
+      "reportedAt": "2026-01-02T00:29:00.000Z",
+      "sourceAccountId": "syn_processor_account_7dccb39d9b8ac9c05924cc8df37100e5",
+      "transferReference": "syn_transfer_f0d84dfb48f2631090a565a922add7d0"
+    }
+  ]
+}

@@ -1,5 +1,9 @@
-/** Local/internal reads only. No cache may make historical assurance look current. */
+import { fileURLToPath } from 'node:url';
+/** Read-only, including the protected ephemeral demo. No assurance cache. */
 export default {
+  output: 'standalone',
+  generateBuildId: async () => process.env['FLOW_IMAGE_REVISION'] ?? null,
+  outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
   poweredByHeader: false,
   serverExternalPackages: ['pg'],
   transpilePackages: [

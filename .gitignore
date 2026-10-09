@@ -10,3 +10,15 @@ coverage/
 **/.next/
 playwright-report/
 test-results/
+
+# Terraform state, saved plans and local deployment configuration can contain secrets.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+**/backend.generated.tf
+.deployment/
+
+container/build/
