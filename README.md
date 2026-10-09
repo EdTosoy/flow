@@ -53,4 +53,20 @@ Follow [local provisioning/demo commands](docs/phase12/README.md), set only the 
 
 ## Read performance and observability (Phase 13)
 
-[Measured proof batching and local metrics/logging/health](docs/phase13/README.md) preserve existing financial semantics and permissions. `/health/live`, `/health/ready` and the existing financial assurance view have separate meanings. `/metrics` exposes process observations and dated last-observed authoritative scopes without recomputing financial truth. [Benchmarks, query plans, verification and limitations](docs/phase13/verification.md). Preferred local latency targets are not production SLAs. Phase 14, real integrations, cloud, AI, new financial products and web financial mutations remain deferred.
+[Measured proof batching and local metrics/logging/health](docs/phase13/README.md) preserve existing financial semantics and permissions. `/health/live`, `/health/ready` and the existing financial assurance view have separate meanings. `/metrics` exposes process observations and dated last-observed authoritative scopes without recomputing financial truth. [Benchmarks, query plans, verification and limitations](docs/phase13/verification.md). Preferred local latency targets are not production SLAs.
+
+## Stripe sandbox processor integration (Phase 14)
+
+Phase 14 adds the first real external financial-system boundary: authenticated Stripe sandbox evidence enters Flow through a dedicated ingress service, immutable ingestion, transactional work intent and the existing PostgreSQL worker infrastructure. Stripe-specific mapping remains isolated from the provider-neutral financial core.
+
+Webhook signatures are verified against the exact raw request bytes using the official Stripe SDK before evidence is trusted. Duplicate delivery, conflicting evidence, out-of-order events, API pagination, bounded retries and overlapping Events API backfill are handled explicitly. Successful webhook acknowledgement occurs only after durable evidence acceptance.
+
+Supported Phase 14 evidence includes captured charges, authoritative Balance Transactions and fees, refunds, disputes and conservative payout/settlement interpretation within the documented scope. Unsupported reversal/recovery economics remain explicit rather than being force-mapped. Source completeness remains `UNKNOWN` when independent evidence is insufficient.
+
+Real external verification passed using a Stripe sandbox `charge.succeeded` event. The signed webhook was durably accepted, processed by the worker, enriched from Stripe sandbox evidence and converted into processor-domain evidence. Overlapping backfill deduplicated to the same logical event/economic effect. Full regression verification remained green.
+
+The bank side remains explicitly synthetic, so this is **real Stripe sandbox processor evidence + synthetic bank evidence**, not proof of a real processor-to-bank production reconciliation environment.
+
+See [Phase 14 integration and setup](docs/phase14/README.md), [external verification evidence](docs/phase14/verification.md), and [ADR-017](docs/architecture/adr/017-external-processor-ingress.md).
+
+Live Stripe processing, payment initiation, checkout/billing/subscriptions, Stripe Connect, real bank integration, cloud deployment, production identity, AI-assisted investigation, new queue infrastructure and web financial mutations remain deferred.
