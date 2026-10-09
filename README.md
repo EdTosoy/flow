@@ -1,78 +1,116 @@
-# Financial reconciliation and exception management
+# Flow
 
-Production-oriented portfolio project using synthetic data. Phase 0 is the approved architectural baseline; Phase 1 implements the generic trusted financial core; Phase 2 adds an isolated deterministic synthetic financial simulator; Phase 3 adds immutable ingestion evidence and versioned normalization; Phase 4 adds processor activity interpretations, scoped payment associations and itemized settlement expectations with explicit internal controls. Phase 5 adds separate immutable bank observations, statement/balance evidence and bank-internal controls. Phase 6 implements exact 1:1 reconciliation, and Phase 7 extends it with explicit complete-declaration N:1 groups. Phase 8 adds separate operational exception management; Phase 9 adds frozen financial controls; Phase 10 adds PostgreSQL workers; Phase 11 adds independent integrity and adversarial verification. Phase 12 introduces a local read-only operator dashboard. Phase 13 adds measured read optimization and bounded local observability.
+Flow is a production-oriented financial reconciliation and exception-management system built as a portfolio project. It compares processor settlement evidence with bank observations, records explainable matches, and keeps discrepancies visible for investigation. An exact-money, immutable double-entry ledger remains a separate accounting boundary.
 
-**Promise:** no unexplained financial discrepancy should fail silently.
+Reconciliation is difficult because records can arrive late, repeat, change, or describe different parts of the same payment. Fees, refunds and grouped settlements complicate totals; matching amounts alone cannot prove that money arrived.
 
-Start with the [architecture and design status](docs/architecture/README.md). The design separates external evidence, internal business expectations, immutable accounting, and reconciliation decisions. PostgreSQL is the durability boundary; API and worker processes belong to one modular monolith.
+**Verified:** real Stripe sandbox charge/fee evidence passed hosted HTTPS ingestion and worker processing. **Demo:** AWS runtime is created on demand and normally offline. **Scope:** bank evidence is synthetic; the dashboard is read-only. [Executed evidence](docs/phase15/verification.md).
 
-Read the [Phase 1 implementation and reproducible commands](docs/phase1/README.md) and [verification evidence](docs/phase1/verification.md). The [implementation sequence](docs/architecture/implementation-sequence.md) defines later acceptance gates, unresolved product decisions and deferred scope. Architecture approval and financial-core verification do not constitute production approval.
+## What it demonstrates
+
+- **Exact accounting:** integer minor-unit money, explicit currencies and balanced journals enforced by PostgreSQL; corrections preserve posted history.
+- **Recoverable work:** financial writes, audit and work intent commit together through a transactional outbox. Semantic idempotency prevents duplicate effects; worker leases and fencing reject expired ownership.
+- **Conservative reconciliation:** exact one-to-one and explicitly declared many-to-one settlement matches, frozen evidence populations and unique whole-item allocations.
+- **Explainable operations:** separate exceptions, controls and integrity checks; accepted risk stays unreconciled and insufficient evidence stays UNKNOWN.
+- **External evidence:** official-SDK Stripe signature verification over raw bytes, immutable provenance, asynchronous enrichment and overlapping recovery without double-booking.
+- **Reproducible deployment:** tested non-root containers, restricted database/IAM roles and an ephemeral AWS/Terraform apply–demo–destroy lifecycle.
+
+## Architecture
+
+A TypeScript modular monolith uses Node.js ingress/workers, a Next.js operations application and shared domain libraries in an Nx/pnpm workspace. PostgreSQL owns durable state. The UI presents approved server-only reads; it never decides reconciliation or changes financial records.
+
+```mermaid
+flowchart TD
+  Stripe["Real Stripe sandbox"] --> Ingress["Signed webhook ingress"]
+  Synthetic["Synthetic processor and bank evidence"] --> Raw
+  Ingress --> Raw
+  Commands["Separate ledger commands"] --> Ledger
+
+  subgraph PG["PostgreSQL: authoritative state"]
+    Raw["Immutable evidence + transactional work intent"]
+    Interpretation["Versioned processor / bank interpretations"]
+    Ledger["Immutable double-entry ledger"]
+    Reconciliation["Evidence-based reconciliation"]
+    Assurance["Exceptions, controls and integrity"]
+    Interpretation --> Reconciliation
+    Reconciliation --> Assurance
+    Ledger --> Assurance
+  end
+
+  Raw --> Workers["Durable workers: leases and fencing"]
+  Workers --> Interpretation
+  Assurance --> Read["Approved read model"]
+  Read --> Ops["Read-only operations dashboard"]
+  Assurance -. "results compared only in tests" .-> Oracle["Test-only simulator oracle"]
+```
+
+External observations never authorize payments or post ledger entries. The dotted path is test verification: oracle data cannot flow into runtime. Independent payment authorization and business-to-ledger orchestration remain deferred. [Current boundaries and code map](docs/architecture/current-system.md) · [Architectural decisions](docs/architecture/adr/README.md).
+
+## Dashboard / demo
+
+The operations dashboard exposes reconciliation evidence, exceptions, control freshness, durable work and financial integrity. The existing screenshot shows actual **Phase 12 local synthetic data**, including financial FAIL and separate structural PASS. It predates hosted Stripe/AWS verification and is not a screenshot of the current cloud deployment.
+
+![Flow's read-only synthetic operations overview, showing distinct financial FAIL, structural PASS and UNKNOWN source completeness](docs/phase12/screenshots/overview.png)
+
+**The AWS demo environment is created on demand with Terraform and destroyed after demonstrations to avoid idle cloud cost.** The runtime at `flow.edtosoy.com` is intentionally offline after teardown. Use the [local dashboard workflow](docs/phase12/README.md#reproducible-local-workflow) to inspect it without AWS or Stripe credentials.
+
+## Verified system
+
+The [Phase 15 report](docs/phase15/verification.md) records executed evidence from 2026-10-09:
+
+| Evidence                | Verified result                                                                                                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hosted Stripe sandbox   | A real signed `charge.succeeded` event passed HTTPS ingress → immutable receipt → durable worker → real Charge/Balance Transaction enrichment → processor charge/fee interpretations |
+| Replay and recovery     | Two overlapping backfills retained one raw event, one completion and the same economic derivation identities                                                                         |
+| Repository regressions  | Full `pnpm verify` passed, including **293 real PostgreSQL integration tests**; final deployment/access regressions passed **8 tests**                                               |
+| Deployment and teardown | **92-resource** runtime created and cleanly destroyed; private RDS, healthy ECS/ALB, valid ACM/HTTPS, scoped IAM and secrets handling checked                                        |
+| Reproducibility         | Fresh **92-create** plan passed after destruction; deliberately not applied for a second charged demonstration                                                                       |
+
+External proof covers capture/fee evidence. Refund, dispute and payout scope is exercised by local contracts and real PostgreSQL tests; those reports do not claim additional real external lifecycle demonstrations. Successful ingestion does not prove all-time source completeness or real-bank reconciliation. [Stripe scope and verification](docs/phase14/README.md) · [Measured read performance and limits](docs/phase13/verification.md).
+
+## Cloud deployment
+
+Terraform separates persistent bootstrap (versioned S3 state with native S3 locking, ECR, delegated Route 53 zone and budget) from disposable runtime (ECS Fargate, ALB/ACM, private Single-AZ RDS PostgreSQL, SSM SecureString, scoped IAM and short-retention CloudWatch logs).
+
+Cloudflare remains authoritative for the parent domain; one-time NS delegation lets Route 53 manage `flow.edtosoy.com`. There is **no NAT Gateway**: tasks use public IPs for outbound access, while security groups allow application ingress only from the ALB and database ingress only from authorized tasks. A $10/month budget provides alerts, not a spending cap.
+
+The lifecycle is bootstrap → confirm DNS delegation → build/push pinned images → apply → migrate/provision → demonstrate/verify → destroy. Detailed commands and manual checkpoints stay in the [deployment runbook](docs/phase15/README.md); reproducing the demonstration creates billable AWS resources.
+
+## Design philosophy
+
+- **PostgreSQL is the durability boundary.** Logs, metrics, queues and the browser are observations, not financial authority.
+- **Candidates are not matches.** Similar amounts or dates do not establish settlement membership or bank receipt.
+- **Ambiguity stays UNKNOWN.** Arrival order, missing evidence and successful processing cannot manufacture completeness.
+- **Operational closure is not reconciliation.** Accepted risk remains unreconciled exposure.
+- **Evidence and history are immutable.** Corrections add history; independent controls assess current freshness.
+- **Tests cannot give runtime the answers.** The simulator oracle is isolated from application and adapter dependencies.
+
+## Inspect or reproduce
+
+For the normal local verification gate, install **Node 24**, **pnpm 11.27.0**, Docker and Chromium (system Chromium, or `pnpm exec playwright install chromium`):
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm verify
 ```
 
-Prerequisites: Node 24, pnpm 11.27.0, Docker and Chromium for the browser gate (`pnpm exec playwright install chromium`, or an installed system Chromium). Integration tests own a disposable real PostgreSQL container; no existing database is reset. No real processor/bank integration, public/customer frontend or cloud infrastructure is implemented. Internal PostgreSQL workers are implemented in Phase 10.
+Integration tests create and clean their own disposable PostgreSQL containers; they do not reset an existing database. Ordinary build/tests and the public synthetic demo need no Stripe credentials or AWS account. [Local dashboard setup](docs/phase12/README.md#reproducible-local-workflow) · [Simulator reproduction](docs/phase2/README.md) · [Stripe sandbox setup](docs/phase14/README.md#developer-workflow).
 
-Read the [Phase 2 simulator model, configuration and reproduction procedure](docs/phase2/README.md) and [verification evidence](docs/phase2/verification.md). Generate safe input locally with `pnpm simulator generate --seed 828192 --payments 10000`; explicit private oracle export is a separate test-only option.
+## Current scope and limitations
 
-Read the [Phase 3 ingestion model and developer workflow](docs/phase3/README.md) and [verification evidence](docs/phase3/verification.md). Raw receipts, source revisions and interpretations are separate immutable evidence. Normalization never posts accounting or performs reconciliation.
+Stripe is **sandbox-only**, the bank side is **synthetic**, and the dashboard is **read-only**. Flow does not initiate live payments, provide checkout/billing, or integrate with a real bank. Supported matching remains exact 1:1 and complete-declaration N:1; arbitrary N:M, partial allocations and FX are deferred.
 
-Read the [Phase 4 processor model and developer pipeline](docs/phase4/README.md) and [verification/acceptance report](docs/phase4/verification.md). Processor claims never automatically create internal authorization or ledger entries, and settlement expectations do not prove bank receipt.
+The AWS demo uses disposable Single-AZ RDS data, no HA/restore guarantee, and shared demo access rather than production identity. Local performance observations are not production SLAs. Flow is not presented as production-ready or compliance-certified. **Phase 16 AI work is explicitly deferred.**
 
-Read the [Phase 5 bank model and public pipeline](docs/phase5/README.md) and [verification/acceptance report](docs/phase5/verification.md). Bank observations never establish processor origin or ledger truth. The developer CLI prints separate processor and bank summaries without matching.
+## Repository navigation
 
-## Phase 6
-
-[Exact synthetic 1:1 reconciliation](docs/phase6/README.md) and [verification report](docs/phase6/verification.md). Run `pnpm reconciliation` with public evidence and an explicitly provisioned source-account mapping. This original rule stays pair-only; Phase 7 and Phase 8 capabilities are separately documented below.
-
-Phase 7 adds explicit complete-declaration N:1 settlement-bank reconciliation on the existing frozen-run/allocation model. See [semantics](docs/phase7/README.md) and [verification](docs/phase7/verification.md).
-
-## Phase 8: operational exceptions
-
-A separate exception domain supports deterministic case generation, review, evidence/notes, auditable assignment/classification, structured resolution and explicit reopening/supersession. Accepted risk closes operations while money stays unreconciled. Verified closure cites existing fresh later-run proof; it creates no allocation. [Model and CLI](docs/phase8/README.md), [verification](docs/phase8/verification.md), [ADR-014](docs/architecture/adr/014-operational-exceptions.md).
-
-Use `pnpm exceptions pipeline` with the existing reconciliation arguments and separate `DATABASE_EXCEPTION_URL`, then `pnpm exceptions apply <command-json>` for review/resolution. Normal output contains runtime evidence only. Manual matching, new downstream worker policies, web financial actions, real integrations, cloud and AI remain deferred.
-
-## Phase 9 financial controls
-
-Versioned frozen control runs coordinate source/processing completeness, processor and bank totals, reconciliation coverage, allocation and ledger integrity, exposure and aging. UNKNOWN evidence stays explicit; operationally accepted risk remains unreconciled. See [implementation](docs/phase9/README.md) and [verification](docs/phase9/verification.md). `pnpm controls run <command-json>` and `pnpm controls pipeline <reconciliation arguments>` use separate synthetic runtime credentials. Phase 10 adds separate durable internal worker processing without changing these frozen control evaluations.
-
-Phase 10 is complete and verified for internal PostgreSQL async workers: [protocol and developer commands](docs/phase10/README.md), [verification](docs/phase10/verification.md).
-
-Phase 11 is complete and verified for independent read-only system integrity checks and synthetic/local adversarial resilience: [scope and commands](docs/phase11/README.md), [executed evidence](docs/phase11/verification.md). Use `pnpm integrity <book-id> [explicit-run-id ...]` with a narrow integrity-reader credential. Structural integrity and financial PASS/FAIL/UNKNOWN remain separate. Phase 12 adds the read-only application described below; financial web actions remain deferred.
-
-## Local operations dashboard (Phase 12)
-
-A read-only Next.js operator application investigates reconciliation, exceptions, controls, durable work and current integrity. Exact currency values and PASS/FAIL/UNKNOWN remain explicit; case closure does not prove reconciliation. Production identity/deployment and all web mutations remain deferred.
-
-Follow [local provisioning/demo commands](docs/phase12/README.md), set only the narrow `DATABASE_OPERATIONS_URL`, build with `pnpm build`, then run `pnpm ops:start` on http://127.0.0.1:3000. Use `pnpm ops:dev` for local development. [Verification and limitations](docs/phase12/verification.md).
-
-![Local synthetic financial operations overview](docs/phase12/screenshots/overview.png)
-
-## Read performance and observability (Phase 13)
-
-[Measured proof batching and local metrics/logging/health](docs/phase13/README.md) preserve existing financial semantics and permissions. `/health/live`, `/health/ready` and the existing financial assurance view have separate meanings. `/metrics` exposes process observations and dated last-observed authoritative scopes without recomputing financial truth. [Benchmarks, query plans, verification and limitations](docs/phase13/verification.md). Preferred local latency targets are not production SLAs.
-
-## Stripe sandbox processor integration (Phase 14)
-
-Phase 14 adds the first real external financial-system boundary: authenticated Stripe sandbox evidence enters Flow through a dedicated ingress service, immutable ingestion, transactional work intent and the existing PostgreSQL worker infrastructure. Stripe-specific mapping remains isolated from the provider-neutral financial core.
-
-Webhook signatures are verified against the exact raw request bytes using the official Stripe SDK before evidence is trusted. Duplicate delivery, conflicting evidence, out-of-order events, API pagination, bounded retries and overlapping Events API backfill are handled explicitly. Successful webhook acknowledgement occurs only after durable evidence acceptance.
-
-Supported Phase 14 evidence includes captured charges, authoritative Balance Transactions and fees, refunds, disputes and conservative payout/settlement interpretation within the documented scope. Unsupported reversal/recovery economics remain explicit rather than being force-mapped. Source completeness remains `UNKNOWN` when independent evidence is insufficient.
-
-Real external verification passed using a Stripe sandbox `charge.succeeded` event. The signed webhook was durably accepted, processed by the worker, enriched from Stripe sandbox evidence and converted into processor-domain evidence. Overlapping backfill deduplicated to the same logical event/economic effect. Full regression verification remained green.
-
-The bank side remains explicitly synthetic, so this is **real Stripe sandbox processor evidence + synthetic bank evidence**, not proof of a real processor-to-bank production reconciliation environment.
-
-See [Phase 14 integration and setup](docs/phase14/README.md), [external verification evidence](docs/phase14/verification.md), and [ADR-017](docs/architecture/adr/017-external-processor-ingress.md).
-
-Live Stripe processing, payment initiation, checkout/billing/subscriptions, Stripe Connect, real bank integration, cloud deployment, production identity, AI-assisted investigation, new queue infrastructure and web financial mutations remain deferred.
-
-## Ephemeral AWS demo (Phase 15)
-
-Phase 15 is implemented and verified with a persistent Terraform bootstrap and a disposable AWS demo runtime. Actual ECS Fargate, HTTPS ALB and private Single-AZ RDS deployment, protected dashboard, hosted Stripe sandbox charge/fee ingestion and overlapping backfill passed; the runtime was then destroyed and removal verified. No NAT gateway is used. Stripe remains sandbox-only and bank evidence synthetic. Cloudflare stays the parent DNS provider with one-time delegation of `flow.edtosoy.com` to a persistent Route 53 child zone. This is a portfolio demo, not a high-availability production service.
-
-Follow [the staged bootstrap and mandatory DNS checkpoint](docs/phase15/README.md). [Verification](docs/phase15/verification.md) distinguishes local checks, AWS bootstrap, hosted external proof and runtime destruction. Deployment is not yet fully verified and is not production readiness. No Phase 16 work is authorized.
+| Start here                                                                                                         | Contents                                                               |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| [Current architecture](docs/architecture/current-system.md) / [design catalog](docs/architecture/README.md)        | Implemented trust boundaries and historical design documents           |
+| [Decision records](docs/architecture/adr/README.md) / [invariants](docs/architecture/invariants.md)                | Durability, exact money, idempotency, matching and security decisions  |
+| [Deployment](docs/phase15/README.md) / [latest verification](docs/phase15/verification.md)                         | Apply/demo/destroy workflow and actual hosted evidence                 |
+| [Operations app](apps/ops) / [read adapter](libs/operations-read-postgres)                                         | Read-only Next.js dashboard and approved PostgreSQL reads              |
+| [Ingress app](apps/integrations) / [Stripe adapter](libs/stripe-integration) / [persistence](libs/stripe-postgres) | Authenticated sandbox evidence and existing worker integration         |
+| [Financial libraries](libs) / [migrations](database/migrations) / [tests](tests)                                   | Domain/persistence packages, database enforcement and regression gates |
+| [Public simulator](libs/simulator) / [test-only oracle](libs/simulator-oracle)                                     | Deterministic inputs and isolated verification ground truth            |
+| [Implementation history](docs/architecture/implementation-sequence.md)                                             | Phase 1–15 scope and evidence; Phase 16 remains deferred               |

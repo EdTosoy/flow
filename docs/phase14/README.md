@@ -1,6 +1,6 @@
 # Phase 14 — Stripe sandbox evidence ingestion
 
-Implementation: sandbox-only external evidence adapter. Verification status is recorded separately in [verification.md](verification.md); actual signed Stripe sandbox capture/fee verification has **PASSED**. No live processing or Phase 15 work is implemented.
+Implementation: sandbox-only external evidence adapter. Verification status is recorded separately in [verification.md](verification.md); actual signed Stripe sandbox capture/fee verification has **PASSED**. Live processing is unsupported. Subsequent [Phase 15 deployment](../phase15/README.md) and [hosted verification](../phase15/verification.md) are documented separately; local instructions here retain their original scope.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ flowchart TD
   B[Explicitly synthetic bank observations] --> R
 ```
 
-`apps/integrations` is a loopback-only ingress process. `libs/stripe-integration` contains the official SDK, signature validation, allowlist, bounded API reader and mapping. `libs/stripe-postgres` connects those adapters to Phase 3 acceptance and the Phase 10 worker. Core Money, ledger, matching, exceptions and controls never import Stripe SDK types. The dedicated processes remain part of one modular monolith, as recorded in [ADR-017](../architecture/adr/017-external-processor-ingress.md).
+`apps/integrations` defaults to loopback-only ingress for this local workflow; hosted configuration is documented in Phase 15. `libs/stripe-integration` contains the official SDK, signature validation, allowlist, bounded API reader and mapping. `libs/stripe-postgres` connects those adapters to Phase 3 acceptance and the Phase 10 worker. Core Money, ledger, matching, exceptions and controls never import Stripe SDK types. The dedicated processes remain part of one modular monolith, as recorded in [ADR-017](../architecture/adr/017-external-processor-ingress.md).
 
 ## Sandbox and account boundary
 
@@ -153,4 +153,4 @@ This is **real Stripe sandbox processor evidence + synthetic bank evidence** whe
 
 ## Limits and deferred work
 
-The external verification gate passed with real signed sandbox capture/fee evidence; refund, dispute and payout external demonstrations are not claimed by that run. Scope also excludes live Stripe, financial POST endpoints, customers/billing/subscriptions/checkout, Connect, real bank ingestion, FX, unrepresented reversal economics, cloud deployment, production identity, AI, new queues, arbitrary N:M, web financial mutation and Phases 15–16. No prior performance optimization, index, cache or materialized view is added or relaxed. Full Phase 1–13 verification remains required; operational readiness remains distinct from financial assurance.
+The external verification gate passed with real signed sandbox capture/fee evidence; refund, dispute and payout external demonstrations are not claimed by that run. The Phase 14 scope excludes live Stripe, financial POST endpoints, customers/billing/subscriptions/checkout, Connect, real bank ingestion, FX, unrepresented reversal economics, cloud deployment, production identity, AI, new queues, arbitrary N:M and web financial mutation. Phase 15 separately implements a protected ephemeral deployment; production identity and Phase 16 AI remain deferred. No prior performance optimization, index, cache or materialized view is added or relaxed. Full Phase 1–13 verification remains required; operational readiness remains distinct from financial assurance.

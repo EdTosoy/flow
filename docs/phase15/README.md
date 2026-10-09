@@ -9,7 +9,7 @@ Use only `iamadmin-general`, AWS account `163596511125`, `us-east-1`, environmen
 Persistent bootstrap owns:
 
 - Private S3 state bucket `flow-demo-tfstate-163596511125-us-east-1`, versioning, AES256 encryption, public-access block, bucket-owner enforcement and HTTPS-only policy.
-- ECR `flow-demo/ops`, `flow-demo/stripe`, `flow-demo/admin`. Stripe ingress and worker use separate commands from one adapter image; admin is one-shot only. Immutable versioned tags/digests will be required. Untagged remnants expire after seven days; tagged deployment images are retained.
+- ECR `flow-demo/ops`, `flow-demo/stripe`, `flow-demo/admin`. Stripe ingress and worker use separate commands from one adapter image; admin is one-shot only. Immutable versioned tags and deployed image digests are required. Untagged remnants expire after seven days; tagged deployment images are retained.
 - Account-wide $10/month budget, actual alerts at 50%, 80%, 100%, and forecast alert at 100%, using the operator-approved contact. Account-wide coverage includes existing unrelated spend and avoids assuming tag activation. **Not a hard spending cap.**
 - Route 53 public child zone `flow.edtosoy.com`, created only after state migration. Root domain and existing Cloudflare records remain in place.
 
@@ -50,7 +50,7 @@ pnpm aws:deploy dns-verify --confirmed
 
 This compares the four actual zone nameservers with public queries through both 1.1.1.1 and 8.8.8.8. Propagation failure blocks continuation. No Cloudflare provider/token is used. Terraform can subsequently manage the ACM validation CNAME within the delegated zone and an apex ALB alias, without Cloudflare edits for recreated ALBs.
 
-## Remaining deployment workflow
+## Deployment workflow
 
 After delegation verification, build/push versioned images, inspect the billable-resource plan, deploy initially disabled services, run one-shot migrations/provisioning and deterministic synthetic setup, configure a dedicated hosted Stripe sandbox destination, then start services. Verify HTTPS, access protection and signed webhook-first processing before backfill. Capture redacted evidence, retire the sandbox destination, destroy runtime, verify removal and retain bootstrap/state.
 

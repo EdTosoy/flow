@@ -1,6 +1,8 @@
 # Phase 12 — Local financial operations dashboard
 
-The first operator web surface investigates existing PostgreSQL truth. It creates no financial decisions. Phase 13, public/customer UI, real integrations, cloud, AI, new accounting, N:M and new brokers remain deferred.
+This page records the Phase 12 local scope and reproduction workflow. Later work added [measured read improvements](../phase13/README.md), [Stripe sandbox evidence](../phase14/README.md) and a [protected ephemeral AWS demo](../phase15/README.md). The local-only access instructions below remain applicable to the original workflow; hosted access is governed separately by Phase 15.
+
+The first operator web surface investigates existing PostgreSQL truth. It creates no financial decisions. At the Phase 12 milestone, Phase 13, public/customer UI, real integrations, cloud, AI, new accounting, N:M and new brokers remained deferred.
 
 ## Architecture and permissions
 
