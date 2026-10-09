@@ -1,0 +1,13 @@
+{
+  "name": "@flow/stripe-postgres",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@flow/stripe-integration": "workspace:*",
+    "@flow/ingestion-domain": "workspace:*",
+    "@flow/worker-postgres": "workspace:*",
+    "pg": "8.23.1"
+  }
+}

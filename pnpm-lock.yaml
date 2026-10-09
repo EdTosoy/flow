@@ -54,6 +54,18 @@ importers:
         specifier: 8.71.1
         version: 8.71.1(eslint@10.12.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
 
+  apps/integrations:
+    dependencies:
+      '@flow/stripe-integration':
+        specifier: workspace:*
+        version: link:../../libs/stripe-integration
+      '@flow/stripe-postgres':
+        specifier: workspace:*
+        version: link:../../libs/stripe-postgres
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
+
   apps/ops:
     dependencies:
       '@flow/money':
@@ -236,6 +248,33 @@ importers:
       '@flow/simulator':
         specifier: workspace:*
         version: link:../simulator
+
+  libs/stripe-integration:
+    dependencies:
+      '@flow/ingestion-domain':
+        specifier: workspace:*
+        version: link:../ingestion-domain
+      '@flow/money':
+        specifier: workspace:*
+        version: link:../money
+      stripe:
+        specifier: 23.0.0
+        version: 23.0.0(@types/node@24.19.1)
+
+  libs/stripe-postgres:
+    dependencies:
+      '@flow/ingestion-domain':
+        specifier: workspace:*
+        version: link:../ingestion-domain
+      '@flow/stripe-integration':
+        specifier: workspace:*
+        version: link:../stripe-integration
+      '@flow/worker-postgres':
+        specifier: workspace:*
+        version: link:../worker-postgres
+      pg:
+        specifier: 8.23.1
+        version: 8.23.1
 
   libs/worker-postgres:
     dependencies:
@@ -2432,6 +2471,15 @@ packages:
   strip-bom@3.0.0:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
+
+  stripe@23.0.0:
+    resolution: {integrity: sha512-MDE2A5ZVVluYURORaZEVghSmnLJc3w6aHAlZSxDQMsOjOb3V0O6ro/CiaeFlJS4N7uIVmsg98ocRsPmUK6YfyA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/node': '>=20'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
@@ -4991,6 +5039,10 @@ snapshots:
       ansi-regex: 5.0.1
 
   strip-bom@3.0.0: {}
+
+  stripe@23.0.0(@types/node@24.19.1):
+    optionalDependencies:
+      '@types/node': 24.19.1
 
   styled-jsx@5.1.6(@babel/core@7.29.7(supports-color@7.2.0))(babel-plugin-macros@3.1.0)(react@19.3.0):
     dependencies:

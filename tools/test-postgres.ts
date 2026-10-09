@@ -684,7 +684,7 @@ async function main(): Promise<void> {
         )
       ).rows,
     );
-    await migrate(admin);
+    await migrate(admin, '012_read_proof_batching.sql');
     if (
       (await snapshot9()) !== beforeOperations ||
       JSON.stringify(
@@ -707,6 +707,38 @@ async function main(): Promise<void> {
       );
     console.log(
       'Populated Phase 12 -> Phase 13 unchanged exact control snapshots/financial/work state PASS',
+    );
+    const before14 = await snapshot9();
+    const workBefore14 = JSON.stringify(
+      (
+        await admin.query(
+          'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+        )
+      ).rows,
+    );
+    await migrate(admin, '013_stripe_sandbox.sql');
+    if (
+      (await snapshot9()) !== before14 ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT to_jsonb(w) FROM worker.work_item w ORDER BY id',
+          )
+        ).rows,
+      ) !== workBefore14 ||
+      JSON.stringify(
+        (
+          await admin.query(
+            'SELECT id,controls.snapshot(command,frozen_at) AS snapshot FROM controls.run ORDER BY id',
+          )
+        ).rows,
+      ) !== readsBeforeBatching
+    )
+      throw new Error(
+        'Stripe migration changed prior financial history, frozen proof or work',
+      );
+    console.log(
+      'Populated Phase 13 -> Phase 14 unchanged financial history, frozen proof and work PASS',
     );
     const historicalRows = (
       await admin.query(
@@ -788,7 +820,14 @@ async function main(): Promise<void> {
       `Disposable PostgreSQL ${Object.values(version.rows[0]!)[0]}; migration from empty + hash consistency PASS`,
     );
     const requested = process.argv.slice(2);
+    await admin.query(
+      'CREATE ROLE flow_test_stripe_ingress LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_stripe_ingress',
+    );
+    await admin.query(
+      'CREATE ROLE flow_test_stripe_worker LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS IN ROLE flow_stripe_worker',
+    );
     const files = [
+      'tests/stripe.integration.test.ts',
       'tests/operations.integration.test.ts',
       'tests/operations-browser.integration.test.ts',
       'tests/observability.integration.test.ts',
@@ -831,6 +870,14 @@ async function main(): Promise<void> {
           env: {
             ...process.env,
             FLOW_TEST_ADMIN_URL: url,
+            FLOW_TEST_STRIPE_INGRESS_URL: url.replace(
+              'flow_test_admin',
+              'flow_test_stripe_ingress',
+            ),
+            FLOW_TEST_STRIPE_WORKER_URL: url.replace(
+              'flow_test_admin',
+              'flow_test_stripe_worker',
+            ),
             FLOW_TEST_OPERATIONS_URL: url.replace(
               'flow_test_admin@',
               'flow_test_operations@',

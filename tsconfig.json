@@ -61,6 +61,15 @@
     },
     {
       "path": "libs/operations-read-postgres"
+    },
+    {
+      "path": "libs/stripe-integration"
+    },
+    {
+      "path": "libs/stripe-postgres"
+    },
+    {
+      "path": "apps/integrations"
     }
   ]
 }

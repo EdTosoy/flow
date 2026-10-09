@@ -1,0 +1,21 @@
+{
+  "name": "stripe-integration",
+  "sourceRoot": "libs/stripe-integration/src",
+  "projectType": "library",
+  "tags": ["layer:stripe-integration", "trust:runtime"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc -b libs/stripe-integration"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx --test libs/stripe-integration/test/*.test.ts"
+      }
+    }
+  }
+}
