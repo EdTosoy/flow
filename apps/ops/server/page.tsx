@@ -1,5 +1,8 @@
 import 'server-only';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { PageSkeleton } from '../components/skeleton';
+import { Refresh } from '../components/refresh';
 import { request, unavailable } from './telemetry';
 import { read, scope, type Search } from './read';
 import {
@@ -84,11 +87,10 @@ async function renderPage({
     evaluation = selection.evaluation;
     const filters = { ...selection.filters };
     if (id && section !== 'controls') filters['id'] = id;
-    const title = titles[section]!;
     if (!book) {
       const books = await read('books', null, { cursor: filters['cursor'] });
       return (
-        <Shell section={section} book={null}>
+        <>
           <div className="page-heading">
             <span className="eyebrow">INTERNAL OPERATIONS</span>
             <h1>Select a financial book</h1>
@@ -123,7 +125,7 @@ async function renderPage({
               </Link>
             )}
           </Panel>
-        </Shell>
+        </>
       );
     }
     const operation = id ? detailOps[section]! : operations[section]!;
@@ -165,24 +167,7 @@ async function renderPage({
           })
         : null;
     return (
-      <Shell section={section} book={book} evaluation={evaluation}>
-        <div className="page-heading">
-          <div>
-            <span className="eyebrow">
-              {id
-                ? 'EVIDENCE INVESTIGATION'
-                : 'OPERATIONS / ' + section.toUpperCase()}
-            </span>
-            <h1>{title[0]}</h1>
-            <p>{title[1]}</p>
-          </div>
-          <a
-            className="button secondary"
-            href={url(section, book, evaluation, id, filters)}
-          >
-            Refresh data ↻
-          </a>
-        </div>
+      <>
         <div className="scope-strip">
           <span>
             Book <Id value={book} />
@@ -244,7 +229,7 @@ async function renderPage({
             )}
           </>
         )}
-      </Shell>
+      </>
     );
   } catch (error) {
     unavailable(error);
@@ -252,11 +237,7 @@ async function renderPage({
     const missing =
       error instanceof ReadUnavailable && error.category === 'NOT_FOUND';
     return (
-      <Shell
-        section={titles[section] ? section : 'overview'}
-        book={book}
-        evaluation={evaluation}
-      >
+      <>
         <div className="page-heading">
           <h1>
             {invalid
@@ -276,13 +257,66 @@ async function renderPage({
         <p>
           <Link href={url('overview', book)}>Return to overview →</Link>
         </p>
-      </Shell>
+      </>
     );
   }
 }
 
-export async function OpsPage(props: Parameters<typeof renderPage>[0]) {
+async function PageData(props: Parameters<typeof renderPage>[0]) {
   return request('page_' + (operations[props.section] ?? 'overview'), () =>
     renderPage(props),
+  );
+}
+
+export function OpsPage(props: Parameters<typeof renderPage>[0]) {
+  const { section, id, search } = props;
+  // This pure scope read only supplies chrome; PageData retains request validation
+  // and the existing observable error handling within its telemetry context.
+  let selection;
+  try {
+    if (!operations[section] || (id && !detailOps[section]))
+      throw new InvalidRead();
+    selection = scope(search);
+  } catch {
+    return (
+      <Shell section={titles[section] ? section : 'overview'} book={null}>
+        <PageData {...props} />
+      </Shell>
+    );
+  }
+  const { book, evaluation } = selection;
+  const title = titles[section]!;
+  return (
+    <Shell section={section} book={book} evaluation={evaluation}>
+      {book && (
+        <div className="page-heading">
+          <div>
+            <span className="eyebrow">
+              {id
+                ? 'EVIDENCE INVESTIGATION'
+                : 'OPERATIONS / ' + section.toUpperCase()}
+            </span>
+            <h1>{title[0]}</h1>
+            <p>{title[1]}</p>
+          </div>
+          <Refresh />
+        </div>
+      )}
+      <Suspense
+        // New scopes get placeholders; same-scope filters/refresh retain the
+        // rendered snapshot during the router's React transition.
+        key={`${section}:${book ?? 'books'}:${id ?? 'list'}`}
+        fallback={
+          <PageSkeleton
+            section={section}
+            detail={Boolean(id)}
+            book={Boolean(book)}
+            evaluation={Boolean(evaluation)}
+          />
+        }
+      >
+        <PageData {...props} />
+      </Suspense>
+    </Shell>
   );
 }
