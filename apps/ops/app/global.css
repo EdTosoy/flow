@@ -682,3 +682,125 @@ footer {
     flex-wrap: wrap;
   }
 }
+
+/* Loading decoration is neutral and has no financial-status styling. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.skeleton {
+  display: block;
+  flex-shrink: 0;
+  max-width: 100%;
+  height: 14px;
+  border-radius: 3px;
+  background: #e4e9e9;
+  animation: skeleton-pulse 2.4s ease-in-out infinite;
+}
+.skeleton-label {
+  height: 12px;
+}
+.skeleton-value {
+  height: 29px;
+}
+.skeleton-badge {
+  height: 23px;
+  border-radius: 4px;
+}
+.skeleton-input {
+  height: 41px;
+  border-radius: 4px;
+}
+.skeleton-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+}
+.skeleton-filter,
+.skeleton-book-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 100%;
+}
+.skeleton-book-heading {
+  width: 380px;
+}
+.page-skeleton .scope-strip {
+  min-height: 33.5px;
+}
+.page-skeleton .scope-strip > .skeleton:last-child {
+  margin-left: auto;
+}
+.page-skeleton .panel-heading {
+  min-height: 61px;
+}
+.page-skeleton .footnote .skeleton {
+  height: 1.6em;
+}
+.skeleton-table th {
+  height: 40px;
+}
+.skeleton-table td {
+  height: 82px;
+}
+.skeleton-table td .skeleton + .skeleton {
+  margin-top: 8px;
+}
+.skeleton-table-tall td {
+  height: 120px;
+}
+.skeleton-notice {
+  padding: 4px 20px;
+  margin: 16px 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.refresh-control {
+  position: relative;
+  flex-shrink: 0;
+}
+.refresh-control .updating {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  white-space: nowrap;
+}
+.updating {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 20px;
+}
+button:disabled {
+  cursor: progress;
+}
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+@media (max-width: 720px) {
+  .page-skeleton .scope-strip > .skeleton:last-child {
+    margin-left: 0;
+  }
+  .page-skeleton .panel-heading {
+    min-height: 57px;
+  }
+  .refresh-control button {
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+}
