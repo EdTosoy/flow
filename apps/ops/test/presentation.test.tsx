@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import fc from 'fast-check';
 import { money, percentage, timestamp } from '../components/format';
 import { Status } from '../components/common';
+import { PageSkeleton } from '../components/skeleton';
 import {
   Overview,
   Exceptions,
@@ -22,6 +23,37 @@ const base: Model = {
   items: [],
   nextCursor: null,
 };
+test('loading decoration is accessible and never asserts financial or empty results', () => {
+  for (const section of [
+    'overview',
+    'reconciliation',
+    'exceptions',
+    'controls',
+    'workers',
+    'integrity',
+  ]) {
+    for (const detail of [false, true]) {
+      const html = renderToStaticMarkup(
+        <PageSkeleton section={section} detail={detail} evaluation />,
+      );
+      assert(html.includes('aria-busy="true"'));
+      assert(html.includes('role="status"'));
+      assert(html.includes('aria-hidden="true"'));
+      assert(
+        !/class="status|\bPASS\b|\bFAIL\b|\bUNKNOWN\b|No results|No cases|0\.00/.test(
+          html,
+        ),
+      );
+      assert(!html.includes('<button'));
+      assert(!html.includes('<input'));
+    }
+  }
+  const books = renderToStaticMarkup(
+    <PageSkeleton section="overview" book={false} />,
+  );
+  assert(books.includes('book-list'));
+  assert(!books.includes('No books'));
+});
 test('exact financial formatting preserves signs, large aggregate values and currency', () => {
   assert.equal(money('9007199254740993', 'PHP'), 'PHP 90,071,992,547,409.93');
   assert.equal(money('-1', 'USD'), 'USD -0.01');

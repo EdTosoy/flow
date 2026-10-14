@@ -12,6 +12,9 @@ export default {
     '@flow/money',
   ],
   async headers() {
+    // React uses eval for development debugging; production keeps it forbidden.
+    const developmentEval =
+      process.env['NODE_ENV'] === 'development' ? " 'unsafe-eval'" : '';
     return [
       {
         source: '/:path*',
@@ -22,8 +25,7 @@ export default {
           { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
           {
             key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline'${developmentEval}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'`,
           },
         ],
       },

@@ -21,6 +21,7 @@ import { PostgresOperations } from '@flow/operations-read-postgres';
 import { seedDemo, type DemoPools } from '../tools/ops-demo';
 import { clean, witness } from './helpers/resilience';
 import { distribution } from './helpers/profile-reads';
+import { verifyLoading } from './helpers/operations-loading';
 const exec = promisify(execFile);
 const keys: Record<keyof DemoPools, string> = {
   admin: 'ADMIN',
@@ -410,6 +411,12 @@ test(
       assert((await page.getByText('UNKNOWN', { exact: false }).count()) > 0);
       await page.goto(base + '/?book=invalid');
       await page.getByRole('heading', { name: 'Invalid request' }).waitFor();
+      await verifyLoading(
+        page,
+        p.admin,
+        overview,
+        process.env['FLOW_OPS_SCREENSHOTS'] ?? join(dir, 'loading-screenshots'),
+      );
       await p.admin.query(
         'REVOKE EXECUTE ON FUNCTION operations.read_v1(uuid,text,jsonb) FROM flow_operations_reader',
       );
@@ -427,6 +434,11 @@ test(
             .getByRole('heading', { name: 'Financial assurance checks' })
             .count(),
           0,
+        );
+        assert.equal(await page.locator('.page-skeleton:visible').count(), 0);
+        assert.equal(
+          await page.locator('main').getByRole('alert').isVisible(),
+          true,
         );
       } finally {
         await p.admin.query(
